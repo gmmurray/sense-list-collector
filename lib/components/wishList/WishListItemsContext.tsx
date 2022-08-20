@@ -114,7 +114,7 @@ export const WishListItemProvider = ({
   );
 
   useEffect(() => {
-    if (queryError) {
+    if (queryError && snackbarContext.message !== queryError.message) {
       snackbarContext.send(queryError.message, 'error');
     }
   }, [queryError, snackbarContext]);

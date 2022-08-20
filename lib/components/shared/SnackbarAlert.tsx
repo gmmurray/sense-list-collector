@@ -6,11 +6,14 @@ type SnackbarAlertType = 'error' | 'warning' | 'info' | 'success';
 type SnackbarAlertContextValue = {
   send: (message: string, type: SnackbarAlertType) => void;
   onClose: () => void;
+  open: boolean;
+  message?: string;
 };
 
 const initialValue: SnackbarAlertContextValue = {
   send: () => {},
   onClose: () => {},
+  open: false,
 };
 
 export const SnackbarAlertContext = createContext(initialValue);
@@ -37,6 +40,8 @@ export const SnackbarAlertProvider = ({
   const value: SnackbarAlertContextValue = {
     send: handleOpen,
     onClose: handleClose,
+    open,
+    message,
   };
 
   return (

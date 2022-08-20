@@ -23,7 +23,7 @@ const WishListPage = () => {
   const snackbarContext = useSnackbarAlert();
 
   useEffect(() => {
-    if (valueError) {
+    if (valueError && snackbarContext.message !== valueError.message) {
       snackbarContext.send(valueError.message, 'error');
     }
   }, [snackbarContext, valueError]);
@@ -66,7 +66,6 @@ const WishListPage = () => {
       <Typography variant="h2" component="h1">
         Wish list
       </Typography>
-      {valueError && <Alert severity="warning">{valueError.message}</Alert>}
       {renderContent()}
     </div>
   );
