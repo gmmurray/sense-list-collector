@@ -36,7 +36,16 @@ const Navbar = () => {
     null,
   );
 
+  const availableLinks = links.filter(link => {
+    if (link.auth) {
+      return !!user;
+    } else {
+      return true;
+    }
+  });
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    if (!availableLinks.length) return;
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -52,14 +61,6 @@ const Navbar = () => {
   };
 
   const handleLogoutClick = useCallback(() => firebaseAuth.signOut(), []);
-
-  const availableLinks = links.filter(link => {
-    if (link.auth) {
-      return !!user;
-    } else {
-      return true;
-    }
-  });
 
   return (
     <AppBar position="static" sx={{ mb: 2 }}>
