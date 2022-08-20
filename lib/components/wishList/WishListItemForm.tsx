@@ -3,26 +3,19 @@
 
 import * as yup from 'yup';
 
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Grid, InputAdornment, Typography } from '@mui/material';
 import CreatableAutocomplete, {
   CreatableAutocompleteOption,
 } from '../form/CreatableAutocomplete';
+import { FormikSelect, FormikTextField } from '../form/wrappers';
+import {
+  IWishListItem,
+  WishListItemPriorities,
+} from '../../../entities/wishList';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Box } from '@mui/system';
 import { IUserDocument } from '../../../entities/user';
-import { IWishListItem } from '../../../entities/wishList';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import { useUserContext } from '../../hoc/withUser';
@@ -39,7 +32,9 @@ const validationSchema = yup.object({
 
 const WishListItemForm = () => {
   const { documentUser, onUpdateDocumentUser } = useUserContext();
-  const [options, setOptions] = useState<CreatableAutocompleteOption[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<
+    CreatableAutocompleteOption[]
+  >([]);
   const {
     editorInitialValue,
     editorLoading,
@@ -55,7 +50,7 @@ const WishListItemForm = () => {
       result = documentUser.categories?.map(c => ({ value: c })) ?? [];
     }
 
-    setOptions(result);
+    setCategoryOptions(result);
   }, [documentUser]);
 
   const onSubmit = useCallback(
@@ -113,87 +108,65 @@ const WishListItemForm = () => {
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextField
-              id="name"
+            <FormikTextField
               name="name"
               label="Name"
-              value={formik.values.name}
-              onChange={formik.handleChange}
-              error={formik.touched.name && !!formik.errors.name}
-              helperText={formik.touched.name && formik.errors.name}
-              variant="standard"
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              id="link"
-              name="link"
-              label="Link"
-              value={formik.values.link}
-              onChange={formik.handleChange}
-              error={formik.touched.link && !!formik.errors.link}
-              helperText={formik.touched.link && formik.errors.link}
-              variant="standard"
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormControl
-              fullWidth
-              variant="standard"
-              error={formik.touched.priority && !!formik.errors.priority}
-            >
-              <InputLabel id="priority-label">Priority</InputLabel>
-              <Select
-                id="priority"
-                name="priority"
-                label="Priority"
-                value={formik.values.priority}
-                onChange={formik.handleChange}
-              >
-                <MenuItem value={undefined}>select</MenuItem>
-                <MenuItem value="low">low</MenuItem>
-                <MenuItem value="medium">medium</MenuItem>
-                <MenuItem value="high">high</MenuItem>
-              </Select>
-              {formik.touched.priority && !!formik.errors.priority && (
-                <FormHelperText>{formik.errors.priority}</FormHelperText>
-              )}
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              id="price"
-              name="price"
-              label="Price"
-              value={formik.values.price}
-              onChange={formik.handleChange}
-              error={formik.touched.price && !!formik.errors.price}
-              helperText={formik.touched.price && formik.errors.price}
-              variant="standard"
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                ),
+              formik={formik}
+              inputProps={{
+                variant: 'standard',
+                fullWidth: true,
               }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              id="description"
+            <FormikTextField
+              name="link"
+              label="Link"
+              formik={formik}
+              inputProps={{
+                variant: 'standard',
+                fullWidth: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormikSelect
+              formik={formik}
+              name="priority"
+              label="Priority"
+              options={WishListItemPriorities.map(p => ({ name: p, value: p }))}
+              inputProps={{
+                fullWidth: true,
+                variant: 'standard',
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormikTextField
+              name="price"
+              label="Price"
+              formik={formik}
+              inputProps={{
+                fullWidth: true,
+                variant: 'standard',
+                InputProps: {
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                },
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormikTextField
               name="description"
               label="Description"
-              value={formik.values.description}
-              onChange={formik.handleChange}
-              error={formik.touched.description && !!formik.errors.description}
-              helperText={
-                formik.touched.description && formik.errors.description
-              }
-              variant="standard"
-              fullWidth
-              multiline
+              formik={formik}
+              inputProps={{
+                fullWidth: true,
+                variant: 'standard',
+                multiline: true,
+              }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -204,20 +177,18 @@ const WishListItemForm = () => {
               value={formik.values.category}
               onChange={handleCategoryChange}
               onCreate={handleCategoryCreate}
-              options={options}
+              options={categoryOptions}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              id="image"
+            <FormikTextField
               name="image"
               label="Image URL"
-              value={formik.values.image}
-              onChange={formik.handleChange}
-              error={formik.touched.image && !!formik.errors.image}
-              helperText={formik.touched.image && formik.errors.image}
-              variant="standard"
-              fullWidth
+              formik={formik}
+              inputProps={{
+                variant: 'standard',
+                fullWidth: true,
+              }}
             />
           </Grid>
           {formik.values.image && (

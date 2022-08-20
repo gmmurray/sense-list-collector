@@ -11,7 +11,7 @@ export type CreatableAutocompleteOption = {
 
 const filter = createFilterOptions<CreatableAutocompleteOption>();
 
-type CreatableAutocompleteProps = {
+export type CreatableAutocompleteProps = {
   value?: string;
   onChange: (value: CreatableAutocompleteOption | null) => any;
   onCreate: (value: CreatableAutocompleteOption) => any;

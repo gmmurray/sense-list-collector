@@ -1,5 +1,7 @@
 import { User } from 'firebase/auth';
 
+export const WishListItemPriorities = ['low', 'medium', 'high'];
+
 export interface IWishListItem {
   id: string;
   name: string;
