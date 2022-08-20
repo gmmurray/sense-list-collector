@@ -25,6 +25,11 @@ const links: { name: string; to: string; auth: boolean }[] = [
     to: '/wish-list',
     auth: true,
   },
+  {
+    name: 'Stash',
+    to: '/stash',
+    auth: true,
+  },
 ];
 
 const Navbar = () => {

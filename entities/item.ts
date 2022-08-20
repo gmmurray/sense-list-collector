@@ -20,6 +20,7 @@ import {
 } from 'firebase/firestore';
 
 import { firebaseDB } from '../config/firebase';
+import { mockItems } from '../mock/items';
 import pickBy from 'lodash.pickby';
 
 export interface IItem {
@@ -148,4 +149,12 @@ export const removeItemFromCollection = async (
   removeItemsFromCollectionBatch(collectionId, [itemId], batch);
 
   return await batch.commit();
+};
+
+export const getLatestItems = async (count: number): Promise<IItemWithId[]> => {
+  const res = mockItems()
+    .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1))
+    .slice(0, count);
+
+  return new Promise(resolve => setTimeout(() => resolve(res), 500));
 };

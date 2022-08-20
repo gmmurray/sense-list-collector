@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 
 import { firebaseDB } from '../config/firebase';
+import { mockCollections } from '../mock/collections';
 import pickBy from 'lodash.pickby';
 
 export interface ICollection {
@@ -133,4 +134,14 @@ export const removeItemsFromCollectionBatch = (
   return batch.update(doc(collectionsCollection, id), {
     itemIds: arrayRemove(itemIds),
   });
+};
+
+export const getLatestCollections = async (
+  count: number,
+): Promise<ICollectionWithId[]> => {
+  const res = mockCollections()
+    .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1))
+    .slice(0, count);
+
+  return new Promise(resolve => setTimeout(() => resolve(res), 500));
 };
