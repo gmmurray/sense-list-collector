@@ -73,8 +73,8 @@ const WishListItemForm = () => {
     initialValues: editorInitialValue ?? {
       id: '',
       name: '',
-      link: 'https://google.com',
-      image: 'https://placehold.jp/100x100.png',
+      link: 'https://google.com', //TODO: remove
+      image: 'https://placehold.jp/100x100.png', //TODO: remove
       priority: undefined,
       price: undefined,
       description: undefined,
@@ -233,7 +233,7 @@ const WishListItemForm = () => {
               />
             </Grid>
           )}
-          <Grid item xs={3} md={1}>
+          <Grid item>
             <LoadingButton
               type="submit"
               loading={editorLoading}
@@ -242,13 +242,12 @@ const WishListItemForm = () => {
             >
               Save
             </LoadingButton>
-          </Grid>
-          <Grid item xs={3} md={1}>
             <Button
               disabled={editorLoading}
               variant="outlined"
               onClick={() => onEditorToggle!(false)}
               color="error"
+              sx={{ ml: 2 }}
             >
               Cancel
             </Button>

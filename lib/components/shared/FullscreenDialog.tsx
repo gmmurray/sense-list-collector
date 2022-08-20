@@ -65,7 +65,9 @@ export const FullscreenDialog = ({
           )}
         </Toolbar>
       </AppBar>
-      <Container maxWidth="xl">{children}</Container>
+      <Container maxWidth="xl" sx={{ mb: 2 }}>
+        {children}
+      </Container>
     </Dialog>
   );
 };

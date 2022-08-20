@@ -45,7 +45,18 @@ const Footer = () => {
               </Typography>
             </Stack>
           </Grid>
-          <Grid item xs={12} md={4} px={2} borderLeft="1px solid white">
+          <Grid
+            item
+            xs={12}
+            md={4}
+            px={2}
+            sx={{
+              borderLeft: {
+                xs: 'none',
+                md: '1px solid white',
+              },
+            }}
+          >
             <Stack>
               <Typography
                 variant="subtitle2"
@@ -75,7 +86,18 @@ const Footer = () => {
               </MUILink>
             </Stack>
           </Grid>
-          <Grid item xs={12} md={4} px={2} borderLeft="1px solid white">
+          <Grid
+            item
+            xs={12}
+            md={4}
+            px={2}
+            sx={{
+              borderLeft: {
+                xs: 'none',
+                md: '1px solid white',
+              },
+            }}
+          >
             <Stack>
               <Typography
                 variant="subtitle2"
