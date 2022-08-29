@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import {
   ICollectionWithId,
-  getLatestCollections,
+  getLatestCollectionsMock,
 } from '../../entities/collection';
 import { IItemWithId, getLatestItems } from '../../entities/item';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -32,7 +32,7 @@ const Stash = () => {
   useEffect(() => {
     const loadCollections = async () => {
       setCollectionsLoading(true);
-      const result = await getLatestCollections(3);
+      const result = await getLatestCollectionsMock(3);
       setCollectionsLoading(false);
       setCollections(result);
     };
@@ -86,7 +86,7 @@ const Stash = () => {
         </ButtonGroup>
       </Grid>
       {showCollections && (
-        <Grid item xs={12} container>
+        <Grid item xs={12} container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" component="h2">
               Collections
@@ -94,7 +94,7 @@ const Stash = () => {
           </Grid>
           <Grid item xs={12}>
             <Link href="/stash/collections" passHref>
-              <MUILink underline="hover">View</MUILink>
+              <MUILink underline="hover">View more</MUILink>
             </Link>
           </Grid>
           <Grid item xs={12}>
@@ -119,7 +119,7 @@ const Stash = () => {
           </Grid>
           <Grid item xs={12}>
             <Link href="/stash/items" passHref>
-              <MUILink underline="hover">View</MUILink>
+              <MUILink underline="hover">View more</MUILink>
             </Link>
           </Grid>
           <Grid item xs={12}>

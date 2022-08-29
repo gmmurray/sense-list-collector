@@ -23,6 +23,7 @@ import { Box } from '@mui/system';
 import CenteredMessage from '../shared/CenteredMessage';
 import { FullscreenDialog } from '../shared/FullscreenDialog';
 import GridViewIcon from '@mui/icons-material/GridView';
+import GridViewSelector from '../shared/GridViewSelector';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import WishListItem from './WishListItem';
@@ -245,18 +246,10 @@ const WishListItems = () => {
         </Grid>
         <Grid item xs={12} display="flex">
           <Box ml="auto">
-            <IconButton
-              color={gridView ? 'primary' : undefined}
-              onClick={() => setGridView(true)}
-            >
-              <GridViewIcon />
-            </IconButton>
-            <IconButton
-              color={!gridView ? 'primary' : undefined}
-              onClick={() => setGridView(false)}
-            >
-              <ViewListIcon />
-            </IconButton>
+            <GridViewSelector
+              isGridView={gridView}
+              onGridViewChange={setGridView}
+            />
           </Box>
         </Grid>
       </Grid>

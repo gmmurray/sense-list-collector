@@ -21,6 +21,7 @@ import {
 
 import { firebaseDB } from '../config/firebase';
 import { mockItems } from '../mock/items';
+import { mockPromisify } from '../lib/helpers/promises';
 import pickBy from 'lodash.pickby';
 
 export interface IItem {
@@ -156,5 +157,5 @@ export const getLatestItems = async (count: number): Promise<IItemWithId[]> => {
     .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1))
     .slice(0, count);
 
-  return new Promise(resolve => setTimeout(() => resolve(res), 500));
+  return mockPromisify(res);
 };
