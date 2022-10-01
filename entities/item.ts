@@ -23,6 +23,7 @@ import { firebaseDB } from '../config/firebase';
 import { mockItems } from '../mock/items';
 import { mockPromisify } from '../lib/helpers/promises';
 import pickBy from 'lodash.pickby';
+import { sortByTimestamp } from '../lib/helpers/timestampSort';
 
 export interface IItem {
   name: string;
@@ -153,9 +154,17 @@ export const removeItemFromCollection = async (
 };
 
 export const getLatestItems = async (count: number): Promise<IItemWithId[]> => {
-  const res = mockItems()
-    .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1))
-    .slice(0, count);
+  const res = sortByTimestamp(mockItems(), 'updated', 'desc').slice(0, count);
 
   return mockPromisify(res);
+};
+
+export const mockGetItemsInCollection = async (
+  collectionId: string,
+): Promise<IItemWithId[]> => {
+  const res = mockItems().filter(item =>
+    item.collectionIds.includes(collectionId),
+  );
+
+  return mockPromisify(sortByTimestamp(res, 'updated', 'desc'));
 };

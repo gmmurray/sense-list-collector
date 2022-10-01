@@ -9,10 +9,9 @@ import {
   TableRow,
   Tooltip,
 } from '@mui/material';
-import React, { Fragment, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { ICollectionWithId } from '../../../entities/collection';
-import Link from 'next/link';
 import PublicIcon from '@mui/icons-material/Public';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import { useRouter } from 'next/router';

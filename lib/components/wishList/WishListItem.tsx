@@ -43,14 +43,14 @@ const WishListItem = ({ item }: WishListItemProps) => {
 
   return (
     <Fade in timeout={500}>
-      <Card sx={{ height: '100%' }}>
+      <Card sx={{ height: '100%' }} elevation={4}>
         <a href={item.link} target="_blank" rel="noreferrer">
           <CardMedia
             component="img"
             image={item.image}
             alt={item.name}
             height="200"
-            sx={{ objectFit: 'contain', backgroundColor: 'black' }}
+            sx={{ objectFit: 'contain' }}
           />
         </a>
         <Box display="flex" flexDirection="column" height="calc(100% - 200px)">

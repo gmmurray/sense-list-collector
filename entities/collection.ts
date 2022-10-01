@@ -18,6 +18,7 @@ import { firebaseDB } from '../config/firebase';
 import { mockCollections } from '../mock/collections';
 import { mockPromisify } from '../lib/helpers/promises';
 import pickBy from 'lodash.pickby';
+import { sortByTimestamp } from '../lib/helpers/timestampSort';
 
 export interface ICollection {
   name: string;
@@ -26,6 +27,7 @@ export interface ICollection {
   isPublic: boolean;
   coverImageUrl?: string;
   itemIds: string[];
+  favoriteItemIds: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -140,11 +142,9 @@ export const removeItemsFromCollectionBatch = (
 export const getLatestCollectionsMock = async (
   count: number,
 ): Promise<ICollectionWithId[]> => {
-  const res = mockCollections()
-    .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1))
-    .slice(0, count);
+  const res = mockCollections();
 
-  return mockPromisify(res);
+  return mockPromisify(sortByTimestamp(res, 'updated', 'desc').slice(0, count));
 };
 
 export const getMockCollection = async (

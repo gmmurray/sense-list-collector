@@ -74,9 +74,22 @@ const collectionsJSON = [
     description:
       'Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
     isPublic: true,
-    coverImageUrl: 'http://dummyimage.com/237x100.png/cc0000/ffffff',
+    coverImageUrl:
+      'https://static.wikia.nocookie.net/gundam/images/8/8e/Rx-93-v-2.jpg',
     createdAt: '1630457674000',
     updatedAt: '1657747340000',
+    itemIds: [
+      '3ce7b82c-306c-4dc5-9016-3391379b2efc',
+      '251a9a27-a85e-4bf1-abe2-93a989393b6b',
+      '44433637-9d50-4ac9-9a97-922f1d72a1fe',
+      '95f8a6d1-8a74-4f01-a49a-ad457cacab9d',
+      '820b9d42-117e-4f29-b7c2-7e8bfa348651',
+    ],
+    favoriteItemIds: [
+      '44433637-9d50-4ac9-9a97-922f1d72a1fe',
+      '95f8a6d1-8a74-4f01-a49a-ad457cacab9d',
+      '820b9d42-117e-4f29-b7c2-7e8bfa348651',
+    ],
   },
   {
     id: 'bec7c3b1-beae-4085-a839-c030596fa6e3',
@@ -85,7 +98,8 @@ const collectionsJSON = [
     description:
       'Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.\n\nVestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.',
     isPublic: false,
-    coverImageUrl: 'http://dummyimage.com/116x100.png/ff4444/ffffff',
+    coverImageUrl:
+      'https://thumbs.dreamstime.com/b/sun-rays-mountain-landscape-5721010.jpg',
     createdAt: '1628581825000',
     updatedAt: '1658431221000',
   },
@@ -173,7 +187,8 @@ export const mockCollections = () =>
     c =>
       ({
         ...c,
-        itemIds: [],
+        itemIds: c.itemIds ?? [],
+        favoriteItemIds: c.favoriteItemIds ?? [],
         createdAt: new Date(parseInt(c.createdAt)),
         updatedAt: new Date(parseInt(c.updatedAt)),
       } as ICollectionWithId),

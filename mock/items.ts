@@ -5,7 +5,8 @@ const itemsJSON = [
     id: '3ce7b82c-306c-4dc5-9016-3391379b2efc',
     name: 'Long-tailed skua',
     userId: 'Sq8nDL1TLNQaOmv7ANjF7tnWJze2',
-    primaryImageUrl: 'http://dummyimage.com/140x100.png/dddddd/000000',
+    primaryImageUrl:
+      'https://preview.redd.it/egy299m7i0r91.jpg?width=960&crop=smart&auto=webp&s=5b207f3865413e72b5f9b0618f6803aef6159a15',
     price: '$5.02',
     description:
       'Sed ante. Vivamus tortor. Duis mattis egestas metus.\n\nAenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.',
@@ -13,12 +14,14 @@ const itemsJSON = [
     rating: 5,
     createdAt: '1624657027000',
     updatedAt: '1645525713000',
+    collectionIds: ['0f041630-78b7-4d02-bed3-981737b667c9'],
   },
   {
     id: '251a9a27-a85e-4bf1-abe2-93a989393b6b',
     name: 'Bahama pintail',
     userId: 'Sq8nDL1TLNQaOmv7ANjF7tnWJze2',
-    primaryImageUrl: 'http://dummyimage.com/210x100.png/dddddd/000000',
+    primaryImageUrl:
+      'https://m.media-amazon.com/images/I/615xH+PfhVL._AC_SL1500_.jpg',
     price: '$9.72',
     description:
       'Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.',
@@ -26,24 +29,28 @@ const itemsJSON = [
     rating: 5,
     createdAt: '1630816139000',
     updatedAt: '1658171255000',
+    collectionIds: ['0f041630-78b7-4d02-bed3-981737b667c9'],
   },
   {
     id: '44433637-9d50-4ac9-9a97-922f1d72a1fe',
     name: 'Spotted-tailed quoll',
     userId: 'Sq8nDL1TLNQaOmv7ANjF7tnWJze2',
-    primaryImageUrl: 'http://dummyimage.com/168x100.png/ff4444/ffffff',
+    primaryImageUrl:
+      'https://static.wikia.nocookie.net/gundam/images/8/8e/Rx-93-v-2.jpg',
     price: null,
     description: null,
     category: null,
     rating: null,
     createdAt: '1636674285000',
     updatedAt: '1648217019000',
+    collectionIds: ['0f041630-78b7-4d02-bed3-981737b667c9'],
   },
   {
     id: '95f8a6d1-8a74-4f01-a49a-ad457cacab9d',
     name: 'Malay squirrel (unidentified)',
     userId: 'Sq8nDL1TLNQaOmv7ANjF7tnWJze2',
-    primaryImageUrl: 'http://dummyimage.com/210x100.png/ff4444/ffffff',
+    primaryImageUrl:
+      'https://external-preview.redd.it/sbBagc8cGPpILIoJY2su9n-eQTM_OEPbGluP28BAfhs.jpg?width=960&crop=smart&auto=webp&s=132572265fc63e3024e2eeca4bce145e690243d3',
     price: '$4.35',
     description:
       'Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.',
@@ -51,12 +58,14 @@ const itemsJSON = [
     rating: 4,
     createdAt: '1626317756000',
     updatedAt: '1658651501000',
+    collectionIds: ['0f041630-78b7-4d02-bed3-981737b667c9'],
   },
   {
     id: '820b9d42-117e-4f29-b7c2-7e8bfa348651',
     name: 'Badger, american',
     userId: 'Sq8nDL1TLNQaOmv7ANjF7tnWJze2',
-    primaryImageUrl: 'http://dummyimage.com/135x100.png/ff4444/ffffff',
+    primaryImageUrl:
+      'https://preview.redd.it/gj5bpkgnt0r91.jpg?width=640&crop=smart&auto=webp&s=134157e1a7c87af01e5ecd34aa288c7c69b13a25',
     price: '$1.89',
     description:
       'In congue. Etiam justo. Etiam pretium iaculis justo.\n\nIn hac habitasse platea dictumst. Etiam faucibus cursus urna. Ut tellus.',
@@ -64,6 +73,7 @@ const itemsJSON = [
     rating: 2,
     createdAt: '1610039597000',
     updatedAt: '1659088101000',
+    collectionIds: ['0f041630-78b7-4d02-bed3-981737b667c9'],
   },
   {
     id: '81375ead-8aa6-45cc-8ab1-505b71d6df6b',
@@ -387,7 +397,7 @@ export const mockItems = () =>
       ({
         ...item,
         images: [],
-        collectionIds: [],
+        collectionIds: item.collectionIds ?? [],
         price: item.price ?? undefined,
         description: item.description ?? undefined,
         rating: item.rating ?? undefined,

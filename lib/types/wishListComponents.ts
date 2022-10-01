@@ -1,4 +1,5 @@
 import { IWishListItem } from '../../entities/wishList';
+import { SortDir } from './sort';
 
 export const wishListItemSortOptions = [
   'name',
@@ -20,7 +21,7 @@ export type WishListItemsState = {
   searchValue?: string;
   listOptions: {
     sortBy: typeof wishListItemSortOptions[number];
-    sortOrder: 'asc' | 'desc';
+    sortOrder: SortDir;
     categoryFilter?: string;
     priceFilter?: number;
     priorityFilter?: IWishListItem['priority'];

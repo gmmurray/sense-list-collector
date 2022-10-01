@@ -1,15 +1,13 @@
 import * as React from 'react';
 
+import { useMediaQuery, useTheme } from '@mui/material';
+
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import { Container } from '@mui/system';
 import Dialog from '@mui/material/Dialog';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import Slide from '@mui/material/Slide';
 import Toolbar from '@mui/material/Toolbar';
 import { TransitionProps } from '@mui/material/transitions';
@@ -29,6 +27,8 @@ type FullscreenDialogProps = {
   open: boolean;
   onClose: () => any;
   action?: (params: any) => any;
+  responsive?: boolean;
+  transition?: 'slide' | 'default';
 } & React.PropsWithChildren;
 
 export const FullscreenDialog = ({
@@ -36,16 +36,29 @@ export const FullscreenDialog = ({
   open,
   onClose,
   action,
+  responsive = false,
+  transition = 'slide',
   children,
 }: FullscreenDialogProps) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const fullScreen = !responsive || isSmallScreen;
+
   return (
     <Dialog
-      fullScreen
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
-      TransitionComponent={Transition}
+      TransitionComponent={transition === 'slide' ? Transition : undefined}
+      PaperProps={{
+        sx: {
+          minHeight: fullScreen ? undefined : '50vh',
+          minWidth: fullScreen ? undefined : '50vw',
+          maxWidth: fullScreen ? undefined : '85vw',
+        },
+      }}
     >
-      <AppBar sx={{ position: 'relative', mb: 2 }}>
+      <AppBar sx={{ mb: 2 }} position="sticky">
         <Toolbar>
           <IconButton
             edge="start"

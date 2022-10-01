@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import {
   ICollectionWithId,
   getLatestCollectionsMock,
@@ -8,10 +8,9 @@ import React, { useEffect, useState } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box } from '@mui/system';
 import CollectionsList from '../../../lib/components/collections/CollectionsList';
-import GridViewIcon from '@mui/icons-material/GridView';
 import GridViewSelector from '../../../lib/components/shared/GridViewSelector';
 import Link from 'next/link';
-import ViewListIcon from '@mui/icons-material/ViewList';
+import withUser from '../../../lib/hoc/withUser';
 
 const ViewCollections = () => {
   const [collections, setCollections] = useState<ICollectionWithId[]>([]);
@@ -59,4 +58,4 @@ const ViewCollections = () => {
   );
 };
 
-export default ViewCollections;
+export default withUser(ViewCollections);

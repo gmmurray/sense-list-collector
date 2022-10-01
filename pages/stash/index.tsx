@@ -111,7 +111,7 @@ const Stash = () => {
         </Grid>
       )}
       {showItems && (
-        <Grid item xs={12} container>
+        <Grid item xs={12} container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" component="h2">
               Items
