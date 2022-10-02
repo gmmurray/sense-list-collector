@@ -1,4 +1,6 @@
 import { IItemWithId } from '../entities/item';
+import { mockPromisify } from '../lib/helpers/promises';
+import { sortByTimestamp } from '../lib/helpers/timestampSort';
 
 const itemsJSON = [
   {
@@ -406,3 +408,21 @@ export const mockItems = () =>
         updatedAt: new Date(parseInt(item.updatedAt)),
       } as IItemWithId),
   );
+
+export const mockGetLatestItems = async (
+  count: number,
+): Promise<IItemWithId[]> => {
+  const res = sortByTimestamp(mockItems(), 'updated', 'desc').slice(0, count);
+
+  return mockPromisify(res);
+};
+
+export const mockGetItemsInCollection = async (
+  collectionId: string,
+): Promise<IItemWithId[]> => {
+  const res = mockItems().filter(item =>
+    item.collectionIds.includes(collectionId),
+  );
+
+  return mockPromisify(sortByTimestamp(res, 'updated', 'desc'));
+};

@@ -1,4 +1,6 @@
 import { ICollectionWithId } from '../entities/collection';
+import { mockPromisify } from '../lib/helpers/promises';
+import { sortByTimestamp } from '../lib/helpers/timestampSort';
 
 const collectionsJSON = [
   {
@@ -193,3 +195,19 @@ export const mockCollections = () =>
         updatedAt: new Date(parseInt(c.updatedAt)),
       } as ICollectionWithId),
   );
+
+export const getLatestCollectionsMock = async (
+  count: number,
+): Promise<ICollectionWithId[]> => {
+  const res = mockCollections();
+
+  return mockPromisify(sortByTimestamp(res, 'updated', 'desc').slice(0, count));
+};
+
+export const getMockCollection = async (
+  id: string,
+): Promise<ICollectionWithId | undefined> => {
+  const res = mockCollections().filter(c => c.id === id)[0];
+
+  return mockPromisify(res);
+};

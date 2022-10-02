@@ -1,31 +1,20 @@
 import { Button, Grid, Typography } from '@mui/material';
-import {
-  ICollectionWithId,
-  getLatestCollectionsMock,
-} from '../../../entities/collection';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
+import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box } from '@mui/system';
 import CollectionsList from '../../../lib/components/collections/CollectionsList';
 import GridViewSelector from '../../../lib/components/shared/GridViewSelector';
 import Link from 'next/link';
-import withUser from '../../../lib/hoc/withUser';
+import { useGetLatestUserCollectionsQuery } from '../../../lib/queries/collections/collectionQueries';
 
 const ViewCollections = () => {
-  const [collections, setCollections] = useState<ICollectionWithId[]>([]);
-  const [collectionsLoading, setCollectionsLoading] = useState(true);
+  const { documentUser } = useUserContext();
+  const { data: collections = [], isLoading: collectionsLoading } =
+    useGetLatestUserCollectionsQuery(documentUser?.userId);
   const [isGridView, setIsGridView] = useState(true);
-
-  useEffect(() => {
-    const loadCollections = async () => {
-      setCollectionsLoading(true);
-      const result = await getLatestCollectionsMock(10);
-      setCollectionsLoading(false);
-      setCollections(result);
-    };
-    loadCollections();
-  }, []);
 
   return (
     <Grid container spacing={2}>
@@ -40,6 +29,11 @@ const ViewCollections = () => {
         </Typography>
       </Grid>
       <Grid item xs={12} display="flex">
+        <Box>
+          <Link href="/stash/collections/new" passHref>
+            <Button startIcon={<AddIcon />}>New</Button>
+          </Link>
+        </Box>
         <Box ml="auto">
           <GridViewSelector
             isGridView={isGridView}

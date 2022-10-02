@@ -6,46 +6,27 @@ import {
   Link as MUILink,
   Typography,
 } from '@mui/material';
-import {
-  ICollectionWithId,
-  getLatestCollectionsMock,
-} from '../../entities/collection';
-import { IItemWithId, getLatestItems } from '../../entities/item';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import withUser, { useUserContext } from '../../lib/hoc/withUser';
 
 import CollectionsList from '../../lib/components/collections/CollectionsList';
 import ItemsList from '../../lib/components/items/ItemsList';
 import Link from 'next/link';
-import withUser from '../../lib/hoc/withUser';
+import { useGetLatestUserCollectionsQuery } from '../../lib/queries/collections/collectionQueries';
+import { useGetLatestUserItemsQuery } from '../../lib/queries/items/itemQueries';
 
 const Stash = () => {
+  const { authUser } = useUserContext();
   const [currentView, setCurrentView] = useState<
     'all' | 'collections' | 'items'
   >('all');
 
-  const [collections, setCollections] = useState<ICollectionWithId[]>([]);
-  const [collectionsLoading, setCollectionsLoading] = useState(false);
-
-  const [items, setItems] = useState<IItemWithId[]>([]);
-  const [itemsLoading, setItemsLoading] = useState(false);
-
-  useEffect(() => {
-    const loadCollections = async () => {
-      setCollectionsLoading(true);
-      const result = await getLatestCollectionsMock(3);
-      setCollectionsLoading(false);
-      setCollections(result);
-    };
-    const loadItems = async () => {
-      setItemsLoading(true);
-      const result = await getLatestItems(3);
-      setItemsLoading(false);
-      setItems(result);
-    };
-
-    loadCollections();
-    loadItems();
-  }, []);
+  const { data: collections, isLoading: collectionsLoading } =
+    useGetLatestUserCollectionsQuery(authUser?.uid, 3);
+  const { data: items, isLoading: itemsLoading } = useGetLatestUserItemsQuery(
+    authUser?.uid,
+    4,
+  );
 
   const handleViewChange = useCallback(
     (newView: typeof currentView) => () => setCurrentView(newView),
@@ -99,7 +80,7 @@ const Stash = () => {
           </Grid>
           <Grid item xs={12}>
             <CollectionsList
-              collections={collections}
+              collections={collections ?? []}
               loading={collectionsLoading}
             />
           </Grid>
@@ -123,7 +104,7 @@ const Stash = () => {
             </Link>
           </Grid>
           <Grid item xs={12}>
-            <ItemsList items={items} loading={itemsLoading} />
+            <ItemsList items={items ?? []} loading={itemsLoading} />
           </Grid>
         </Grid>
       )}

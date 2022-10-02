@@ -5,25 +5,27 @@ import {
   removeItemsFromCollectionBatch,
 } from './collection';
 import {
+  Timestamp,
   addDoc,
   arrayRemove,
   arrayUnion,
   collection,
   doc,
-  getDoc,
-  getDocs,
+  limit,
+  orderBy,
   query,
-  serverTimestamp,
   setDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
+import {
+  performFirestoreDocRetrieval,
+  performFirestoreQuery,
+} from '../lib/helpers/firestoreHelpers';
 
+import { MAX_QUERY_LIMIT } from '../lib/constants/firestoreConstants';
 import { firebaseDB } from '../config/firebase';
-import { mockItems } from '../mock/items';
-import { mockPromisify } from '../lib/helpers/promises';
 import pickBy from 'lodash.pickby';
-import { sortByTimestamp } from '../lib/helpers/timestampSort';
 
 export interface IItem {
   name: string;
@@ -51,25 +53,28 @@ export const ITEMS_COLLECTION_NAME = 'items';
 
 export const itemsCollection = collection(firebaseDB, ITEMS_COLLECTION_NAME);
 
-export const getItem = async (
-  itemId: string,
+export const getUserItem = async (
+  itemId?: string,
+  userId?: string,
 ): Promise<IItemWithId | undefined> => {
+  if (!itemId || !userId) throw new Error('Not found');
+
   const ref = doc(itemsCollection, itemId);
 
-  const snapshot = await getDoc(ref);
+  const item = await performFirestoreDocRetrieval<IItemWithId>(ref);
 
-  if (!snapshot.exists()) {
-    return undefined;
+  if (item && item.userId === userId) {
+    return item;
   }
 
-  return { ...snapshot.data(), id: snapshot.id } as IItemWithId;
+  throw new Error('Not found');
 };
 
 export const getItemWithCollections = async (
   itemId: string,
   userId?: string,
 ): Promise<IItemWithCollections | undefined> => {
-  const item = await getItem(itemId);
+  const item = await getUserItem(itemId);
 
   if (!item) return undefined;
 
@@ -79,26 +84,24 @@ export const getItemWithCollections = async (
 };
 
 export const getItemsInCollection = async (
-  collectionId: string,
+  collection?: ICollectionWithId,
 ): Promise<IItemWithId[]> => {
+  if (!collection?.itemIds.length) return [];
+
   const q = query(
     itemsCollection,
-    where('collectionIds', 'array-contains', collectionId),
+    where('collectionIds', 'array-contains', collection.id),
   );
 
-  const snapshot = await getDocs(q);
-
-  return snapshot.docs.map(
-    ({ id, data }) => ({ ...data(), id } as IItemWithId),
-  );
+  return await performFirestoreQuery<IItemWithId>(q);
 };
 
 export const createItem = async (item: IItem, userId: string) => {
   const clean = pickBy({
     ...item,
     userId,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
   });
   const created = await addDoc(itemsCollection, clean);
 
@@ -119,7 +122,7 @@ export const updateItem = async (item: IItemWithId) => {
   const clean = pickBy({
     ...item,
     id: undefined,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
   });
 
   return await setDoc(ref, clean);
@@ -153,18 +156,15 @@ export const removeItemFromCollection = async (
   return await batch.commit();
 };
 
-export const getLatestItems = async (count: number): Promise<IItemWithId[]> => {
-  const res = sortByTimestamp(mockItems(), 'updated', 'desc').slice(0, count);
+export const getLatestUserItems = async (userId?: string, count?: number) => {
+  if (!userId) return [];
 
-  return mockPromisify(res);
-};
-
-export const mockGetItemsInCollection = async (
-  collectionId: string,
-): Promise<IItemWithId[]> => {
-  const res = mockItems().filter(item =>
-    item.collectionIds.includes(collectionId),
+  const q = query(
+    itemsCollection,
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc'),
+    limit(count ?? MAX_QUERY_LIMIT),
   );
 
-  return mockPromisify(sortByTimestamp(res, 'updated', 'desc'));
+  return performFirestoreQuery<IItemWithId>(q);
 };

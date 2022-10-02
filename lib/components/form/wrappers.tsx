@@ -1,6 +1,10 @@
 import {
+  Checkbox,
+  CheckboxProps,
   FormControl,
+  FormControlLabel,
   FormControlProps,
+  FormGroup,
   FormHelperText,
   InputLabel,
   MenuItem,
@@ -43,6 +47,46 @@ export function FormikTextField<T>({
       error={error}
       helperText={helperText}
     />
+  );
+}
+
+export function FormikCheckbox<T>({
+  formik,
+  name,
+  label,
+  inputProps,
+}: {
+  formik: FormikContextType<T>;
+  name: string;
+  label: string;
+  inputProps: CheckboxProps;
+}) {
+  const { values, touched, errors, handleChange } = formik;
+
+  const value = values[name as keyof typeof values];
+  const error =
+    touched[name as keyof typeof touched] &&
+    !!errors[name as keyof typeof errors];
+  const helperText =
+    touched[name as keyof typeof touched] &&
+    (errors[name as keyof typeof errors] as string | undefined);
+
+  return (
+    <FormGroup>
+      <FormControlLabel
+        control={
+          <Checkbox
+            {...inputProps}
+            id={name}
+            name={name}
+            value={value}
+            onChange={handleChange}
+          />
+        }
+        label={label}
+      />
+      {!!helperText && <FormHelperText>{helperText}</FormHelperText>}
+    </FormGroup>
   );
 }
 

@@ -26,7 +26,7 @@ const CollectionsListItem = ({ collection }: CollectionsListItemProps) => {
               image={getCollectionCoverImageUrl(collection)}
               alt={collection.name}
               height="300"
-              sx={{ objectFit: 'contain' }}
+              sx={{ objectFit: 'contain', pt: 2 }}
             />
             <CardContent>{collection.name}</CardContent>
           </CardActionArea>

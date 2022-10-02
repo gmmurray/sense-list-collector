@@ -68,8 +68,8 @@ const WishListItemForm = () => {
     initialValues: editorInitialValue ?? {
       id: '',
       name: '',
-      link: 'https://google.com', //TODO: remove
-      image: 'https://placehold.jp/100x100.png', //TODO: remove
+      link: '',
+      image: '',
       priority: undefined,
       price: undefined,
       description: undefined,

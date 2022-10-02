@@ -1,24 +1,29 @@
-import { IItemWithId, getItemsInCollection } from './item';
 import {
+  DocumentData,
+  DocumentReference,
+  Timestamp,
   WriteBatch,
   addDoc,
   arrayRemove,
   arrayUnion,
   collection,
   doc,
-  getDoc,
   getDocs,
+  limit,
+  orderBy,
   query,
-  serverTimestamp,
   setDoc,
   where,
 } from 'firebase/firestore';
+import { IItemWithId, getItemsInCollection } from './item';
+import {
+  performFirestoreDocRetrieval,
+  performFirestoreQuery,
+} from '../lib/helpers/firestoreHelpers';
 
+import { MAX_QUERY_LIMIT } from '../lib/constants/firestoreConstants';
 import { firebaseDB } from '../config/firebase';
-import { mockCollections } from '../mock/collections';
-import { mockPromisify } from '../lib/helpers/promises';
 import pickBy from 'lodash.pickby';
-import { sortByTimestamp } from '../lib/helpers/timestampSort';
 
 export interface ICollection {
   name: string;
@@ -48,19 +53,18 @@ export const collectionsCollection = collection(
 );
 
 // retrieve user or public collection
-export const getCollection = async (collectionId: string, userId?: string) => {
+export const getCollection = async (collectionId?: string, userId?: string) => {
+  if (!collectionId) throw new Error('Not found');
+
   const ref = doc(collectionsCollection, collectionId);
 
-  const snapshot = await getDoc(ref);
+  const collection = await performFirestoreDocRetrieval<ICollectionWithId>(ref);
 
-  if (!snapshot.exists()) {
-    return undefined;
+  if (collection && (collection.isPublic || collection.userId === userId)) {
+    return collection;
   }
 
-  const result = { ...snapshot.data(), id: snapshot.id } as ICollectionWithId;
-
-  if (result.isPublic || result.userId === userId) return result;
-  else return undefined;
+  throw new Error('Not found');
 };
 
 export const getCollectionWithItems = async (
@@ -71,7 +75,7 @@ export const getCollectionWithItems = async (
 
   if (!collection) return collection;
 
-  const items = await getItemsInCollection(collectionId);
+  const items = await getItemsInCollection(collection);
 
   return { ...collection, items };
 };
@@ -99,13 +103,31 @@ export const createCollection = async (
   const clean = pickBy({
     ...collection,
     userId,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: Timestamp.now().toDate().toString(),
+    updatedAt: Timestamp.now().toDate().toString(),
   });
+
   const created = await addDoc(collectionsCollection, clean);
 
   return created.id;
 };
+
+export const createCollectionWithRef = async (
+  collection: ICollection,
+  userId: string,
+  ref: DocumentReference<DocumentData>,
+) => {
+  const clean = pickBy({
+    ...collection,
+    userId,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  });
+
+  await setDoc(ref, clean);
+};
+
+export const createNewColletionRef = () => doc(collectionsCollection);
 
 export const updateCollection = async (collection: ICollectionWithId) => {
   const ref = doc(collectionsCollection, collection.id);
@@ -113,7 +135,7 @@ export const updateCollection = async (collection: ICollectionWithId) => {
   const clean = pickBy({
     ...collection,
     id: undefined,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
   });
 
   return await setDoc(ref, clean);
@@ -139,18 +161,18 @@ export const removeItemsFromCollectionBatch = (
   });
 };
 
-export const getLatestCollectionsMock = async (
-  count: number,
-): Promise<ICollectionWithId[]> => {
-  const res = mockCollections();
+export const getLatestUserCollections = async (
+  userId?: string,
+  count?: number,
+) => {
+  if (!userId) return [];
 
-  return mockPromisify(sortByTimestamp(res, 'updated', 'desc').slice(0, count));
-};
+  const q = query(
+    collectionsCollection,
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc'),
+    limit(count ?? MAX_QUERY_LIMIT),
+  );
 
-export const getMockCollection = async (
-  id: string,
-): Promise<ICollectionWithId | undefined> => {
-  const res = mockCollections().filter(c => c.id === id)[0];
-
-  return mockPromisify(res);
+  return performFirestoreQuery<ICollectionWithId>(q);
 };

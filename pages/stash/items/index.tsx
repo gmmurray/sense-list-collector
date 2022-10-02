@@ -1,27 +1,20 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
-import { IItemWithId, getLatestItems } from '../../../entities/item';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GridViewSelector from '../../../lib/components/shared/GridViewSelector';
 import ItemsList from '../../../lib/components/items/ItemsList';
 import Link from 'next/link';
-import withUser from '../../../lib/hoc/withUser';
+import { useGetLatestUserItemsQuery } from '../../../lib/queries/items/itemQueries';
 
 const ViewItems = () => {
-  const [items, setItems] = useState<IItemWithId[]>([]);
-  const [itemsLoading, setItemsLoading] = useState(true);
-  const [isGridView, setIsGridView] = useState(true);
+  const { authUser } = useUserContext();
+  const { data: items, isLoading: itemsLoading } = useGetLatestUserItemsQuery(
+    authUser?.uid,
+  );
 
-  useEffect(() => {
-    const loadItems = async () => {
-      setItemsLoading(true);
-      const result = await getLatestItems(10);
-      setItemsLoading(false);
-      setItems(result);
-    };
-    loadItems();
-  }, []);
+  const [isGridView, setIsGridView] = useState(true);
 
   return (
     <Grid container spacing={2}>
@@ -46,7 +39,7 @@ const ViewItems = () => {
       <Grid item xs={12}>
         <ItemsList
           isGridView={isGridView}
-          items={items}
+          items={items ?? []}
           loading={itemsLoading}
         />
       </Grid>

@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Grid,
-  IconButton,
   Menu,
   MenuItem,
   Skeleton,
@@ -22,10 +21,8 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { Box } from '@mui/system';
 import CenteredMessage from '../shared/CenteredMessage';
 import { FullscreenDialog } from '../shared/FullscreenDialog';
-import GridViewIcon from '@mui/icons-material/GridView';
 import GridViewSelector from '../shared/GridViewSelector';
 import SortIcon from '@mui/icons-material/Sort';
-import ViewListIcon from '@mui/icons-material/ViewList';
 import WishListItem from './WishListItem';
 import WishListItemForm from './WishListItemForm';
 import WishListItemTable from './WishListItemTable';
