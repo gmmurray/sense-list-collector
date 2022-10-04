@@ -32,7 +32,22 @@ export const saveFirebaseImage = async ({
   return getDownloadURL((await uploadTask).ref);
 };
 
-type saveFirebaseCollectionImageParams = {
+export const generateUserCollectionImageRef = (
+  userId: string,
+  collectionId: string,
+  includeImagePrefix: boolean = false,
+) =>
+  `${
+    includeImagePrefix ? 'images/' : ''
+  }${userId}/collections/${collectionId}/`;
+
+export const generateUserItemImageRef = (
+  userId: string,
+  itemId: string,
+  includeImagePrefix: boolean = false,
+) => `${includeImagePrefix ? 'images/' : ''}${userId}/items/${itemId}/`;
+
+export type saveFirebaseCollectionImageParams = {
   file: File;
   userId: string;
   collectionId: string;
@@ -46,7 +61,27 @@ export const saveFirebaseCollectionImage = async ({
 }: saveFirebaseCollectionImageParams) => {
   return await saveFirebaseImage({
     file,
-    path: `${userId}/collections/${collectionId}/${file.name}`,
+    path: generateUserCollectionImageRef(userId, collectionId) + file.name,
+    customMetadata: undefined,
+    progressCallback,
+  });
+};
+
+export type saveFirebaseItemImageParams = {
+  file: File;
+  userId: string;
+  itemId: string;
+  progressCallback?: (value: number) => void;
+};
+export const saveFirebaseItemImage = async ({
+  file,
+  userId,
+  itemId,
+  progressCallback,
+}: saveFirebaseItemImageParams) => {
+  return await saveFirebaseImage({
+    file,
+    path: generateUserItemImageRef(userId, itemId) + file.name,
     customMetadata: undefined,
     progressCallback,
   });

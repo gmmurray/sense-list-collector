@@ -14,8 +14,13 @@ import {
   query,
   setDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore';
-import { IItemWithId, getItemsInCollection } from './item';
+import {
+  IItemWithId,
+  getItemsInCollection,
+  updateCollectionsOnItemWithinBatch,
+} from './item';
 import {
   performFirestoreDocRetrieval,
   performFirestoreQuery,
@@ -36,6 +41,8 @@ export interface ICollection {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export const COLLECTION_DESCRIPTION_MAX_LENGTH = 1000;
 
 export interface ICollectionWithId extends ICollection {
   id: string;
@@ -103,8 +110,8 @@ export const createCollection = async (
   const clean = pickBy({
     ...collection,
     userId,
-    createdAt: Timestamp.now().toDate().toString(),
-    updatedAt: Timestamp.now().toDate().toString(),
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
   });
 
   const created = await addDoc(collectionsCollection, clean);
@@ -141,25 +148,36 @@ export const updateCollection = async (collection: ICollectionWithId) => {
   return await setDoc(ref, clean);
 };
 
-export const addItemsToCollectionBatch = (
-  id: string,
+// one collection to many items
+export const updateItemsOnCollection = async (
   itemIds: string[],
-  batch: WriteBatch,
+  isAdditive: boolean,
+  collectionId?: string,
 ) => {
-  return batch.update(doc(collectionsCollection, id), {
-    itemIds: arrayUnion(itemIds),
+  if (!collectionId) throw new Error('Collection not found');
+  const batch = writeBatch(firebaseDB);
+
+  batch.update(doc(collectionsCollection, collectionId), {
+    itemIds: isAdditive ? arrayUnion(...itemIds) : arrayRemove(...itemIds),
   });
+
+  itemIds.forEach(id =>
+    updateCollectionsOnItemWithinBatch(id, [collectionId], isAdditive, batch),
+  );
+
+  return await batch.commit();
 };
 
-export const removeItemsFromCollectionBatch = (
-  id: string,
+// many collections to one item (used within a loop)
+export const updateItemsOnCollectionWithinBatch = (
+  collectionId: string,
   itemIds: string[],
   batch: WriteBatch,
-) => {
-  return batch.update(doc(collectionsCollection, id), {
-    itemIds: arrayRemove(itemIds),
+  isAdditive: boolean,
+) =>
+  batch.update(doc(collectionsCollection, collectionId), {
+    itemIds: isAdditive ? arrayUnion(...itemIds) : arrayRemove(...itemIds),
   });
-};
 
 export const getLatestUserCollections = async (
   userId?: string,
@@ -175,4 +193,23 @@ export const getLatestUserCollections = async (
   );
 
   return performFirestoreQuery<ICollectionWithId>(q);
+};
+
+export const deleteCollection = async (
+  collectionId?: string,
+  userId?: string,
+) => {
+  if (!collectionId || !userId) throw new Error('Error deleting collection');
+
+  const collection = await getCollection(collectionId, userId);
+
+  const batch = writeBatch(firebaseDB);
+
+  collection.itemIds.forEach(itemId =>
+    updateCollectionsOnItemWithinBatch(itemId, [collection.id], false, batch),
+  );
+
+  batch.delete(doc(collectionsCollection, collection.id));
+
+  return await batch.commit();
 };

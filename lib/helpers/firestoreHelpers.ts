@@ -4,6 +4,7 @@ import {
   DocumentSnapshot,
   Query,
   QuerySnapshot,
+  Timestamp,
   getDoc,
   getDocs,
 } from 'firebase/firestore';
@@ -53,3 +54,10 @@ export async function performFirestoreDocRetrieval<T extends { id: string }>(
   const snapshot = await getDoc(ref);
   return resolveFirestoreSnapshotDoc<T>(snapshot);
 }
+
+export const getDateStringFromFirestoreTimestamp = (date: Date) => {
+  const validDate =
+    date instanceof Date ? date : (date as unknown as Timestamp).toDate();
+
+  return validDate.toLocaleDateString();
+};

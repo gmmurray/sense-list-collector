@@ -76,7 +76,7 @@ const ViewCollection = () => {
           <Button startIcon={<ArrowBackIcon />}>Back to collections</Button>
         </Link>
       </Grid>
-      {!collectionLoading && (
+      {!collectionLoading && collection && (
         <Grid item xs={12}>
           <Typography variant="h2" component="h1">
             {collection?.name ?? 'Collection'}

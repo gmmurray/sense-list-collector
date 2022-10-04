@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { Box, Grid } from '@mui/material';
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 
 import CenteredLoadingIndicator from '../../../shared/CenteredLoadingIndicator';
 import CenteredMessage from '../../../shared/CenteredMessage';
@@ -16,23 +16,19 @@ import { useCollectionTabContext } from '../CollectionTabContext';
 const CollectionItemsTab = () => {
   const { items, itemsLoading, isOwner } = useCollectionTabContext();
   const [galleryView, setGalleryView] = useState(true);
-  const [selectedItem, setSelectedItem] = useState<IItemWithId | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const handleItemClick = useCallback(
-    (id: string) => {
-      const selected = items.find(i => i.id === id);
-      if (selected) {
-        setSelectedItem(selected);
-      }
-    },
-    [items],
-  );
+  const handleItemClick = useCallback((id: string) => {
+    setSelectedId(id);
+  }, []);
 
   if (itemsLoading) {
     return <CenteredLoadingIndicator />;
   } else if (items.length === 0) {
     return <CenteredMessage message="No items in this collection" />;
   }
+
+  const selectedItem = items.filter(i => i.id === selectedId)[0];
 
   return (
     <Fragment>
@@ -56,7 +52,7 @@ const CollectionItemsTab = () => {
       <FullscreenDialog
         title="View"
         open={!!selectedItem}
-        onClose={() => setSelectedItem(null)}
+        onClose={() => setSelectedId(null)}
         transition="default"
         responsive
       >

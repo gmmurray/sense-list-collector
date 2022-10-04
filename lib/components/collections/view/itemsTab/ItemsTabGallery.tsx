@@ -26,17 +26,13 @@ const ItemsTabGallery = ({ items, onItemClick }: ItemsTabGalleryProps) => {
 
   return (
     <Fragment>
-      <ImageList
-        variant={isSmallScreen ? undefined : 'masonry'}
-        cols={isSmallScreen ? 1 : 3}
-        gap={6}
-      >
+      <ImageList cols={isSmallScreen ? 1 : 3} gap={6}>
         {items.map(item => (
           <Fade key={item.id} in timeout={500}>
             <ImageListItem
               sx={{
                 border: '2px solid',
-                borderColor: 'primary.dark',
+                borderColor: 'primary.light',
                 borderRadius: `${theme.shape.borderRadius}px`,
               }}
             >

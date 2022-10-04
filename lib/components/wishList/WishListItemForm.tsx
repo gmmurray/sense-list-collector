@@ -15,7 +15,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Box } from '@mui/system';
-import { IUserDocument } from '../../../entities/user';
+import { ITEM_DESCRIPTION_MAX_LENGTH } from '../../../entities/item';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import { useUserContext } from '../../hoc/withUser';
@@ -27,11 +27,16 @@ const validationSchema = yup.object({
   image: yup.string().url('Must be a valid link'),
   priority: yup.string().oneOf(['low', 'medium', 'high']),
   price: yup.number().typeError('Must be a valid number'),
-  description: yup.string(),
+  description: yup
+    .string()
+    .max(
+      ITEM_DESCRIPTION_MAX_LENGTH,
+      `Description must be at most ${ITEM_DESCRIPTION_MAX_LENGTH} characters`,
+    ),
 });
 
 const WishListItemForm = () => {
-  const { documentUser, onUpdateDocumentUser } = useUserContext();
+  const { documentUser, onCreateUserCategory } = useUserContext();
   const [categoryOptions, setCategoryOptions] = useState<
     CreatableAutocompleteOption[]
   >([]);
@@ -88,16 +93,12 @@ const WishListItemForm = () => {
 
   const handleCategoryCreate = useCallback(
     async (option: CreatableAutocompleteOption) => {
-      if (!documentUser || !onUpdateDocumentUser) return;
-
-      const newValue: IUserDocument = {
-        ...documentUser,
-        categories: [...(documentUser.categories ?? []), option.value],
-      };
-
-      await onUpdateDocumentUser(newValue);
+      if (!onCreateUserCategory) {
+        return;
+      }
+      return await onCreateUserCategory(option.value);
     },
-    [documentUser, onUpdateDocumentUser],
+    [onCreateUserCategory],
   );
 
   return (

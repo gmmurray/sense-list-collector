@@ -3,7 +3,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 import CollectionDashboardTab from './CollectionDashboardTab';
 import CollectionItemsTab from './itemsTab/CollectionItemsTab';
-import CollectionSettingsTab from './CollectionSettingsTab';
+import CollectionSettingsTab from './settingsTab/CollectionSettingsTab';
 import { Tab } from '@mui/material';
 import { getStringFromStringOrArray } from '../../../helpers/stringHelpers';
 import { useCollectionTabContext } from './CollectionTabContext';

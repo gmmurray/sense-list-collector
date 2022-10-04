@@ -11,6 +11,7 @@ import {
 
 import { IItemWithId } from '../../../../../entities/item';
 import React from 'react';
+import { getDateStringFromFirestoreTimestamp } from '../../../../helpers/firestoreHelpers';
 
 type ItemsTabTableProps = {
   items: IItemWithId[];
@@ -46,7 +47,7 @@ const ItemsTabTable = ({ items, onItemClick }: ItemsTabTableProps) => {
                 <TableCell align="right">{item.category ?? '--'}</TableCell>
                 <TableCell align="right">{item.rating ?? '--'}</TableCell>
                 <TableCell align="right">
-                  {item.createdAt.toLocaleString()}
+                  {getDateStringFromFirestoreTimestamp(item.createdAt)}
                 </TableCell>
               </TableRow>
             </Fade>

@@ -27,7 +27,6 @@ const ItemsListItem = ({ item }: ItemsListItemProps) => {
               alt={item.name}
               sx={{
                 objectFit: 'contain',
-                backgroundColor: 'black',
                 height: '150px',
                 minWidth: '200px',
                 maxWidth: '200px',

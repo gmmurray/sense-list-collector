@@ -14,6 +14,7 @@ import React, { useCallback } from 'react';
 import { ICollectionWithId } from '../../../entities/collection';
 import PublicIcon from '@mui/icons-material/Public';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
+import { getDateStringFromFirestoreTimestamp } from '../../helpers/firestoreHelpers';
 import { useRouter } from 'next/router';
 
 type CollectionsTableProps = {
@@ -34,7 +35,7 @@ const CollectionsTable = ({ collections }: CollectionsTableProps) => {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell align="right">Public</TableCell>
-            <TableCell align="right">Items</TableCell>
+            <TableCell align="right">Item(s)</TableCell>
             <TableCell align="right">Updated</TableCell>
           </TableRow>
         </TableHead>
@@ -59,7 +60,7 @@ const CollectionsTable = ({ collections }: CollectionsTableProps) => {
                 </TableCell>
                 <TableCell align="right">{c.itemIds?.length ?? 0}</TableCell>
                 <TableCell align="right">
-                  {new Date(c.updatedAt).toLocaleString()}
+                  {getDateStringFromFirestoreTimestamp(c.updatedAt)}
                 </TableCell>
               </TableRow>
             </Fade>

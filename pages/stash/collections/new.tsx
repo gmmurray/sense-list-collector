@@ -4,29 +4,36 @@ import * as yup from 'yup';
 
 import { Button, Grid, LinearProgress, Typography } from '@mui/material';
 import {
+  COLLECTION_DESCRIPTION_MAX_LENGTH,
+  ICollection,
+} from '../../../entities/collection';
+import {
   FormikCheckbox,
   FormikTextField,
 } from '../../../lib/components/form/wrappers';
-import {
-  ICollection,
-  createCollection,
-  createCollectionWithRef,
-  createNewColletionRef,
-} from '../../../entities/collection';
 import React, { useCallback, useState } from 'react';
+import {
+  useCreateCollectionAndLoadImageMutation,
+  useCreateCollectionMutation,
+} from '../../../lib/queries/collections/collectionMutations';
 import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
-import { saveFirebaseCollectionImage } from '../../../entities/firebaseFiles';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../lib/components/shared/SnackbarAlert';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
-  description: yup.string().required('Description is required'),
+  description: yup
+    .string()
+    .required('Description is required')
+    .max(
+      COLLECTION_DESCRIPTION_MAX_LENGTH,
+      `Description must be at most ${COLLECTION_DESCRIPTION_MAX_LENGTH} characters`,
+    ),
 });
 
 const NewCollection = () => {
@@ -34,7 +41,10 @@ const NewCollection = () => {
   const { documentUser } = useUserContext();
   const snackbarContext = useSnackbarAlert();
 
-  const [createLoading, setCreateLoading] = useState(false);
+  const createCollectionMutation = useCreateCollectionMutation();
+  const createCollectionAndLoadImageMutation =
+    useCreateCollectionAndLoadImageMutation();
+
   const [fileUploadPercent, setFileUploadPercent] = useState<number | null>(
     null,
   );
@@ -44,27 +54,19 @@ const NewCollection = () => {
     async (values: ICollection) => {
       if (!documentUser) return;
 
-      setCreateLoading(true);
       try {
-        let createdId: string;
-        if (imageFile) {
-          const newCollectionRef = createNewColletionRef();
-          const savedFileUrl = await saveFirebaseCollectionImage({
-            file: imageFile,
-            userId: documentUser.userId,
-            collectionId: newCollectionRef.id,
-            progressCallback: value => setFileUploadPercent(value),
-          });
+        let createdId = imageFile
+          ? await createCollectionAndLoadImageMutation.mutateAsync({
+              userId: documentUser.userId,
+              collection: values,
+              file: imageFile,
+              progressCallback: value => setFileUploadPercent(value),
+            })
+          : await createCollectionMutation.mutateAsync({
+              userId: documentUser.userId,
+              collection: values,
+            });
 
-          await createCollectionWithRef(
-            { ...values, coverImageUrl: savedFileUrl },
-            documentUser.userId,
-            newCollectionRef,
-          );
-          createdId = newCollectionRef.id;
-        } else {
-          createdId = await createCollection(values, documentUser.userId);
-        }
         snackbarContext.send('Collection created', 'success');
         router.push(`/stash/collections/${createdId}?tab=3`);
       } catch (error) {
@@ -72,9 +74,15 @@ const NewCollection = () => {
         snackbarContext.send('Error creating collection', 'error');
       }
       setFileUploadPercent(null);
-      setCreateLoading(false);
     },
-    [documentUser, router, snackbarContext, imageFile],
+    [
+      documentUser,
+      imageFile,
+      snackbarContext,
+      router,
+      createCollectionAndLoadImageMutation,
+      createCollectionMutation,
+    ],
   );
 
   const formik = useFormik<ICollection>({
@@ -139,7 +147,7 @@ const NewCollection = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={10}>
+            <Grid item xs={12} md={10}>
               <FormikTextField
                 name="coverImageUrl"
                 label="Cover Image URL"
@@ -151,7 +159,7 @@ const NewCollection = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={2} display="flex">
+            <Grid item xs={12} md={2} display="flex">
               {!imageFile ? (
                 <Button variant="outlined" component="label">
                   Upload file
@@ -216,7 +224,10 @@ const NewCollection = () => {
             <Grid item>
               <LoadingButton
                 type="submit"
-                loading={createLoading}
+                loading={
+                  createCollectionMutation.isLoading ||
+                  createCollectionAndLoadImageMutation.isLoading
+                }
                 variant="contained"
                 disableElevation
               >
@@ -226,7 +237,10 @@ const NewCollection = () => {
             <Grid item>
               <Link href="/stash/collections" passHref>
                 <Button
-                  disabled={createLoading}
+                  disabled={
+                    createCollectionMutation.isLoading ||
+                    createCollectionAndLoadImageMutation.isLoading
+                  }
                   variant="outlined"
                   color="error"
                   sx={{ ml: 2 }}

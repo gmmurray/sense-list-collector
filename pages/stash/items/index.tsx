@@ -2,6 +2,7 @@ import { Box, Button, Grid, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
+import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GridViewSelector from '../../../lib/components/shared/GridViewSelector';
 import ItemsList from '../../../lib/components/items/ItemsList';
@@ -29,6 +30,11 @@ const ViewItems = () => {
         </Typography>
       </Grid>
       <Grid item xs={12} display="flex">
+        <Box>
+          <Link href="/stash/items/new" passHref>
+            <Button startIcon={<AddIcon />}>New</Button>
+          </Link>
+        </Box>
         <Box ml="auto">
           <GridViewSelector
             isGridView={isGridView}

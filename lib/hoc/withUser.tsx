@@ -1,4 +1,13 @@
 import { Backdrop, CircularProgress } from '@mui/material';
+import {
+  DocumentData,
+  QueryDocumentSnapshot,
+  collection,
+  doc,
+  query,
+  setDoc,
+  where,
+} from 'firebase/firestore';
 import React, {
   createContext,
   useCallback,
@@ -6,9 +15,9 @@ import React, {
   useEffect,
 } from 'react';
 import { User, getAuth } from 'firebase/auth';
-import { collection, doc, query, setDoc, where } from 'firebase/firestore';
 import firebaseApp, { firebaseDB } from '../../config/firebase';
 
+import { CreatableAutocompleteOption } from '../components/form/CreatableAutocomplete';
 import { IUserDocument } from '../../entities/user';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -19,11 +28,22 @@ const auth = getAuth(firebaseApp);
 const getUserDocQuery = (id: string) =>
   query(collection(firebaseDB, 'users'), where('userId', '==', id));
 
+const getDocUserFromQueryResult = (
+  result: QueryDocumentSnapshot<DocumentData> | undefined,
+) =>
+  result
+    ? {
+        ...(result.data() as IUserDocument),
+        documentId: result.id,
+      }
+    : null;
+
 type UserContextType = {
   authUser: User | null | undefined;
   loading: boolean;
   documentUser: IUserDocument | null | undefined;
   onUpdateDocumentUser?: (value: IUserDocument) => any;
+  onCreateUserCategory?: (value: string) => Promise<void>;
 };
 
 const initialContextValue: UserContextType = {
@@ -62,6 +82,23 @@ const UserProvider = ({ children }: any) => {
     [user],
   );
 
+  const userDocQueryResult = userDocQuery?.docs[0];
+
+  const handleCategoryCreate = useCallback(
+    async (value: string) => {
+      const docUser = getDocUserFromQueryResult(userDocQueryResult);
+      if (!docUser) return;
+
+      const newValue: IUserDocument = {
+        ...docUser,
+        categories: [...(docUser.categories ?? []), value],
+      };
+
+      await handleUserDocumentUpdate(newValue);
+    },
+    [handleUserDocumentUpdate, userDocQueryResult],
+  );
+
   if (userLoading) {
     return (
       <Backdrop
@@ -73,18 +110,12 @@ const UserProvider = ({ children }: any) => {
     );
   }
 
-  const userDocQueryResult = userDocQuery?.docs[0];
-
   const value: UserContextType = {
     authUser: user,
     loading: userLoading,
-    documentUser: userDocQueryResult
-      ? {
-          ...(userDocQueryResult.data() as IUserDocument),
-          documentId: userDocQueryResult.id,
-        }
-      : null,
+    documentUser: getDocUserFromQueryResult(userDocQueryResult),
     onUpdateDocumentUser: handleUserDocumentUpdate,
+    onCreateUserCategory: handleCategoryCreate,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

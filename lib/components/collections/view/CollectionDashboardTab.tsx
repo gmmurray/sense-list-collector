@@ -10,13 +10,16 @@ import React, { Fragment } from 'react';
 
 import CenteredLoadingIndicator from '../../shared/CenteredLoadingIndicator';
 import Link from 'next/link';
+import { Timestamp } from 'firebase/firestore';
+import { getDateStringFromFirestoreTimestamp } from '../../../helpers/firestoreHelpers';
 import { sortByTimestamp } from '../../../helpers/timestampSort';
 import { useCollectionTabContext } from './CollectionTabContext';
 
 const DASHBOARD_ITEMS_COUNT = 3;
 
 const CollectionDashboardTab = () => {
-  const { collection, items, itemsLoading } = useCollectionTabContext();
+  const { collection, items, itemsLoading, isOwner } =
+    useCollectionTabContext();
 
   if (!collection) return null;
 
@@ -41,7 +44,7 @@ const CollectionDashboardTab = () => {
           <Grid item xs={12}>
             {!itemsLoading && (
               <Paper sx={{ p: 2 }}>
-                <Typography variant="h4">New items</Typography>
+                <Typography variant="h4">Latest items</Typography>
                 <List>
                   {newItems.map(item => (
                     <ListItem key={item.id} disablePadding>
@@ -101,7 +104,10 @@ const CollectionDashboardTab = () => {
         >
           <Typography variant="h5">Last updated</Typography>
           <Typography variant="subtitle1" sx={{ mt: 'auto' }}>
-            {new Date(collection.updatedAt).toLocaleDateString()}
+            {getDateStringFromFirestoreTimestamp(collection.updatedAt)}
+            {/* {(collection.updatedAt as unknown as Timestamp)
+              .toDate()
+              .toLocaleDateString()} */}
           </Typography>
         </Paper>
       </Grid>

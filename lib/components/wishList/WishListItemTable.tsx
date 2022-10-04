@@ -15,7 +15,6 @@ import React, { useCallback } from 'react';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { IWishListItem } from '../../../entities/wishList';
 import LinkIcon from '@mui/icons-material/Link';
-import { useRouter } from 'next/router';
 import { useWishListItemsContext } from './WishListItemsContext';
 
 type WishListItemTableProps = {

@@ -4,6 +4,7 @@ import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 
 import { IItemWithId } from '../../../../../entities/item';
 import React from 'react';
+import { getDateStringFromFirestoreTimestamp } from '../../../../helpers/firestoreHelpers';
 import { getItemPrimaryImageUrl } from '../../../../constants/images';
 
 type ItemDetailKey =
@@ -23,7 +24,6 @@ type ItemDetailProps = {
 
 const ItemDetail = ({ item, dataKey, title }: ItemDetailProps) => {
   const data = item[dataKey];
-  console.log(data);
 
   if (!data) return null;
 
@@ -33,7 +33,7 @@ const ItemDetail = ({ item, dataKey, title }: ItemDetailProps) => {
   } else if (typeof data === 'number') {
     content = data.toLocaleString();
   } else {
-    content = data.toLocaleDateString();
+    content = getDateStringFromFirestoreTimestamp(data);
   }
 
   return (
