@@ -1,6 +1,7 @@
 import { User } from 'firebase/auth';
 
 export const WishListItemPriorities = ['low', 'medium', 'high'];
+export const WishListItemStatuses = ['need', 'own'];
 
 export interface IWishListItem {
   id: string;
@@ -11,6 +12,7 @@ export interface IWishListItem {
   price?: string;
   description?: string;
   category?: string;
+  status?: 'need' | 'own';
 }
 
 export interface IWishList {

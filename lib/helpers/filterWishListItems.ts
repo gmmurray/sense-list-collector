@@ -5,9 +5,17 @@ export const filterWishListItems = (
   items: IWishListItem[],
   options: WishListItemsState['listOptions'],
 ) => {
-  const { categoryFilter, priceFilter, priorityFilter } = options;
+  const { categoryFilter, priceFilter, priorityFilter, statusFilter } = options;
   return items.filter(item => {
     let include = true;
+
+    if (statusFilter) {
+      if (item.status === undefined) {
+        return false;
+      } else {
+        include = include && item.status === statusFilter;
+      }
+    }
 
     if (categoryFilter) {
       if (categoryFilter === 'none') {
@@ -19,7 +27,7 @@ export const filterWishListItems = (
 
     if (priceFilter) {
       if (item.price === undefined) {
-        include = false;
+        return false;
       } else {
         const priceValue = parseInt(item.price!);
         include = include && priceFilter > priceValue;
@@ -28,7 +36,7 @@ export const filterWishListItems = (
 
     if (priorityFilter) {
       if (!item.priority) {
-        include = false;
+        return false;
       } else {
         include = include && item.priority === priorityFilter;
       }

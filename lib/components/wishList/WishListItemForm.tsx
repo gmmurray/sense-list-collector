@@ -11,6 +11,7 @@ import { FormikSelect, FormikTextField } from '../form/wrappers';
 import {
   IWishListItem,
   WishListItemPriorities,
+  WishListItemStatuses,
 } from '../../../entities/wishList';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -79,6 +80,7 @@ const WishListItemForm = () => {
       price: undefined,
       description: undefined,
       category: undefined,
+      status: 'need',
     },
     onSubmit: values => onSubmit(values),
     validationSchema,
@@ -182,6 +184,18 @@ const WishListItemForm = () => {
             />
           </Grid>
           <Grid item xs={12} md={6}>
+            <FormikSelect
+              formik={formik}
+              name="status"
+              label="Status"
+              options={WishListItemStatuses.map(p => ({ name: p, value: p }))}
+              inputProps={{
+                fullWidth: true,
+                variant: 'standard',
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
             <FormikTextField
               name="image"
               label="Image URL"
@@ -205,7 +219,7 @@ const WishListItemForm = () => {
               />
             </Grid>
           )}
-          <Grid item>
+          <Grid item xs={12}>
             <LoadingButton
               type="submit"
               loading={editorLoading}

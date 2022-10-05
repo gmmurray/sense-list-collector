@@ -1,4 +1,5 @@
-import { IWishListItem } from '../../entities/wishList';
+import { IWishList, IWishListItem } from '../../entities/wishList';
+
 import { SortDir } from './sort';
 
 export const wishListItemSortOptions = [
@@ -25,7 +26,9 @@ export type WishListItemsState = {
     categoryFilter?: string;
     priceFilter?: number;
     priorityFilter?: IWishListItem['priority'];
+    statusFilter?: IWishListItem['status'];
   };
+  singleItemLoading?: string;
 };
 
 export type WishListItemsActions = {
@@ -39,8 +42,16 @@ export type WishListItemsActions = {
     sortOrder: WishListItemsState['listOptions']['sortOrder'],
   ) => void;
   onFilterChange?: (
-    filter: 'categoryFilter' | 'priceFilter' | 'priorityFilter',
+    filter:
+      | 'categoryFilter'
+      | 'priceFilter'
+      | 'priorityFilter'
+      | 'statusFilter',
     value?: any,
   ) => void;
   onReset?: () => void;
+  onItemStatusChange?: (
+    id: string,
+    status?: IWishListItem['status'],
+  ) => Promise<void>;
 };

@@ -32,6 +32,7 @@ import { useWishListItemsContext } from './WishListItemsContext';
 const WishListItems = () => {
   const itemsContext = useWishListItemsContext();
   const userContext = useUserContext();
+
   const [sortAnchorEl, setSortAnchorEl] = useState<HTMLElement | null>(null);
   const [categoryAnchorEl, setCategoryAnchorEl] = useState<HTMLElement | null>(
     null,
@@ -40,6 +41,10 @@ const WishListItems = () => {
     null,
   );
   const [priceAnchorEl, setPriceAnchorEl] = useState<HTMLElement | null>(null);
+  const [statusAnchorEl, setStatusAnchorEl] = useState<HTMLElement | null>(
+    null,
+  );
+
   const [gridView, setGridView] = useState(true);
 
   const {
@@ -59,6 +64,7 @@ const WishListItems = () => {
       categoryFilter,
       priceFilter,
       priorityFilter,
+      statusFilter,
     },
   } = itemsContext;
 
@@ -133,9 +139,32 @@ const WishListItems = () => {
       const newValue = value === priceFilter ? undefined : value;
 
       onFilterChange('priceFilter', newValue);
-      handlePriorityFilterClose();
+      handlePriceFilterClose();
     },
-    [handlePriorityFilterClose, onFilterChange, priceFilter],
+    [handlePriceFilterClose, onFilterChange, priceFilter],
+  );
+
+  const handleStatusFilterOpen = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) =>
+      setStatusAnchorEl(e.currentTarget),
+    [],
+  );
+
+  const handleStatusFilterClose = useCallback(
+    () => setStatusAnchorEl(null),
+    [],
+  );
+
+  const handleStatusFilterChange = useCallback(
+    (value: 'need' | 'own') => {
+      if (!onFilterChange) return;
+
+      const newValue = value === statusFilter ? undefined : value;
+
+      onFilterChange('statusFilter', newValue);
+      handleStatusFilterClose();
+    },
+    [handleStatusFilterClose, onFilterChange, statusFilter],
   );
 
   const handleSortClick = useCallback(
@@ -212,6 +241,14 @@ const WishListItems = () => {
               size="small"
             >
               Price
+            </Button>
+            <Button
+              variant={statusFilter ? 'contained' : 'outlined'}
+              disableElevation
+              onClick={handleStatusFilterOpen}
+              size="small"
+            >
+              Status
             </Button>
           </ButtonGroup>
         </Grid>
@@ -341,6 +378,24 @@ const WishListItems = () => {
           selected={priceFilter === 100}
           onClick={() => handlePriceFilterChange(100)}
         >{`< 100`}</MenuItem>
+      </Menu>
+      <Menu
+        anchorEl={statusAnchorEl}
+        open={!!statusAnchorEl}
+        onClose={handleStatusFilterClose}
+      >
+        <MenuItem
+          selected={statusFilter === 'need'}
+          onClick={() => handleStatusFilterChange('need')}
+        >
+          need
+        </MenuItem>
+        <MenuItem
+          selected={statusFilter === 'own'}
+          onClick={() => handleStatusFilterChange('own')}
+        >
+          own
+        </MenuItem>
       </Menu>
       <Menu
         anchorEl={sortAnchorEl}

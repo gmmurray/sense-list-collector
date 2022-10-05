@@ -50,7 +50,9 @@ const defaultWishListItemsState: WishListItemsState = {
   listOptions: {
     sortBy: 'name',
     sortOrder: 'asc',
+    statusFilter: 'need',
   },
+  singleItemLoading: undefined,
 };
 
 const defaultWishListItemsContextValue: WishListItemsState &
@@ -169,6 +171,30 @@ export const WishListItemProvider = ({
     [contextState.listId, snackbarContext],
   );
 
+  const handleUpdateItemStatus = useCallback(
+    async (id: string, status: IWishListItem['status']) => {
+      const oldValues = contextState.items.filter(item => item.id === id)[0];
+      if (!oldValues) return;
+
+      setContextState(state => ({
+        ...state,
+        singleItemLoading: id,
+      }));
+
+      const ref = doc(getCollection(contextState.listId), id);
+
+      await updateDoc(ref, { ...oldValues, status });
+
+      setContextState(state => ({
+        ...state,
+        filteredItems: filterThenSort(state.items, state.listOptions),
+        singleItemLoading: undefined,
+      }));
+      snackbarContext.send('Item updated', 'success');
+    },
+    [contextState.items, contextState.listId, snackbarContext],
+  );
+
   const handleDeleteItem = useCallback(
     async (id: string) => {
       setContextState(state => ({
@@ -233,7 +259,11 @@ export const WishListItemProvider = ({
 
   const handleFilterChange = useCallback(
     (
-      filter: 'categoryFilter' | 'priceFilter' | 'priorityFilter',
+      filter:
+        | 'categoryFilter'
+        | 'priceFilter'
+        | 'priorityFilter'
+        | 'statusFilter',
       value?: any,
     ) => {
       setContextState(state => ({
@@ -261,7 +291,10 @@ export const WishListItemProvider = ({
       ...state,
       searchValue: defaultWishListItemsState.searchValue,
       listOptions: { ...defaultWishListItemsState.listOptions },
-      filteredItems: state.items,
+      filteredItems: filterThenSort(
+        state.items,
+        defaultWishListItemsState.listOptions,
+      ),
     }));
   }, []);
 
@@ -275,6 +308,7 @@ export const WishListItemProvider = ({
     onSortChange: handleSortChange,
     onFilterChange: handleFilterChange,
     onReset: handleReset,
+    onItemStatusChange: handleUpdateItemStatus,
   };
 
   return (
