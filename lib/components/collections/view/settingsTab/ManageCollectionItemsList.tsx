@@ -23,15 +23,17 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { FullscreenDialog } from '../../../shared/FullscreenDialog';
 import Fuse from 'fuse.js';
+import { ICollectionWithId } from '../../../../../entities/collection';
 import { IItemWithId } from '../../../../../entities/item';
 import InfoIcon from '@mui/icons-material/Info';
-import ItemsTabViewItem from '../itemsTab/ItemsTabViewItem';
 import { LoadingButton } from '@mui/lab';
 import RemoveIcon from '@mui/icons-material/Remove';
+import ViewCollectionItemDialog from '../ViewCollectionItemDialog';
 import debounce from 'lodash.debounce';
 import { getItemPrimaryImageUrl } from '../../../../constants/images';
 
 type ManageCollectionItemsListProps = {
+  collection: ICollectionWithId;
   collectionItems: IItemWithId[];
   userItems: IItemWithId[];
   itemsLoading: boolean;
@@ -42,6 +44,7 @@ type ManageCollectionItemsListProps = {
 let searchEngine: Fuse<IItemWithId>;
 
 const ManageCollectionItemsList = ({
+  collection,
   collectionItems,
   userItems,
   itemsLoading,
@@ -283,7 +286,13 @@ const ManageCollectionItemsList = ({
         transition="default"
         responsive
       >
-        {viewItemId && <ItemsTabViewItem item={viewItem} isOwner />}
+        {viewItemId && (
+          <ViewCollectionItemDialog
+            collection={collection}
+            item={viewItem}
+            isOwner
+          />
+        )}
       </FullscreenDialog>
     </Grid>
   );

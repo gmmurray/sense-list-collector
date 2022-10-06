@@ -1,20 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { Box, Grid } from '@mui/material';
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 
 import CenteredLoadingIndicator from '../../../shared/CenteredLoadingIndicator';
 import CenteredMessage from '../../../shared/CenteredMessage';
 import { FullscreenDialog } from '../../../shared/FullscreenDialog';
 import GalleryViewSelector from '../../../shared/GalleryViewSelector';
-import { IItemWithId } from '../../../../../entities/item';
 import ItemsTabGallery from './ItemsTabGallery';
 import ItemsTabTable from './ItemsTabTable';
-import ItemsTabViewItem from './ItemsTabViewItem';
+import ViewCollectionItemDialog from '../ViewCollectionItemDialog';
 import { useCollectionTabContext } from '../CollectionTabContext';
 
 const CollectionItemsTab = () => {
-  const { items, itemsLoading, isOwner } = useCollectionTabContext();
+  const { collection, items, itemsLoading, isOwner } =
+    useCollectionTabContext();
   const [galleryView, setGalleryView] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -45,7 +45,11 @@ const CollectionItemsTab = () => {
           {galleryView ? (
             <ItemsTabGallery items={items} onItemClick={handleItemClick} />
           ) : (
-            <ItemsTabTable items={items} onItemClick={handleItemClick} />
+            <ItemsTabTable
+              collection={collection}
+              items={items}
+              onItemClick={handleItemClick}
+            />
           )}
         </Grid>
       </Grid>
@@ -57,7 +61,11 @@ const CollectionItemsTab = () => {
         responsive
       >
         {selectedItem && (
-          <ItemsTabViewItem item={selectedItem} isOwner={isOwner} />
+          <ViewCollectionItemDialog
+            collection={collection}
+            item={selectedItem}
+            isOwner={isOwner}
+          />
         )}
       </FullscreenDialog>
     </Fragment>

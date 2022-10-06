@@ -311,6 +311,7 @@ const CollectionSettingsTab = () => {
         <Typography variant="h5">Items</Typography>
         <Divider sx={{ mb: 2 }} />
         <ManageCollectionItemsList
+          collection={collection}
           collectionItems={collectionItems}
           userItems={userItemsNotInCollection}
           itemsLoading={collectionItemsLoading || userItemsLoading}

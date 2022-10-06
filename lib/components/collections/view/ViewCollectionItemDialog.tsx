@@ -1,11 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import React, { useCallback } from 'react';
 
-import { IItemWithId } from '../../../../../entities/item';
-import React from 'react';
-import { getDateStringFromFirestoreTimestamp } from '../../../../helpers/firestoreHelpers';
-import { getItemPrimaryImageUrl } from '../../../../constants/images';
+import FavoritedCollectionItemButton from './FavoritedCollectionItemButton';
+import { ICollectionWithId } from '../../../../entities/collection';
+import { IItemWithId } from '../../../../entities/item';
+import { getDateStringFromFirestoreTimestamp } from '../../../helpers/firestoreHelpers';
+import { getItemPrimaryImageUrl } from '../../../constants/images';
+import { useSnackbarAlert } from '../../shared/SnackbarAlert';
+import { useUpdateCollectionFavoriteItemsMutation } from '../../../queries/collections/collectionMutations';
 
 type ItemDetailKey =
   | 'name'
@@ -46,18 +50,59 @@ const ItemDetail = ({ item, dataKey, title }: ItemDetailProps) => {
   );
 };
 
-type ItemsTabViewItemProps = {
+type ViewCollectionItemDialogProps = {
+  collection?: ICollectionWithId;
   item: IItemWithId;
   isOwner: boolean;
 };
 
-const ItemsTabViewItem = ({ item, isOwner }: ItemsTabViewItemProps) => {
+const ViewCollectionItemDialog = ({
+  collection,
+  item,
+  isOwner,
+}: ViewCollectionItemDialogProps) => {
+  const snackbar = useSnackbarAlert();
+
+  const updateCollectionFavoriteItemsMutation =
+    useUpdateCollectionFavoriteItemsMutation();
+
+  const handleUpdateFavorite = useCallback(async () => {
+    if (!isOwner || !collection) return;
+    const isAdditive = !collection.favoriteItemIds.includes(item.id);
+
+    try {
+      await updateCollectionFavoriteItemsMutation.mutateAsync({
+        itemIds: [item.id],
+        isAdditive,
+        collectionId: collection.id,
+      });
+    } catch (error) {
+      console.log('Error updating collection favorite items');
+      snackbar.send('Error updating favorites', 'error');
+    }
+  }, [
+    collection,
+    isOwner,
+    item.id,
+    snackbar,
+    updateCollectionFavoriteItemsMutation,
+  ]);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} display="flex" alignItems="center">
         <Box>
           <Typography variant="h4">{item.name}</Typography>
         </Box>
+        {isOwner && (collection?.itemIds ?? []).includes(item.id) && (
+          <Box>
+            <FavoritedCollectionItemButton
+              onClick={handleUpdateFavorite}
+              selected={(collection?.favoriteItemIds ?? []).includes(item.id)}
+              disabled={updateCollectionFavoriteItemsMutation.isLoading}
+            />
+          </Box>
+        )}
         {isOwner && (
           <Box ml="auto">
             <Button
@@ -86,4 +131,4 @@ const ItemsTabViewItem = ({ item, isOwner }: ItemsTabViewItemProps) => {
   );
 };
 
-export default ItemsTabViewItem;
+export default ViewCollectionItemDialog;

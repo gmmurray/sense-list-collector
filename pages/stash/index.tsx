@@ -75,7 +75,7 @@ const Stash = () => {
           </Grid>
           <Grid item xs={12}>
             <Link href="/stash/collections" passHref>
-              <MUILink underline="hover">View more</MUILink>
+              <MUILink underline="hover">View all</MUILink>
             </Link>
           </Grid>
           <Grid item xs={12}>
@@ -100,7 +100,7 @@ const Stash = () => {
           </Grid>
           <Grid item xs={12}>
             <Link href="/stash/items" passHref>
-              <MUILink underline="hover">View more</MUILink>
+              <MUILink underline="hover">View all</MUILink>
             </Link>
           </Grid>
           <Grid item xs={12}>

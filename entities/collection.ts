@@ -13,6 +13,7 @@ import {
   orderBy,
   query,
   setDoc,
+  updateDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
@@ -146,6 +147,23 @@ export const updateCollection = async (collection: ICollectionWithId) => {
   });
 
   return await setDoc(ref, clean);
+};
+
+export const updateCollectionFavoriteItems = async (
+  itemIds: string[],
+  isAdditive: boolean,
+  collectionId?: string,
+) => {
+  if (!collectionId) throw new Error('Error updating collection');
+
+  const ref = doc(collectionsCollection, collectionId);
+
+  await updateDoc(ref, {
+    favoriteItemIds: isAdditive
+      ? arrayUnion(...itemIds)
+      : arrayRemove(...itemIds),
+    updatedAt: Timestamp.now(),
+  });
 };
 
 // one collection to many items

@@ -6,6 +6,7 @@ import {
   createNewColletionRef,
   deleteCollection,
   updateCollection,
+  updateCollectionFavoriteItems,
   updateItemsOnCollection,
 } from '../../../entities/collection';
 import { deleteObject, getStorage, listAll, ref } from 'firebase/storage';
@@ -144,6 +145,29 @@ export const useUpdateCollectionItemsMutation = () =>
           reactQueryClient.invalidateQueries(collectionQueryKeys.all),
           reactQueryClient.invalidateQueries(itemQueryKeys.all),
         ]),
+    },
+  );
+
+export const useUpdateCollectionFavoriteItemsMutation = () =>
+  useMutation(
+    async ({
+      itemIds,
+      isAdditive,
+      collectionId,
+    }: {
+      itemIds: string[];
+      isAdditive: boolean;
+      collectionId?: string;
+    }) => updateCollectionFavoriteItems(itemIds, isAdditive, collectionId),
+    {
+      onSuccess: async () => {
+        await reactQueryClient.invalidateQueries(
+          collectionQueryKeys.singleCollection(),
+        );
+        await reactQueryClient.invalidateQueries(
+          itemQueryKeys.itemsInCollection(),
+        );
+      },
     },
   );
 
