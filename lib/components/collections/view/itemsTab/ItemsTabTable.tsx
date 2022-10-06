@@ -68,6 +68,7 @@ const ItemsTabTable = ({
             <TableCell>Name</TableCell>
             <TableCell align="right">Category</TableCell>
             <TableCell align="right">Rating</TableCell>
+            <TableCell align="right">Updated</TableCell>
             <TableCell align="right">Created</TableCell>
           </TableRow>
         </TableHead>
@@ -95,6 +96,9 @@ const ItemsTabTable = ({
                 </TableCell>
                 <TableCell align="right">{item.category ?? '--'}</TableCell>
                 <TableCell align="right">{item.rating ?? '--'}</TableCell>
+                <TableCell align="right">
+                  {getDateStringFromFirestoreTimestamp(item.updatedAt)}
+                </TableCell>
                 <TableCell align="right">
                   {getDateStringFromFirestoreTimestamp(item.createdAt)}
                 </TableCell>

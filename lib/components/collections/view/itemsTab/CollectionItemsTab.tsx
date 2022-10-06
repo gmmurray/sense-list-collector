@@ -5,7 +5,6 @@ import React, { Fragment, useCallback, useState } from 'react';
 
 import CenteredLoadingIndicator from '../../../shared/CenteredLoadingIndicator';
 import CenteredMessage from '../../../shared/CenteredMessage';
-import { FullscreenDialog } from '../../../shared/FullscreenDialog';
 import GalleryViewSelector from '../../../shared/GalleryViewSelector';
 import ItemsTabGallery from './ItemsTabGallery';
 import ItemsTabTable from './ItemsTabTable';
@@ -13,8 +12,7 @@ import ViewCollectionItemDialog from '../ViewCollectionItemDialog';
 import { useCollectionTabContext } from '../CollectionTabContext';
 
 const CollectionItemsTab = () => {
-  const { collection, items, itemsLoading, isOwner } =
-    useCollectionTabContext();
+  const { collection, items, itemsLoading } = useCollectionTabContext();
   const [galleryView, setGalleryView] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -53,21 +51,11 @@ const CollectionItemsTab = () => {
           )}
         </Grid>
       </Grid>
-      <FullscreenDialog
-        title="View"
-        open={!!selectedItem}
+      <ViewCollectionItemDialog
+        collection={collection}
+        item={selectedItem}
         onClose={() => setSelectedId(null)}
-        transition="default"
-        responsive
-      >
-        {selectedItem && (
-          <ViewCollectionItemDialog
-            collection={collection}
-            item={selectedItem}
-            isOwner={isOwner}
-          />
-        )}
-      </FullscreenDialog>
+      />
     </Fragment>
   );
 };

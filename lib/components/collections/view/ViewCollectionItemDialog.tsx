@@ -4,12 +4,14 @@ import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
 
 import FavoritedCollectionItemButton from './FavoritedCollectionItemButton';
+import { FullscreenDialog } from '../../shared/FullscreenDialog';
 import { ICollectionWithId } from '../../../../entities/collection';
 import { IItemWithId } from '../../../../entities/item';
 import { getDateStringFromFirestoreTimestamp } from '../../../helpers/firestoreHelpers';
 import { getItemPrimaryImageUrl } from '../../../constants/images';
 import { useSnackbarAlert } from '../../shared/SnackbarAlert';
 import { useUpdateCollectionFavoriteItemsMutation } from '../../../queries/collections/collectionMutations';
+import { useUserContext } from '../../../hoc/withUser';
 
 type ItemDetailKey =
   | 'name'
@@ -52,22 +54,25 @@ const ItemDetail = ({ item, dataKey, title }: ItemDetailProps) => {
 
 type ViewCollectionItemDialogProps = {
   collection?: ICollectionWithId;
-  item: IItemWithId;
-  isOwner: boolean;
+  item?: IItemWithId;
+  onClose: () => any;
 };
 
 const ViewCollectionItemDialog = ({
   collection,
   item,
-  isOwner,
+  onClose,
 }: ViewCollectionItemDialogProps) => {
   const snackbar = useSnackbarAlert();
+  const { authUser } = useUserContext();
 
   const updateCollectionFavoriteItemsMutation =
     useUpdateCollectionFavoriteItemsMutation();
 
+  const isOwner = collection && authUser && collection.userId === authUser.uid;
+
   const handleUpdateFavorite = useCallback(async () => {
-    if (!isOwner || !collection) return;
+    if (!isOwner || !collection || !item) return;
     const isAdditive = !collection.favoriteItemIds.includes(item.id);
 
     try {
@@ -83,51 +88,63 @@ const ViewCollectionItemDialog = ({
   }, [
     collection,
     isOwner,
-    item.id,
+    item,
     snackbar,
     updateCollectionFavoriteItemsMutation,
   ]);
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} display="flex" alignItems="center">
-        <Box>
-          <Typography variant="h4">{item.name}</Typography>
-        </Box>
-        {isOwner && (collection?.itemIds ?? []).includes(item.id) && (
-          <Box>
-            <FavoritedCollectionItemButton
-              onClick={handleUpdateFavorite}
-              selected={(collection?.favoriteItemIds ?? []).includes(item.id)}
-              disabled={updateCollectionFavoriteItemsMutation.isLoading}
+    <FullscreenDialog
+      title="View"
+      open={!!item}
+      onClose={onClose}
+      transition="default"
+      responsive
+    >
+      {!!item && (
+        <Grid container spacing={2}>
+          <Grid item xs={12} display="flex" alignItems="center">
+            <Box>
+              <Typography variant="h4">{item.name}</Typography>
+            </Box>
+            {isOwner && (collection?.itemIds ?? []).includes(item.id) && (
+              <Box>
+                <FavoritedCollectionItemButton
+                  onClick={handleUpdateFavorite}
+                  selected={(collection?.favoriteItemIds ?? []).includes(
+                    item.id,
+                  )}
+                  disabled={updateCollectionFavoriteItemsMutation.isLoading}
+                />
+              </Box>
+            )}
+            {isOwner && (
+              <Box ml="auto">
+                <Button
+                  href={`${window.location.origin}/stash/items/${item.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Edit
+                </Button>
+              </Box>
+            )}
+          </Grid>
+          <Grid item xs={12} textAlign="center" sx={{ minHeight: '200px' }}>
+            <img
+              src={getItemPrimaryImageUrl(item)}
+              style={{ objectFit: 'contain', maxWidth: '100%' }}
+              alt={item.name}
             />
-          </Box>
-        )}
-        {isOwner && (
-          <Box ml="auto">
-            <Button
-              href={`${window.location.origin}/stash/items/${item.id}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Edit
-            </Button>
-          </Box>
-        )}
-      </Grid>
-      <Grid item xs={12} textAlign="center">
-        <img
-          src={getItemPrimaryImageUrl(item)}
-          style={{ objectFit: 'contain', maxWidth: '100%' }}
-          alt={item.name}
-        />
-      </Grid>
-      <ItemDetail item={item} dataKey="category" title="Category" />
-      <ItemDetail item={item} dataKey="description" title="Description" />
-      <ItemDetail item={item} dataKey="rating" title="Rating" />
-      <ItemDetail item={item} dataKey="createdAt" title="Created" />
-      <ItemDetail item={item} dataKey="updatedAt" title="Updated" />
-    </Grid>
+          </Grid>
+          <ItemDetail item={item} dataKey="category" title="Category" />
+          <ItemDetail item={item} dataKey="description" title="Description" />
+          <ItemDetail item={item} dataKey="rating" title="Rating" />
+          <ItemDetail item={item} dataKey="createdAt" title="Created" />
+          <ItemDetail item={item} dataKey="updatedAt" title="Updated" />
+        </Grid>
+      )}
+    </FullscreenDialog>
   );
 };
 

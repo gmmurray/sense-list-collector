@@ -21,7 +21,6 @@ import CenteredLoadingIndicator from '../../../shared/CenteredLoadingIndicator';
 import CenteredMessage from '../../../shared/CenteredMessage';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import { FullscreenDialog } from '../../../shared/FullscreenDialog';
 import Fuse from 'fuse.js';
 import { ICollectionWithId } from '../../../../../entities/collection';
 import { IItemWithId } from '../../../../../entities/item';
@@ -279,21 +278,11 @@ const ManageCollectionItemsList = ({
       <Grid item xs={12}>
         {renderContent()}
       </Grid>
-      <FullscreenDialog
-        title="View"
-        open={!!viewItemId}
+      <ViewCollectionItemDialog
+        collection={collection}
+        item={viewItem}
         onClose={() => setViewItemId(null)}
-        transition="default"
-        responsive
-      >
-        {viewItemId && (
-          <ViewCollectionItemDialog
-            collection={collection}
-            item={viewItem}
-            isOwner
-          />
-        )}
-      </FullscreenDialog>
+      />
     </Grid>
   );
 };
