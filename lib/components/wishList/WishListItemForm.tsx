@@ -19,7 +19,8 @@ import { Box } from '@mui/system';
 import { ITEM_DESCRIPTION_MAX_LENGTH } from '../../../entities/item';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
-import { useUserContext } from '../../hoc/withUser';
+import { useUpdateUserCategoryMutation } from '../../queries/users/userMutations';
+import { useUserContext } from '../../hoc/withUser/userContext';
 import { useWishListItemsContext } from './WishListItemsContext';
 
 const validationSchema = yup.object({
@@ -37,7 +38,7 @@ const validationSchema = yup.object({
 });
 
 const WishListItemForm = () => {
-  const { documentUser, onCreateUserCategory } = useUserContext();
+  const { documentUser } = useUserContext();
   const [categoryOptions, setCategoryOptions] = useState<
     CreatableAutocompleteOption[]
   >([]);
@@ -48,6 +49,8 @@ const WishListItemForm = () => {
     onCreate,
     onEditorToggle,
   } = useWishListItemsContext();
+
+  const updateUserCategoryMutation = useUpdateUserCategoryMutation();
 
   useEffect(() => {
     let result: CreatableAutocompleteOption[] = [];
@@ -95,12 +98,15 @@ const WishListItemForm = () => {
 
   const handleCategoryCreate = useCallback(
     async (option: CreatableAutocompleteOption) => {
-      if (!onCreateUserCategory) {
-        return;
-      }
-      return await onCreateUserCategory(option.value);
+      if (!documentUser) return;
+
+      await updateUserCategoryMutation.mutateAsync({
+        category: option.value,
+        isAdditive: true,
+        userId: documentUser.userId,
+      });
     },
-    [onCreateUserCategory],
+    [documentUser, updateUserCategoryMutation],
   );
 
   return (

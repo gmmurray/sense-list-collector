@@ -11,7 +11,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FormikContextType } from 'formik';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
-import { useUserContext } from '../../hoc/withUser';
+import { useUpdateUserCategoryMutation } from '../../queries/users/userMutations';
+import { useUserContext } from '../../hoc/withUser/userContext';
 
 type CreateEditItemFormProps = {
   formik: FormikContextType<IItem>;
@@ -30,7 +31,9 @@ const CreateEditItemForm = ({
   isLoading,
   isEdit = false,
 }: CreateEditItemFormProps) => {
-  const { documentUser, onCreateUserCategory } = useUserContext();
+  const { documentUser } = useUserContext();
+
+  const updateUserCategoryMutation = useUpdateUserCategoryMutation();
 
   const [categoryOptions, setCategoryOptions] = useState<
     CreatableAutocompleteOption[]
@@ -50,12 +53,16 @@ const CreateEditItemForm = ({
   );
 
   const handleCategoryCreate = useCallback(
-    (option: CreatableAutocompleteOption) => {
-      if (!onCreateUserCategory) return;
+    async (option: CreatableAutocompleteOption) => {
+      if (!documentUser) return;
 
-      onCreateUserCategory(option.value);
+      await updateUserCategoryMutation.mutateAsync({
+        category: option.value,
+        isAdditive: true,
+        userId: documentUser.userId,
+      });
     },
-    [onCreateUserCategory],
+    [documentUser, updateUserCategoryMutation],
   );
 
   const handleFileChange = useCallback(

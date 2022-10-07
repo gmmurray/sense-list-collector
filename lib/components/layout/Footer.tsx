@@ -5,13 +5,14 @@ import {
   Link as MUILink,
   Stack,
   Typography,
+  useTheme,
 } from '@mui/material';
 
-import { Copyright } from '@mui/icons-material';
 import Link from 'next/link';
 import React from 'react';
 
 const Footer = () => {
+  const theme = useTheme();
   return (
     <Box
       component="footer"
@@ -19,10 +20,10 @@ const Footer = () => {
         py: 3,
         px: 2,
         mt: 'auto',
-        backgroundColor: theme =>
+        backgroundColor:
           theme.palette.mode === 'light'
             ? theme.palette.primary.light
-            : theme.palette.primary.dark,
+            : theme.palette.grey[900],
       }}
     >
       <Container maxWidth="sm">

@@ -1,6 +1,5 @@
 import { Button, Grid, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -9,6 +8,8 @@ import CollectionsList from '../../../lib/components/collections/CollectionsList
 import GridViewSelector from '../../../lib/components/shared/GridViewSelector';
 import Link from 'next/link';
 import { useGetLatestUserCollectionsQuery } from '../../../lib/queries/collections/collectionQueries';
+import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withUser from '../../../lib/hoc/withUser';
 
 const ViewCollections = () => {
   const { documentUser } = useUserContext();

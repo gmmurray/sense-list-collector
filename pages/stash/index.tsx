@@ -7,13 +7,14 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import withUser, { useUserContext } from '../../lib/hoc/withUser';
 
 import CollectionsList from '../../lib/components/collections/CollectionsList';
 import ItemsList from '../../lib/components/items/ItemsList';
 import Link from 'next/link';
 import { useGetLatestUserCollectionsQuery } from '../../lib/queries/collections/collectionQueries';
 import { useGetLatestUserItemsQuery } from '../../lib/queries/items/itemQueries';
+import { useUserContext } from '../../lib/hoc/withUser/userContext';
+import withUser from '../../lib/hoc/withUser';
 
 const Stash = () => {
   const { authUser } = useUserContext();

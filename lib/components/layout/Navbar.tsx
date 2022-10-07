@@ -18,6 +18,7 @@ import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import { firebaseAuth } from '../../../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRouter } from 'next/router';
 
 const links: { name: string; to: string; auth: boolean }[] = [
   {
@@ -34,6 +35,7 @@ const links: { name: string; to: string; auth: boolean }[] = [
 
 const Navbar = () => {
   const [user, userLoading] = useAuthState(firebaseAuth);
+  const router = useRouter();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
@@ -65,7 +67,10 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
-  const handleLogoutClick = useCallback(() => firebaseAuth.signOut(), []);
+  const handleLogoutClick = useCallback(() => {
+    firebaseAuth.signOut();
+    router.push('/auth');
+  }, [router]);
 
   return (
     <AppBar position="static" sx={{ mb: 2 }}>

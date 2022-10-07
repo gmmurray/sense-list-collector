@@ -16,7 +16,7 @@ import { IItemWithId } from '../../../../../entities/item';
 import { getDateStringFromFirestoreTimestamp } from '../../../../helpers/firestoreHelpers';
 import { useSnackbarAlert } from '../../../shared/SnackbarAlert';
 import { useUpdateCollectionFavoriteItemsMutation } from '../../../../queries/collections/collectionMutations';
-import { useUserContext } from '../../../../hoc/withUser';
+import { useUserContext } from '../../../../hoc/withUser/userContext';
 
 type ItemsTabTableProps = {
   collection?: ICollectionWithId;

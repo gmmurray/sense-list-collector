@@ -23,8 +23,8 @@ import {
   updateCollectionsOnItemWithinBatch,
 } from './item';
 import {
-  performFirestoreDocRetrieval,
-  performFirestoreQuery,
+  performIdentifiableFirestoreDocRetrieval,
+  performIdentifiableFirestoreQuery,
 } from '../lib/helpers/firestoreHelpers';
 
 import { MAX_QUERY_LIMIT } from '../lib/constants/firestoreConstants';
@@ -66,7 +66,8 @@ export const getCollection = async (collectionId?: string, userId?: string) => {
 
   const ref = doc(collectionsCollection, collectionId);
 
-  const collection = await performFirestoreDocRetrieval<ICollectionWithId>(ref);
+  const collection =
+    await performIdentifiableFirestoreDocRetrieval<ICollectionWithId>(ref);
 
   if (collection && (collection.isPublic || collection.userId === userId)) {
     return collection;
@@ -210,7 +211,7 @@ export const getLatestUserCollections = async (
     limit(count ?? MAX_QUERY_LIMIT),
   );
 
-  return performFirestoreQuery<ICollectionWithId>(q);
+  return performIdentifiableFirestoreQuery<ICollectionWithId>(q);
 };
 
 export const deleteCollection = async (

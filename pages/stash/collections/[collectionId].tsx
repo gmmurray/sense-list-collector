@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { Button, Grid, Typography } from '@mui/material';
-import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CenteredLoadingIndicator from '../../../lib/components/shared/CenteredLoadingIndicator';
@@ -15,6 +14,8 @@ import { getStringFromStringOrArray } from '../../../lib/helpers/stringHelpers';
 import { useGetCollectionQuery } from '../../../lib/queries/collections/collectionQueries';
 import { useGetItemsInCollectionQuery } from '../../../lib/queries/items/itemQueries';
 import { useRouter } from 'next/router';
+import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withUser from '../../../lib/hoc/withUser';
 
 const ViewCollection = () => {
   const router = useRouter();
@@ -72,9 +73,11 @@ const ViewCollection = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Link href={'/stash/collections'} passHref>
-          <Button startIcon={<ArrowBackIcon />}>Back to collections</Button>
-        </Link>
+        {authUser && (
+          <Link href={'/stash/collections'} passHref>
+            <Button startIcon={<ArrowBackIcon />}>Back to collections</Button>
+          </Link>
+        )}
       </Grid>
       {!collectionLoading && collection && (
         <Grid item xs={12}>
@@ -82,7 +85,7 @@ const ViewCollection = () => {
             {collection?.name ?? 'Collection'}
           </Typography>
           <Typography variant="subtitle1">
-            by {isOwner ? 'me' : authUser?.uid}
+            by {isOwner ? 'me' : collection.userId}
           </Typography>
         </Grid>
       )}
@@ -93,4 +96,4 @@ const ViewCollection = () => {
   );
 };
 
-export default withUser(ViewCollection);
+export default withUser(ViewCollection, { isPublic: true });

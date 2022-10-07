@@ -11,7 +11,7 @@ import { getDateStringFromFirestoreTimestamp } from '../../../helpers/firestoreH
 import { getItemPrimaryImageUrl } from '../../../constants/images';
 import { useSnackbarAlert } from '../../shared/SnackbarAlert';
 import { useUpdateCollectionFavoriteItemsMutation } from '../../../queries/collections/collectionMutations';
-import { useUserContext } from '../../../hoc/withUser';
+import { useUserContext } from '../../../hoc/withUser/userContext';
 
 type ItemDetailKey =
   | 'name'

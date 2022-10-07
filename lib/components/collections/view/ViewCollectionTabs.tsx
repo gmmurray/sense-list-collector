@@ -8,7 +8,7 @@ import { Tab } from '@mui/material';
 import { getStringFromStringOrArray } from '../../../helpers/stringHelpers';
 import { useCollectionTabContext } from './CollectionTabContext';
 import { useRouter } from 'next/router';
-import { useUserContext } from '../../../hoc/withUser';
+import { useUserContext } from '../../../hoc/withUser/userContext';
 
 const tabLookup: Record<
   string,

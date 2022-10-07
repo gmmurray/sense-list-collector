@@ -9,7 +9,6 @@ import {
   useCreateItemMutation,
   useCreateItemWithImageMutation,
 } from '../../../lib/queries/items/itemMutations';
-import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CreateEditItemForm from '../../../lib/components/items/CreateEditItemForm';
@@ -17,6 +16,8 @@ import Link from 'next/link';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../lib/components/shared/SnackbarAlert';
+import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withUser from '../../../lib/hoc/withUser';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),

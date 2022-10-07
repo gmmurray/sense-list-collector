@@ -15,7 +15,6 @@ import {
   useUpdateItemMutation,
   useUpdateItemWithImageMutation,
 } from '../../../lib/queries/items/itemMutations';
-import withUser, { useUserContext } from '../../../lib/hoc/withUser';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CenteredLoadingIndicator from '../../../lib/components/shared/CenteredLoadingIndicator';
@@ -28,6 +27,8 @@ import { getStringFromStringOrArray } from '../../../lib/helpers/stringHelpers';
 import { useGetUserItemQuery } from '../../../lib/queries/items/itemQueries';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../lib/components/shared/SnackbarAlert';
+import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withUser from '../../../lib/hoc/withUser';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),

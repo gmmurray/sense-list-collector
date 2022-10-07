@@ -9,15 +9,17 @@ import {
   getDocs,
 } from 'firebase/firestore';
 
+import { IdentifiableEntity } from '../types/identifiableEntity';
+
 export const resolveFirestoreTimestamps = (data: any) => ({
   ...data,
   updatedAt: data.updatedAt.toDate(),
   createdAt: data.createdAt.toDate(),
 });
 
-export function resolveFirestoreSnapshotDocs<T extends { id: string }>(
-  snapshot: QuerySnapshot<DocumentData>,
-): T[] {
+export function resolveIdentifiableFirestoreSnapshotDocs<
+  T extends IdentifiableEntity,
+>(snapshot: QuerySnapshot<DocumentData>): T[] {
   return snapshot.docs.map(doc => {
     const data = doc.data();
 
@@ -28,9 +30,21 @@ export function resolveFirestoreSnapshotDocs<T extends { id: string }>(
   });
 }
 
-export function resolveFirestoreSnapshotDoc<T extends { id: string }>(
-  snapshot: DocumentSnapshot<DocumentData>,
-): T | undefined {
+export function resolveFirestoreSnapshotDocs<T>(
+  snapshot: QuerySnapshot<DocumentData>,
+): T[] {
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+
+    return {
+      ...data,
+    } as T;
+  });
+}
+
+export function resolveIdentifiableFirestoreSnapshotDoc<
+  T extends IdentifiableEntity,
+>(snapshot: DocumentSnapshot<DocumentData>): T | undefined {
   if (!snapshot.exists()) return undefined;
 
   const data = snapshot.data();
@@ -41,14 +55,39 @@ export function resolveFirestoreSnapshotDoc<T extends { id: string }>(
   } as T;
 }
 
-export async function performFirestoreQuery<T extends { id: string }>(
+export function resolveFirestoreSnapshotDoc<T>(
+  snapshot: DocumentSnapshot<DocumentData>,
+): T | undefined {
+  if (!snapshot.exists()) return undefined;
+
+  const data = snapshot.data();
+
+  return {
+    ...data,
+  } as T;
+}
+
+export async function performIdentifiableFirestoreQuery<
+  T extends IdentifiableEntity,
+>(query: Query<DocumentData>): Promise<T[]> {
+  const snapshot = await getDocs(query);
+  return resolveIdentifiableFirestoreSnapshotDocs<T>(snapshot);
+}
+export async function performFirestoreQuery<T>(
   query: Query<DocumentData>,
 ): Promise<T[]> {
   const snapshot = await getDocs(query);
   return resolveFirestoreSnapshotDocs<T>(snapshot);
 }
 
-export async function performFirestoreDocRetrieval<T extends { id: string }>(
+export async function performIdentifiableFirestoreDocRetrieval<
+  T extends IdentifiableEntity,
+>(ref: DocumentReference<DocumentData>): Promise<T | undefined> {
+  const snapshot = await getDoc(ref);
+  return resolveIdentifiableFirestoreSnapshotDoc<T>(snapshot);
+}
+
+export async function performFirestoreDocRetrieval<T>(
   ref: DocumentReference<DocumentData>,
 ): Promise<T | undefined> {
   const snapshot = await getDoc(ref);

@@ -1,11 +1,9 @@
 import { Grid, Typography } from '@mui/material';
-import firebaseApp, {
-  firebaseAuth,
-  firebaseUiConfig,
-} from '../config/firebase';
+import firebaseApp, { firebaseAuth } from '../config/firebase';
 
 import { Box } from '@mui/system';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { firebaseUiConfig } from '../config/firebaseUI';
 import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
@@ -16,7 +14,7 @@ const SignInPage = () => {
   const router = useRouter();
   useEffect(() => {
     if (user) {
-      router.push('/');
+      router.push('/home');
     }
   }, [router, user]);
   return (

@@ -20,8 +20,8 @@ import {
   updateItemsOnCollectionWithinBatch,
 } from './collection';
 import {
-  performFirestoreDocRetrieval,
-  performFirestoreQuery,
+  performIdentifiableFirestoreDocRetrieval,
+  performIdentifiableFirestoreQuery,
 } from '../lib/helpers/firestoreHelpers';
 
 import { MAX_QUERY_LIMIT } from '../lib/constants/firestoreConstants';
@@ -66,7 +66,7 @@ export const getUserItem = async (
 
   const ref = doc(itemsCollection, itemId);
 
-  const item = await performFirestoreDocRetrieval<IItemWithId>(ref);
+  const item = await performIdentifiableFirestoreDocRetrieval<IItemWithId>(ref);
 
   if (item && item.userId === userId) {
     return item;
@@ -98,7 +98,7 @@ export const getItemsInCollection = async (
     where('collectionIds', 'array-contains', collection.id),
   );
 
-  return await performFirestoreQuery<IItemWithId>(q);
+  return await performIdentifiableFirestoreQuery<IItemWithId>(q);
 };
 
 export const createItem = async (item: IItem, userId: string) => {
@@ -202,7 +202,7 @@ export const getLatestUserItems = async (userId?: string, count?: number) => {
     limit(count ?? MAX_QUERY_LIMIT),
   );
 
-  return performFirestoreQuery<IItemWithId>(q);
+  return performIdentifiableFirestoreQuery<IItemWithId>(q);
 };
 
 export const createNewItemRef = () => doc(itemsCollection);

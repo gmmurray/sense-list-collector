@@ -29,7 +29,7 @@ import { useFormik } from 'formik';
 import { useGetLatestUserItemsQuery } from '../../../../queries/items/itemQueries';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../shared/SnackbarAlert';
-import { useUserContext } from '../../../../hoc/withUser';
+import { useUserContext } from '../../../../hoc/withUser/userContext';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),

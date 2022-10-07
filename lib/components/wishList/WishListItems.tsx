@@ -26,7 +26,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import WishListItem from './WishListItem';
 import WishListItemForm from './WishListItemForm';
 import WishListItemTable from './WishListItemTable';
-import { useUserContext } from '../../hoc/withUser';
+import { useUserContext } from '../../hoc/withUser/userContext';
 import { useWishListItemsContext } from './WishListItemsContext';
 
 const WishListItems = () => {
