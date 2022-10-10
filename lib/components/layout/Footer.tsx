@@ -2,12 +2,14 @@ import {
   Box,
   Container,
   Grid,
+  IconButton,
   Link as MUILink,
   Stack,
   Typography,
   useTheme,
 } from '@mui/material';
 
+import GitHubIcon from '@mui/icons-material/GitHub';
 import Link from 'next/link';
 import React from 'react';
 
@@ -17,7 +19,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        py: 3,
+        py: 1,
         px: 2,
         mt: 'auto',
         backgroundColor:
@@ -26,8 +28,7 @@ const Footer = () => {
             : theme.palette.grey[900],
       }}
     >
-      <Container maxWidth="sm">
-        <Grid container mb={2} textAlign="center">
+      {/* <Grid container mb={2} textAlign="center">
           <Grid item xs={12} md={4} px={2}>
             <Stack>
               <Link href="/" passHref>
@@ -137,23 +138,27 @@ const Footer = () => {
               </MUILink>
             </Stack>
           </Grid>
+        </Grid> */}
+      <Grid container>
+        <Grid item xs={12} textAlign="center">
+          <IconButton href="https://github.com/gmmurray" target="_blank">
+            <GitHubIcon />
+          </IconButton>
         </Grid>
-        <Grid container>
-          <Grid item xs={12} textAlign="center">
-            <Typography variant="caption" color="white">
-              {`Copyright© ${new Date().getFullYear()} `}
-              <MUILink
-                color="inherit"
-                href="https://gregmurray.org"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Greg Murray
-              </MUILink>
-            </Typography>
-          </Grid>
+        <Grid item xs={12} textAlign="center">
+          <Typography variant="caption" color="white">
+            {`Copyright© ${new Date().getFullYear()} `}
+            <MUILink
+              color="inherit"
+              href="https://gregmurray.org"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Greg Murray
+            </MUILink>
+          </Typography>
         </Grid>
-      </Container>
+      </Grid>
     </Box>
   );
 };

@@ -17,13 +17,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <title>sense list collector</title>
       </Head>
-      <Layout>
-        <SnackbarAlertProvider>
-          <QueryClientProvider client={reactQueryClient}>
+      <QueryClientProvider client={reactQueryClient}>
+        <Layout>
+          <SnackbarAlertProvider>
             <Component {...pageProps} />
-          </QueryClientProvider>
-        </SnackbarAlertProvider>
-      </Layout>
+          </SnackbarAlertProvider>
+        </Layout>
+      </QueryClientProvider>
     </CustomThemeProvider>
   );
 }

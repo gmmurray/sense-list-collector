@@ -61,7 +61,7 @@ export function FormikCheckbox<T>({
   label: string;
   inputProps: CheckboxProps;
 }) {
-  const { values, touched, errors, handleChange } = formik;
+  const { values, touched, errors, handleChange, setFieldValue } = formik;
 
   const value = values[name as keyof typeof values];
   const error =
@@ -79,8 +79,8 @@ export function FormikCheckbox<T>({
             {...inputProps}
             id={name}
             name={name}
-            value={value}
-            onChange={handleChange}
+            checked={!!value}
+            onChange={e => setFieldValue(name, e.target.checked)}
           />
         }
         label={label}

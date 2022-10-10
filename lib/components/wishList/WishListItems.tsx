@@ -45,7 +45,9 @@ const WishListItems = () => {
     null,
   );
 
-  const [gridView, setGridView] = useState(true);
+  const [gridView, setGridView] = useState(
+    !userContext.documentUser?.experience?.preferTables,
+  );
 
   const {
     onFilterChange,

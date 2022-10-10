@@ -47,6 +47,11 @@ export const generateUserItemImageRef = (
   includeImagePrefix: boolean = false,
 ) => `${includeImagePrefix ? 'images/' : ''}${userId}/items/${itemId}/`;
 
+export const generateUserAvatarImageRef = (
+  userId: string,
+  includeImagePrefix: boolean = false,
+) => `${includeImagePrefix ? 'images/' : ''}${userId}/profile/avatar/`;
+
 export type saveFirebaseCollectionImageParams = {
   file: File;
   userId: string;
@@ -82,6 +87,24 @@ export const saveFirebaseItemImage = async ({
   return await saveFirebaseImage({
     file,
     path: generateUserItemImageRef(userId, itemId) + file.name,
+    customMetadata: undefined,
+    progressCallback,
+  });
+};
+
+export type saveFirebaseUserAvatarImageParams = {
+  file: File;
+  userId: string;
+  progressCallback?: (value: number) => void;
+};
+export const saveFirebaseUserAvatarImage = async ({
+  file,
+  userId,
+  progressCallback,
+}: saveFirebaseUserAvatarImageParams) => {
+  return await saveFirebaseImage({
+    file,
+    path: generateUserAvatarImageRef(userId) + file.name,
     customMetadata: undefined,
     progressCallback,
   });

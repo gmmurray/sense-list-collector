@@ -11,12 +11,14 @@ import { useUserContext } from '../../../lib/hoc/withUser/userContext';
 import withUser from '../../../lib/hoc/withUser';
 
 const ViewItems = () => {
-  const { authUser } = useUserContext();
+  const { documentUser } = useUserContext();
   const { data: items, isLoading: itemsLoading } = useGetLatestUserItemsQuery(
-    authUser?.uid,
+    documentUser?.userId,
   );
 
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(
+    !documentUser?.experience?.preferTables,
+  );
 
   return (
     <Grid container spacing={2}>

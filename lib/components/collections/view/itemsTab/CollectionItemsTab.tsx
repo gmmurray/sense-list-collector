@@ -10,10 +10,14 @@ import ItemsTabGallery from './ItemsTabGallery';
 import ItemsTabTable from './ItemsTabTable';
 import ViewCollectionItemDialog from '../ViewCollectionItemDialog';
 import { useCollectionTabContext } from '../CollectionTabContext';
+import { useUserContext } from '../../../../hoc/withUser/userContext';
 
 const CollectionItemsTab = () => {
+  const { documentUser } = useUserContext();
   const { collection, items, itemsLoading } = useCollectionTabContext();
-  const [galleryView, setGalleryView] = useState(true);
+  const [galleryView, setGalleryView] = useState(
+    !documentUser?.experience?.preferTables,
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleItemClick = useCallback((id: string) => {

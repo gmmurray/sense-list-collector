@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Avatar,
   Box,
   Button,
   Container,
@@ -11,13 +12,13 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import { firebaseAuth } from '../../../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useGetUserProfileQuery } from '../../queries/users/userQueries';
 import { useRouter } from 'next/router';
 
 const links: { name: string; to: string; auth: boolean }[] = [
@@ -36,12 +37,10 @@ const links: { name: string; to: string; auth: boolean }[] = [
 const Navbar = () => {
   const [user, userLoading] = useAuthState(firebaseAuth);
   const router = useRouter();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null,
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
-  );
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const { data: currentUserProfile } = useGetUserProfileQuery(user?.uid);
 
   const availableLinks = links.filter(link => {
     if (link.auth) {
@@ -51,21 +50,33 @@ const Navbar = () => {
     }
   });
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    if (!availableLinks.length) return;
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  const handleOpenNavMenu = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      if (!availableLinks.length) return;
+      setAnchorElNav(event.currentTarget);
+    },
+    [availableLinks.length],
+  );
 
-  const handleCloseNavMenu = () => {
+  const handleOpenUserMenu = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorElUser(event.currentTarget);
+    },
+    [],
+  );
+
+  const handleCloseNavMenu = useCallback(() => {
     setAnchorElNav(null);
-  };
+  }, []);
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = useCallback(() => {
     setAnchorElUser(null);
-  };
+  }, []);
+
+  const handleSettingsClick = useCallback(() => {
+    router.push('/me');
+    handleCloseUserMenu();
+  }, [handleCloseUserMenu, router]);
 
   const handleLogoutClick = useCallback(() => {
     firebaseAuth.signOut();
@@ -159,9 +170,12 @@ const Navbar = () => {
           </Box>
           {user && (
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="User settings">
+              <Tooltip title={currentUserProfile?.username ?? 'User'}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <AccountCircleIcon sx={{ color: 'white' }} />
+                  <Avatar
+                    alt={currentUserProfile?.username ?? 'current user'}
+                    src={currentUserProfile?.avatar}
+                  />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -180,6 +194,7 @@ const Navbar = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
+                <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
                 <MenuItem onClick={handleLogoutClick}>
                   <Typography textAlign="center">Logout</Typography>
                 </MenuItem>

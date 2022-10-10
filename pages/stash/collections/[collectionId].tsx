@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-import { Button, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CenteredLoadingIndicator from '../../../lib/components/shared/CenteredLoadingIndicator';
@@ -13,6 +13,7 @@ import { getCollectionCoverImageUrl } from '../../../lib/constants/images';
 import { getStringFromStringOrArray } from '../../../lib/helpers/stringHelpers';
 import { useGetCollectionQuery } from '../../../lib/queries/collections/collectionQueries';
 import { useGetItemsInCollectionQuery } from '../../../lib/queries/items/itemQueries';
+import { useGetUserProfileQuery } from '../../../lib/queries/users/userQueries';
 import { useRouter } from 'next/router';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
 import withUser from '../../../lib/hoc/withUser';
@@ -32,6 +33,8 @@ const ViewCollection = () => {
 
   const { data: collectionItems, isLoading: collectionItemsLoading } =
     useGetItemsInCollectionQuery(collection);
+  const { data: userProfile, isLoading: userProfileLoading } =
+    useGetUserProfileQuery(collection?.userId);
 
   const isOwner = collection?.userId === authUser?.uid;
 
@@ -84,9 +87,14 @@ const ViewCollection = () => {
           <Typography variant="h2" component="h1">
             {collection?.name ?? 'Collection'}
           </Typography>
-          <Typography variant="subtitle1">
-            by {isOwner ? 'me' : collection.userId}
-          </Typography>
+          <Box display="flex">
+            <Avatar alt={userProfile?.username} src={userProfile?.avatar} />
+            <Link href={`/users/${collection.userId}`} passHref>
+              <Button sx={{ ml: 1 }}>
+                {userProfile?.username ?? 'View user'}
+              </Button>
+            </Link>
+          </Box>
         </Grid>
       )}
       <Grid item xs={12}>

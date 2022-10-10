@@ -15,7 +15,9 @@ const ViewCollections = () => {
   const { documentUser } = useUserContext();
   const { data: collections = [], isLoading: collectionsLoading } =
     useGetLatestUserCollectionsQuery(documentUser?.userId);
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(
+    !documentUser?.experience?.preferTables,
+  );
 
   return (
     <Grid container spacing={2}>
