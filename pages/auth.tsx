@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import firebaseApp, { firebaseAuth } from '../config/firebase';
 
 import { Box } from '@mui/system';
@@ -8,6 +8,7 @@ import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const SignInPage = () => {
   const [user] = useAuthState(firebaseAuth);
@@ -26,6 +27,7 @@ const SignInPage = () => {
         alignItems: 'center',
         justifyContent: 'center',
         background: 'radial-gradient(circle at top, #47afcf , #ac28c9)',
+        textAlign: 'center',
       }}
     >
       <Box>
@@ -35,20 +37,23 @@ const SignInPage = () => {
           color="white"
           textAlign="center"
         >
-          Welcome
+          Collector
         </Typography>
         <Typography
-          variant="h2"
-          component="h2"
+          variant="h6"
+          component="h6"
           color="white"
           textAlign="center"
         >
-          Sign in
+          Click below to sign up / sign in
         </Typography>
         <StyledFirebaseAuth
           uiConfig={firebaseUiConfig}
           firebaseAuth={getAuth(firebaseApp)}
         />
+        <Link href="/" passHref>
+          <Button>Back</Button>
+        </Link>
       </Box>
     </Box>
   );

@@ -15,11 +15,11 @@ type LayoutProps = {} & React.PropsWithChildren;
 const Layout = ({ children }: LayoutProps) => {
   const [user, userLoading] = useAuthState(firebaseAuth);
   const router = useRouter();
-  const isAuthPage = router.pathname === '/auth';
+  const noLayout = router.pathname === '/auth' || router.pathname === '/';
 
   const { data: currentUserProfile } = useGetUserProfileQuery(user?.uid);
 
-  if (isAuthPage) {
+  if (noLayout) {
     return <>{children}</>;
   }
 
