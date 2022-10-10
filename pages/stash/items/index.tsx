@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import GridViewSelector from '../../../lib/components/shared/GridViewSelector';
-import ItemsList from '../../../lib/components/items/ItemsList';
+import GridViewSelector from '../../../components/shared/GridViewSelector';
+import ItemsList from '../../../components/items/ItemsList';
 import Link from 'next/link';
 import { useGetLatestUserItemsQuery } from '../../../lib/queries/items/itemQueries';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';

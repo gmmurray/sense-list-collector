@@ -3,12 +3,12 @@
 import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CenteredLoadingIndicator from '../../../lib/components/shared/CenteredLoadingIndicator';
-import CenteredMessage from '../../../lib/components/shared/CenteredMessage';
-import CollectionTabProvider from '../../../lib/components/collections/view/CollectionTabContext';
+import CenteredLoadingIndicator from '../../../components/shared/CenteredLoadingIndicator';
+import CenteredMessage from '../../../components/shared/CenteredMessage';
+import CollectionTabProvider from '../../../components/collections/view/CollectionTabContext';
 import Link from 'next/link';
 import React from 'react';
-import ViewCollectionTabs from '../../../lib/components/collections/view/ViewCollectionTabs';
+import ViewCollectionTabs from '../../../components/collections/view/ViewCollectionTabs';
 import { getCollectionCoverImageUrl } from '../../../lib/constants/images';
 import { getStringFromStringOrArray } from '../../../lib/helpers/stringHelpers';
 import { useGetCollectionQuery } from '../../../lib/queries/collections/collectionQueries';

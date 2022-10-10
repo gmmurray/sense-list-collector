@@ -11,11 +11,11 @@ import {
 } from '../../../lib/queries/items/itemMutations';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CreateEditItemForm from '../../../lib/components/items/CreateEditItemForm';
+import CreateEditItemForm from '../../../components/items/CreateEditItemForm';
 import Link from 'next/link';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import { useSnackbarAlert } from '../../../lib/components/shared/SnackbarAlert';
+import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
 import withUser from '../../../lib/hoc/withUser';
 

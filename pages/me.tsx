@@ -1,7 +1,7 @@
 import React from 'react';
-import ResponsiveTabPage from '../lib/components/shared/ResponsiveTabPage';
-import UserPreferencesPage from '../lib/components/me/userPreferencesPage/UserPreferencesPage';
-import UserProfilePage from '../lib/components/me/userProfilePage/UserProfilePage';
+import ResponsiveTabPage from '../components/shared/ResponsiveTabPage';
+import UserPreferencesPage from '../components/me/userPreferencesPage/UserPreferencesPage';
+import UserProfilePage from '../components/me/userProfilePage/UserProfilePage';
 import withUser from '../lib/hoc/withUser';
 
 const pages = [

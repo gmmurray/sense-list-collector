@@ -3,14 +3,14 @@ import React, { useCallback, useEffect } from 'react';
 import { collection, doc, query, setDoc, where } from 'firebase/firestore';
 import { firebaseAuth, firebaseDB } from '../../config/firebase';
 
-import CenteredLoadingIndicator from '../../lib/components/shared/CenteredLoadingIndicator';
+import CenteredLoadingIndicator from '../../components/shared/CenteredLoadingIndicator';
 import { WISH_LIST_COLLECTION } from '../../lib/constants/collections';
 import { WishListEntity } from '../../entities/wishList';
-import { WishListItemProvider } from '../../lib/components/wishList/WishListItemsContext';
-import WishListItems from '../../lib/components/wishList/WishListItems';
+import { WishListItemProvider } from '../../components/wishList/WishListItemsContext';
+import WishListItems from '../../components/wishList/WishListItems';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { useSnackbarAlert } from '../../lib/components/shared/SnackbarAlert';
+import { useSnackbarAlert } from '../../components/shared/SnackbarAlert';
 import withUser from '../../lib/hoc/withUser';
 
 const wishListCollection = collection(firebaseDB, WISH_LIST_COLLECTION);

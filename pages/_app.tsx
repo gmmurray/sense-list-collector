@@ -4,9 +4,9 @@ import type { AppProps } from 'next/app';
 import { CssBaseline } from '@mui/material';
 import { CustomThemeProvider } from '../config/muiTheme';
 import Head from 'next/head';
-import Layout from '../lib/components/layout/Layout';
+import Layout from '../components/layout/Layout';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { SnackbarAlertProvider } from '../lib/components/shared/SnackbarAlert';
+import { SnackbarAlertProvider } from '../components/shared/SnackbarAlert';
 import { reactQueryClient } from '../config/reactQuery';
 
 function MyApp({ Component, pageProps }: AppProps) {

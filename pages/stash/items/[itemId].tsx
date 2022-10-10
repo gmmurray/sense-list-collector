@@ -17,16 +17,16 @@ import {
 } from '../../../lib/queries/items/itemMutations';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CenteredLoadingIndicator from '../../../lib/components/shared/CenteredLoadingIndicator';
-import CenteredMessage from '../../../lib/components/shared/CenteredMessage';
-import CreateEditItemForm from '../../../lib/components/items/CreateEditItemForm';
+import CenteredLoadingIndicator from '../../../components/shared/CenteredLoadingIndicator';
+import CenteredMessage from '../../../components/shared/CenteredMessage';
+import CreateEditItemForm from '../../../components/items/CreateEditItemForm';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
 import { getItemPrimaryImageUrl } from '../../../lib/constants/images';
 import { getStringFromStringOrArray } from '../../../lib/helpers/stringHelpers';
 import { useGetUserItemQuery } from '../../../lib/queries/items/itemQueries';
 import { useRouter } from 'next/router';
-import { useSnackbarAlert } from '../../../lib/components/shared/SnackbarAlert';
+import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
 import withUser from '../../../lib/hoc/withUser';
 

@@ -10,7 +10,7 @@ import {
 import {
   FormikCheckbox,
   FormikTextField,
-} from '../../../lib/components/form/wrappers';
+} from '../../../components/form/wrappers';
 import React, { useCallback, useState } from 'react';
 import {
   useCreateCollectionAndLoadImageMutation,
@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import { useSnackbarAlert } from '../../../lib/components/shared/SnackbarAlert';
+import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
 import withUser from '../../../lib/hoc/withUser';
 
