@@ -9,7 +9,7 @@ import {
   getDocs,
 } from 'firebase/firestore';
 
-import { IdentifiableEntity } from '../types/identifiableEntity';
+import { IdentifiableEntity } from '../types/IdentifiableEntity';
 
 export const resolveFirestoreTimestamps = (data: any) => ({
   ...data,

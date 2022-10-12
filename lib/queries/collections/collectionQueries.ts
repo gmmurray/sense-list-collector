@@ -1,8 +1,10 @@
 import {
   getCollection,
   getLatestUserCollections,
+  searchCollections,
 } from '../../../entities/collection';
 
+import { ICollectionSearchOptions } from '../../types/collectionSearchTypes';
 import { useQuery } from '@tanstack/react-query';
 
 export const collectionQueryKeys = {
@@ -14,7 +16,13 @@ export const collectionQueryKeys = {
       { userId, count },
     ] as const,
   singleCollection: (collectionId?: string, userId?: string) =>
-    [...collectionQueryKeys.all, 'single-collection'] as const,
+    [
+      ...collectionQueryKeys.all,
+      'single-collection',
+      { collectionId, userId },
+    ] as const,
+  search: (options: ICollectionSearchOptions) =>
+    [...collectionQueryKeys.all, 'search', { ...options }] as const,
 };
 export const useGetLatestUserCollectionsQuery = (
   userId?: string,
@@ -35,4 +43,9 @@ export const useGetCollectionQuery = (collectionId?: string, userId?: string) =>
     {
       enabled: !!collectionId,
     },
+  );
+
+export const useSearchCollectionQuery = (options: ICollectionSearchOptions) =>
+  useQuery(collectionQueryKeys.search(options), () =>
+    searchCollections(options),
   );

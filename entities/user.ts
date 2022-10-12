@@ -118,6 +118,14 @@ export const getUserProfile = async (userId?: string) => {
   return user.profile as RequiredProps<IUserDocument>['profile'];
 };
 
+export const getUserProfiles = async (id: string[]) => {
+  const q = query(userDocumentsCollection, where('userId', 'in', id));
+
+  const users = await performFirestoreQuery<IUserDocument>(q);
+
+  return users.map(u => ({ userId: u.userId, profile: u.profile }));
+};
+
 export const updateUserProfile = async (
   key: keyof RequiredProps<IUserDocument>['profile'],
   value: string,

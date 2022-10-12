@@ -5,6 +5,8 @@ import {
   Button,
   Container,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Link as MUILink,
   Menu,
   MenuItem,
@@ -15,7 +17,10 @@ import {
 import React, { useCallback, useState } from 'react';
 
 import Link from 'next/link';
+import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { firebaseAuth } from '../../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useGetUserProfileQuery } from '../../lib/queries/users/userQueries';
@@ -23,13 +28,18 @@ import { useRouter } from 'next/router';
 
 const links: { name: string; to: string; auth: boolean }[] = [
   {
-    name: 'Wish List',
-    to: '/wish-list',
-    auth: true,
+    name: 'Explore',
+    to: '/explore',
+    auth: false,
   },
   {
     name: 'Stash',
     to: '/stash',
+    auth: true,
+  },
+  {
+    name: 'Wish List',
+    to: '/wish-list',
     auth: true,
   },
 ];
@@ -82,6 +92,12 @@ const Navbar = () => {
     firebaseAuth.signOut();
     router.push('/auth');
   }, [router]);
+
+  const handleProfileClick = useCallback(() => {
+    if (!user) return;
+    router.push(`/users/${user?.uid}`);
+    handleCloseUserMenu();
+  }, [handleCloseUserMenu, router, user]);
 
   return (
     <AppBar position="static" sx={{ mb: 2 }}>
@@ -194,9 +210,23 @@ const Navbar = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
+                <MenuItem onClick={handleProfileClick}>
+                  <ListItemIcon>
+                    <PersonIcon />
+                  </ListItemIcon>
+                  <ListItemText>Profile page</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={handleSettingsClick}>
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText>Settings</ListItemText>
+                </MenuItem>
                 <MenuItem onClick={handleLogoutClick}>
-                  <Typography textAlign="center">Logout</Typography>
+                  <ListItemIcon>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText>Logout</ListItemText>
                 </MenuItem>
               </Menu>
             </Box>

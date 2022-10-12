@@ -1,6 +1,7 @@
 import {
   DocumentData,
   DocumentReference,
+  QueryConstraint,
   Timestamp,
   WriteBatch,
   addDoc,
@@ -8,28 +9,37 @@ import {
   arrayUnion,
   collection,
   doc,
+  endBefore,
   getDocs,
   limit,
   orderBy,
   query,
   setDoc,
+  startAfter,
   updateDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
 import {
+  ICollectionSearchOptions,
+  ICollectionSearchResult,
+} from '../lib/types/collectionSearchTypes';
+import {
   IItemWithId,
   getItemsInCollection,
   updateCollectionsOnItemWithinBatch,
 } from './item';
+import { IUserDocument, getUserProfiles } from './user';
 import {
   performIdentifiableFirestoreDocRetrieval,
   performIdentifiableFirestoreQuery,
+  resolveIdentifiableFirestoreSnapshotDocs,
 } from '../lib/helpers/firestoreHelpers';
 
 import { MAX_QUERY_LIMIT } from '../lib/constants/firestoreConstants';
 import { firebaseDB } from '../config/firebase';
 import pickBy from 'lodash.pickby';
+import { uniqueElements } from '../lib/helpers/arrayHelpers';
 
 export interface ICollection {
   name: string;
@@ -45,8 +55,13 @@ export interface ICollection {
 
 export const COLLECTION_DESCRIPTION_MAX_LENGTH = 1000;
 
+export const COLLECTION_SEARCH_PAGE_SIZE = 10;
 export interface ICollectionWithId extends ICollection {
   id: string;
+}
+
+export interface ICollectionWithProfile extends ICollectionWithId {
+  profile: IUserDocument['profile'];
 }
 
 export interface ICollectionWithItems extends ICollectionWithId {
@@ -231,4 +246,57 @@ export const deleteCollection = async (
   batch.delete(doc(collectionsCollection, collection.id));
 
   return await batch.commit();
+};
+
+export const searchCollections = async (
+  options: ICollectionSearchOptions,
+): Promise<ICollectionSearchResult> => {
+  const conditions: QueryConstraint[] = [];
+
+  if (options.userId) {
+    conditions.push(where('userId', '==', options.userId));
+  }
+
+  if (options.lastElement && !options.firstElement) {
+    conditions.push(startAfter(options.lastElement));
+  }
+
+  if (options.firstElement && !options.lastElement) {
+    conditions.push(endBefore(options.firstElement));
+  }
+
+  if (options.hasItems) {
+    conditions.push(where('itemIds', '!=', []));
+    conditions.push(orderBy('itemIds', 'desc'));
+  }
+
+  const q = query(
+    collectionsCollection,
+    where('isPublic', '==', true),
+    ...conditions,
+    orderBy('updatedAt', 'desc'),
+    limit(COLLECTION_SEARCH_PAGE_SIZE),
+  );
+
+  const collectionResult = await getDocs(q);
+
+  const collectionData =
+    resolveIdentifiableFirestoreSnapshotDocs<ICollectionWithProfile>(
+      collectionResult,
+    );
+
+  const profileIds = uniqueElements(collectionData.map(c => c.userId));
+
+  const profiles = profileIds.length ? await getUserProfiles(profileIds) : [];
+
+  const profileMap = new Map(profiles.map(p => [p.userId, p.profile]));
+
+  return {
+    data: collectionData.map(c => ({
+      ...c,
+      profile: profileMap.get(c.userId),
+    })),
+    lastElement: collectionResult.docs[COLLECTION_SEARCH_PAGE_SIZE - 1],
+    firstElement: collectionResult.docs[0],
+  };
 };
