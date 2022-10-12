@@ -100,3 +100,6 @@ export const getDateStringFromFirestoreTimestamp = (date: Date) => {
 
   return validDate.toLocaleDateString();
 };
+
+export const getDateFromFirestoreTimestamp = (date: Date) =>
+  date instanceof Date ? date : (date as unknown as Timestamp).toDate();

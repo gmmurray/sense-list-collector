@@ -216,14 +216,25 @@ export const updateItemsOnCollectionWithinBatch = (
 export const getLatestUserCollections = async (
   userId?: string,
   count?: number,
+  requirePublic: boolean = false,
 ) => {
   if (!userId) return [];
+
+  const constraints: QueryConstraint[] = [];
+
+  if (requirePublic) {
+    constraints.push(where('isPublic', '==', true));
+  }
+
+  if (count) {
+    constraints.push(limit(count));
+  }
 
   const q = query(
     collectionsCollection,
     where('userId', '==', userId),
     orderBy('updatedAt', 'desc'),
-    limit(count ?? MAX_QUERY_LIMIT),
+    ...constraints,
   );
 
   return performIdentifiableFirestoreQuery<ICollectionWithId>(q);

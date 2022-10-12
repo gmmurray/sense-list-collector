@@ -1,8 +1,5 @@
 import {
-  USERNAME_ALREADY_EXISTS_ERROR,
-  USER_DOCUMENT_NOT_FOUND_ERROR,
-} from '../lib/constants/errors';
-import {
+  Timestamp,
   arrayRemove,
   arrayUnion,
   collection,
@@ -15,6 +12,10 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import {
+  USERNAME_ALREADY_EXISTS_ERROR,
+  USER_DOCUMENT_NOT_FOUND_ERROR,
+} from '../lib/constants/errors';
+import {
   performFirestoreDocRetrieval,
   performFirestoreQuery,
 } from '../lib/helpers/firestoreHelpers';
@@ -25,6 +26,7 @@ import { firebaseDB } from '../config/firebase';
 export interface IUserDocument {
   userId: string;
   categories: string[];
+  createdAt: Date;
   experience: {
     preferTables: boolean;
   };
@@ -40,9 +42,11 @@ export const USER_DOCUMENT_USERNAME_LENGTH = {
   min: 5,
   max: 15,
 };
+export const USER_PAGE_COLLECTION_LIMIT = 50;
 
 export const createDefaultUser = (userId: string): IUserDocument => ({
   userId,
+  createdAt: Timestamp.now() as unknown as Date,
   categories: [],
   experience: {
     preferTables: false,
