@@ -1,65 +1,66 @@
-import { Alert, Button, Typography } from '@mui/material';
-import React, { useCallback, useEffect } from 'react';
-import { collection, doc, query, setDoc, where } from 'firebase/firestore';
-import { firebaseAuth, firebaseDB } from '../../config/firebase';
+import React, { useCallback } from 'react';
 
 import CenteredLoadingIndicator from '../../components/shared/CenteredLoadingIndicator';
-import { WISH_LIST_COLLECTION } from '../../lib/constants/collections';
-import { WishListEntity } from '../../entities/wishList';
+import { LoadingButton } from '@mui/lab';
+import { Typography } from '@mui/material';
 import { WishListItemProvider } from '../../components/wishList/WishListItemsContext';
 import WishListItems from '../../components/wishList/WishListItems';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { useCreateWishListMutation } from '../../lib/queries/wishList/wishListMutations';
+import { useGetWishListQuery } from '../../lib/queries/wishList/wishListQueries';
 import { useSnackbarAlert } from '../../components/shared/SnackbarAlert';
+import { useUserContext } from '../../lib/hoc/withUser/userContext';
 import withUser from '../../lib/hoc/withUser';
 
-const wishListCollection = collection(firebaseDB, WISH_LIST_COLLECTION);
-
 const WishListPage = () => {
-  const [user] = useAuthState(firebaseAuth);
-  const [value, valueLoading, valueError] = useCollection(
-    query(wishListCollection, where('userId', '==', user?.uid ?? '')),
-  );
+  const { documentUser } = useUserContext();
   const snackbarContext = useSnackbarAlert();
 
-  useEffect(() => {
-    if (valueError && snackbarContext.message !== valueError.message) {
-      snackbarContext.send(valueError.message, 'error');
-    }
-  }, [snackbarContext, valueError]);
+  const { data: wishList, isLoading: wishListLoading } = useGetWishListQuery(
+    documentUser?.userId,
+  );
+
+  const createWishListMutation = useCreateWishListMutation();
 
   const handleCreateWishList = useCallback(async () => {
-    const ref = doc(wishListCollection);
+    if (!documentUser) return;
 
-    await setDoc(ref, { ...new WishListEntity(user!) });
-  }, [user]);
+    try {
+      await createWishListMutation.mutateAsync({ userId: documentUser.userId });
+      snackbarContext.send('Wish list created', 'success');
+    } catch (error) {
+      console.log(error);
+      snackbarContext.send('Error creating wish list', 'error');
+    }
+  }, [createWishListMutation, documentUser, snackbarContext]);
 
-  const renderContent = useCallback(() => {
-    if (valueLoading) {
+  const renderContent = () => {
+    if (wishListLoading) {
       return <CenteredLoadingIndicator />;
     }
 
-    const userWishList = value?.docs[0];
-
-    if (!userWishList) {
+    if (!wishList || createWishListMutation.isLoading) {
       return (
         <div>
           <Typography variant="subtitle1" gutterBottom>
-            You don&apos;t have a wish list yet
+            You don&apos;t have a wish list yet!
           </Typography>
-          <Button onClick={handleCreateWishList} variant="contained">
-            create one
-          </Button>
+          <LoadingButton
+            loading={createWishListMutation.isLoading}
+            onClick={handleCreateWishList}
+            variant="contained"
+          >
+            Create one
+          </LoadingButton>
         </div>
       );
     }
 
     return (
-      <WishListItemProvider listId={userWishList.id}>
+      <WishListItemProvider listId={wishList.userId}>
         <WishListItems />
       </WishListItemProvider>
     );
-  }, [handleCreateWishList, value?.docs, valueLoading]);
+  };
 
   return (
     <div>

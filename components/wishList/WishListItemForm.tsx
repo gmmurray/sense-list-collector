@@ -3,7 +3,17 @@
 
 import * as yup from 'yup';
 
-import { Button, Grid, InputAdornment, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Collapse,
+  Grid,
+  InputAdornment,
+  Link,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import CreatableAutocomplete, {
   CreatableAutocompleteOption,
 } from '../form/CreatableAutocomplete';
@@ -38,6 +48,7 @@ const validationSchema = yup.object({
 });
 
 const WishListItemForm = () => {
+  const theme = useTheme();
   const { documentUser } = useUserContext();
   const [categoryOptions, setCategoryOptions] = useState<
     CreatableAutocompleteOption[]
@@ -48,6 +59,7 @@ const WishListItemForm = () => {
     onSave,
     onCreate,
     onEditorToggle,
+    onConversionItemChange,
   } = useWishListItemsContext();
 
   const updateUserCategoryMutation = useUpdateUserCategoryMutation();
@@ -65,7 +77,7 @@ const WishListItemForm = () => {
   const onSubmit = useCallback(
     async (values: IWishListItem) => {
       if (editorInitialValue) {
-        return await onSave!(editorInitialValue.id, values);
+        return await onSave!(values);
       }
 
       return await onCreate!(values);
@@ -109,11 +121,33 @@ const WishListItemForm = () => {
     [documentUser, updateUserCategoryMutation],
   );
 
+  const handleAddItem = useCallback(() => {
+    if (!editorInitialValue || !onConversionItemChange) return;
+
+    onConversionItemChange({
+      item: editorInitialValue,
+      includeDeletion: false,
+    });
+  }, [editorInitialValue, onConversionItemChange]);
+
   return (
     <Box>
       <Typography variant="h2" component="h1" gutterBottom>
         {editorInitialValue ? 'Update' : 'Create'} wish list item
       </Typography>
+      <Collapse in={editorInitialValue && editorInitialValue.status === 'own'}>
+        <Alert
+          variant={theme.palette.mode === 'dark' ? 'outlined' : 'filled'}
+          severity="success"
+          sx={{ mb: 2 }}
+        >
+          <AlertTitle>Done!</AlertTitle>
+          This item is marked as owned. You can add it to your stash{' '}
+          <Link underline="hover" component="button" onClick={handleAddItem}>
+            here
+          </Link>
+        </Alert>
+      </Collapse>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>

@@ -8,6 +8,7 @@ import {
   arrayUnion,
   collection,
   doc,
+  getDoc,
   limit,
   orderBy,
   query,
@@ -24,6 +25,7 @@ import {
   performIdentifiableFirestoreQuery,
 } from '../lib/helpers/firestoreHelpers';
 
+import { IWishListItem } from './wishList';
 import { MAX_QUERY_LIMIT } from '../lib/constants/firestoreConstants';
 import { firebaseDB } from '../config/firebase';
 import pickBy from 'lodash.pickby';
@@ -118,6 +120,24 @@ export const createItem = async (item: IItem, userId: string) => {
     await batch.commit();
   }
 
+  return created.id;
+};
+
+export const createItemInBatch = async (
+  item: IItem,
+  userId: string,
+  batch: WriteBatch,
+) => {
+  const clean = pickBy({
+    ...item,
+    userId,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  });
+  const ref = doc(itemsCollection);
+  batch.set(ref, clean);
+
+  const created = await getDoc(ref);
   return created.id;
 };
 
@@ -222,3 +242,19 @@ export const deleteItem = async (itemId?: string, userId?: string) => {
 
   return await batch.commit();
 };
+
+export const createItemFromWishList = (
+  { name, description, image, price, category }: IWishListItem,
+  userId: string,
+): IItem => ({
+  name,
+  userId,
+  category,
+  images: [],
+  collectionIds: [],
+  description,
+  price,
+  primaryImageUrl: image,
+  updatedAt: new Date(),
+  createdAt: new Date(),
+});

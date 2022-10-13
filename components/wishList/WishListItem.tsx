@@ -21,6 +21,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import { LoadingButton } from '@mui/lab';
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
 import { useWishListItemsContext } from './WishListItemsContext';
 
 const getPriorityIcon = (
@@ -32,6 +33,7 @@ const getPriorityIcon = (
   if (status === 'own') {
     icon = <CheckIcon color="success" />;
   } else {
+    if (priority === undefined) return null;
     if (priority === 'low') icon = <KeyboardArrowDownIcon color="success" />;
     else if (priority === 'medium')
       icon = <KeyboardArrowUpIcon color="warning" />;
@@ -67,9 +69,13 @@ const WishListItem = ({ item }: WishListItemProps) => {
 
   return (
     <Fade in timeout={500}>
-      <Card sx={{ height: '100%' }} elevation={4}>
+      <Card
+        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+        elevation={4}
+      >
         <CardActionArea
           onClick={() => itemsContext.onEditorToggle!(true, item)}
+          sx={{ flex: 1 }}
         >
           <CardMedia
             component="img"
@@ -104,11 +110,9 @@ const WishListItem = ({ item }: WishListItemProps) => {
                     {item.name}
                   </Typography>
                 </Grid>
-                {item.priority && (
-                  <Grid item sx={{ ml: 'auto' }}>
-                    {getPriorityIcon(item.priority, item.status)}
-                  </Grid>
-                )}
+                <Grid item sx={{ ml: 'auto' }}>
+                  {getPriorityIcon(item.priority, item.status)}
+                </Grid>
               </Grid>
               <Typography sx={{ mb: 1.5, mt: 'auto' }} color="text.secondary">
                 ${item.price === undefined ? '--' : item.price}
@@ -123,13 +127,17 @@ const WishListItem = ({ item }: WishListItemProps) => {
               item.status === 'own' ? getOwnStatusColor(theme) : undefined,
           }}
         >
-          <LoadingButton
-            size="small"
-            loading={itemsContext.singleItemLoading === item.id}
-            onClick={handleStatusChange}
+          <Tooltip
+            title={item.status === 'own' ? 'Mark as needed' : 'Mark as owned'}
           >
-            {item.status === 'own' ? 'Still need' : 'Own it'}
-          </LoadingButton>
+            <LoadingButton
+              size="small"
+              loading={itemsContext.singleItemLoading === item.id}
+              onClick={handleStatusChange}
+            >
+              {item.status === 'own' ? <RemoveDoneIcon /> : <CheckIcon />}
+            </LoadingButton>
+          </Tooltip>
           <a
             href={item.link}
             target="_blank"

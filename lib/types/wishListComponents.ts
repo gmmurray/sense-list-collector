@@ -1,5 +1,4 @@
-import { IWishList, IWishListItem } from '../../entities/wishList';
-
+import { IWishListItem } from '../../entities/wishList';
 import { SortDir } from './sort';
 
 export const wishListItemSortOptions = [
@@ -7,6 +6,7 @@ export const wishListItemSortOptions = [
   'category',
   'price',
   'priority',
+  'status',
 ] as const;
 
 export const baseCategoryFilters = ['none', 'all'];
@@ -29,12 +29,16 @@ export type WishListItemsState = {
     statusFilter?: IWishListItem['status'];
   };
   singleItemLoading?: string;
+  conversionItem?: {
+    item: IWishListItem;
+    includeDeletion: boolean;
+  };
 };
 
 export type WishListItemsActions = {
   onEditorToggle?: (editorOpen: boolean, values?: IWishListItem) => void;
   onCreate?: (value: IWishListItem) => Promise<void>;
-  onSave?: (id: string, value: IWishListItem) => Promise<void>;
+  onSave?: (value: IWishListItem) => Promise<void>;
   onDelete?: (id: string) => Promise<void>;
   onSearch?: (search?: string) => void;
   onSortChange?: (
@@ -54,4 +58,7 @@ export type WishListItemsActions = {
     id: string,
     status?: IWishListItem['status'],
   ) => Promise<void>;
+  onConversionItemChange?: (
+    state: WishListItemsState['conversionItem'],
+  ) => void;
 };

@@ -1,19 +1,7 @@
 import {
-  WISH_LIST_COLLECTION,
-  WISH_LIST_ITEMS_COLLECTION,
-} from '../../lib/constants/collections';
-import {
   WishListItemsActions,
   WishListItemsState,
 } from '../../lib/types/wishListComponents';
-import {
-  collection,
-  deleteDoc,
-  doc,
-  query,
-  setDoc,
-  updateDoc,
-} from 'firebase/firestore';
 import {
   createContext,
   useCallback,
@@ -21,18 +9,20 @@ import {
   useEffect,
   useState,
 } from 'react';
+import {
+  useCreateWishListItemMutation,
+  useDeleteWishListItemMutation,
+  useUpdateWishListItemMutation,
+  useUpdateWishListItemStatusMutation,
+} from '../../lib/queries/wishList/wishListMutations';
 
 import Fuse from 'fuse.js';
 import { IWishListItem } from '../../entities/wishList';
 import { filterWishListItems } from '../../lib/helpers/filterWishListItems';
-import { firebaseDB } from '../../config/firebase';
-import { sanitizeInputs } from '../../lib/helpers/sanitizeInputs';
 import { sortWishListItems } from '../../lib/helpers/sortWishListItems';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { useGetWishListItemsQuery } from '../../lib/queries/wishList/wishListQueries';
 import { useSnackbarAlert } from '../shared/SnackbarAlert';
-
-const getCollection = (id: string) =>
-  collection(firebaseDB, WISH_LIST_COLLECTION, id, WISH_LIST_ITEMS_COLLECTION);
+import { useUserContext } from '../../lib/hoc/withUser/userContext';
 
 type WishListProviderProps = {
   listId: string;
@@ -53,6 +43,7 @@ const defaultWishListItemsState: WishListItemsState = {
     statusFilter: 'need',
   },
   singleItemLoading: undefined,
+  conversionItem: undefined,
 };
 
 const defaultWishListItemsContextValue: WishListItemsState &
@@ -77,49 +68,50 @@ export const WishListItemProvider = ({
   listId,
   children,
 }: WishListProviderProps) => {
+  const { documentUser } = useUserContext();
+  const snackbarContext = useSnackbarAlert();
+
+  const { data: wishListItems = [], isLoading: wishListItemsLoading } =
+    useGetWishListItemsQuery(documentUser?.userId);
+
+  const createWishListItemMutation = useCreateWishListItemMutation();
+  const updateWishListItemMutation = useUpdateWishListItemMutation();
+  const updateWishListItemStatusMutation =
+    useUpdateWishListItemStatusMutation();
+  const deleteWishListItemMutation = useDeleteWishListItemMutation();
+
   const [contextState, setContextState] = useState({
     ...defaultWishListItemsState,
     listId,
   });
 
-  const [queryResult, queryLoading, queryError] = useCollection(
-    query(getCollection(listId)),
-  );
-
-  const snackbarContext = useSnackbarAlert();
-
   useEffect(() => {
-    if (!queryResult) return;
-
-    const items = (queryResult?.docs ?? []).map(
-      item =>
-        ({
-          ...item.data(),
-          id: item.id,
-        } as IWishListItem),
-    );
-
-    searchEngine = new Fuse(items, {
+    searchEngine = new Fuse(wishListItems, {
       keys: ['name', 'description', 'category'],
     });
 
     setContextState(state => ({
       ...state,
-      items,
-      filteredItems: filterThenSort(items, state.listOptions),
+      items: wishListItems,
+      filteredItems: filterThenSort(wishListItems, state.listOptions),
     }));
-  }, [queryResult]);
+  }, [wishListItems]);
 
   useEffect(
-    () => setContextState(state => ({ ...state, itemsLoading: queryLoading })),
-    [queryLoading],
+    () =>
+      setContextState(state => ({
+        ...state,
+        itemsLoading:
+          wishListItemsLoading ||
+          createWishListItemMutation.isLoading ||
+          updateWishListItemMutation.isLoading,
+      })),
+    [
+      createWishListItemMutation.isLoading,
+      updateWishListItemMutation.isLoading,
+      wishListItemsLoading,
+    ],
   );
-
-  useEffect(() => {
-    if (queryError && snackbarContext.message !== queryError.message) {
-      snackbarContext.send(queryError.message, 'error');
-    }
-  }, [queryError, snackbarContext]);
 
   const handleEditorToggle = useCallback(
     (editorOpen: boolean, editorInitialValue?: IWishListItem) =>
@@ -129,92 +121,115 @@ export const WishListItemProvider = ({
 
   const handleCreateItem = useCallback(
     async (value: IWishListItem) => {
-      setContextState(state => ({
-        ...state,
-        editorLoading: true,
-      }));
+      if (!documentUser) return;
 
-      const sanitizedValues = sanitizeInputs(value);
-      const ref = doc(getCollection(contextState.listId));
-
-      await setDoc(ref, { ...sanitizedValues });
-      setContextState(state => ({
-        ...state,
-        filteredItems: filterThenSort(state.items, state.listOptions),
-        editorLoading: false,
-        editorOpen: false,
-      }));
-      snackbarContext.send('Item created', 'success');
+      try {
+        await createWishListItemMutation.mutateAsync({
+          value,
+          userId: documentUser.userId,
+        });
+        setContextState(state => ({
+          ...state,
+          filteredItems: filterThenSort(state.items, state.listOptions),
+          editorOpen: false,
+        }));
+        snackbarContext.send('Item created', 'success');
+      } catch (error) {
+        console.log(error);
+        snackbarContext.send('Error creating item', 'error');
+      }
     },
-    [contextState.listId, snackbarContext],
+    [createWishListItemMutation, documentUser, snackbarContext],
   );
 
   const handleSaveItem = useCallback(
-    async (id: string, value: IWishListItem) => {
-      setContextState(state => ({
-        ...state,
-        editorLoading: true,
-      }));
+    async (value: IWishListItem) => {
+      if (!documentUser) return;
 
-      const ref = doc(getCollection(contextState.listId), id);
-
-      await updateDoc(ref, { ...value });
-
-      setContextState(state => ({
-        ...state,
-        filteredItems: filterThenSort(state.items, state.listOptions),
-        editorLoading: false,
-        editorOpen: false,
-      }));
-      snackbarContext.send('Item saved', 'success');
+      try {
+        await updateWishListItemMutation.mutateAsync({
+          value,
+          userId: documentUser.userId,
+        });
+        setContextState(state => ({
+          ...state,
+          filteredItems: filterThenSort(state.items, state.listOptions),
+          editorOpen: false,
+          conversionItem:
+            value.status === 'own'
+              ? { item: value, includeDeletion: false }
+              : undefined,
+        }));
+        snackbarContext.send('Item updated', 'success');
+      } catch (error) {
+        console.log(error);
+        snackbarContext.send('Error updating item', 'error');
+      }
     },
-    [contextState.listId, snackbarContext],
+    [documentUser, snackbarContext, updateWishListItemMutation],
   );
 
   const handleUpdateItemStatus = useCallback(
     async (id: string, status: IWishListItem['status']) => {
-      const oldValues = contextState.items.filter(item => item.id === id)[0];
-      if (!oldValues) return;
+      if (!documentUser) return;
 
-      setContextState(state => ({
-        ...state,
-        singleItemLoading: id,
-      }));
+      try {
+        setContextState(state => ({
+          ...state,
+          singleItemLoading: id,
+        }));
+        await updateWishListItemStatusMutation.mutateAsync({
+          id,
+          userId: documentUser.userId,
+          status,
+        });
 
-      const ref = doc(getCollection(contextState.listId), id);
-
-      await updateDoc(ref, { ...oldValues, status });
-
-      setContextState(state => ({
-        ...state,
-        filteredItems: filterThenSort(state.items, state.listOptions),
-        singleItemLoading: undefined,
-      }));
-      snackbarContext.send('Item updated', 'success');
+        setContextState(state => ({
+          ...state,
+          filteredItems: filterThenSort(state.items, state.listOptions),
+          singleItemLoading: undefined,
+          conversionItem:
+            status === 'own'
+              ? {
+                  item: wishListItems.filter(item => item.id === id)[0],
+                  includeDeletion: false,
+                }
+              : undefined,
+        }));
+        snackbarContext.send('Item status updated', 'success');
+      } catch (error) {
+        console.log(error);
+        snackbarContext.send('Error updating item status', 'error');
+      }
     },
-    [contextState.items, contextState.listId, snackbarContext],
+    [
+      documentUser,
+      snackbarContext,
+      updateWishListItemStatusMutation,
+      wishListItems,
+    ],
   );
 
   const handleDeleteItem = useCallback(
     async (id: string) => {
-      setContextState(state => ({
-        ...state,
-        editorLoading: true,
-      }));
-
-      const ref = doc(getCollection(contextState.listId), id);
-
-      await deleteDoc(ref);
-
-      setContextState(state => ({
-        ...state,
-        filteredItems: filterThenSort(state.items, state.listOptions),
-        editorLoading: false,
-        editorOpen: false,
-      }));
-      snackbarContext.send('Item deleted', 'info');
+      if (!documentUser) return;
+      try {
+        await deleteWishListItemMutation.mutateAsync({
+          id,
+          userId: documentUser.userId,
+        });
+        setContextState(state => ({
+          ...state,
+          filteredItems: filterThenSort(state.items, state.listOptions),
+          editorOpen: false,
+        }));
+        snackbarContext.send('Item deleted', 'success');
+      } catch (error) {
+        console.log(error);
+        snackbarContext.send('Error deleting item', 'error');
+      }
     },
-    [contextState.listId, snackbarContext],
+    [deleteWishListItemMutation, documentUser, snackbarContext],
   );
 
   const handleSearch = useCallback(
@@ -298,6 +313,12 @@ export const WishListItemProvider = ({
     }));
   }, []);
 
+  const handleConversionItemChange = useCallback(
+    (conversionItem: WishListItemsState['conversionItem']) =>
+      setContextState(state => ({ ...state, conversionItem })),
+    [],
+  );
+
   const value: WishListItemsState & WishListItemsActions = {
     ...contextState,
     onEditorToggle: handleEditorToggle,
@@ -309,6 +330,7 @@ export const WishListItemProvider = ({
     onFilterChange: handleFilterChange,
     onReset: handleReset,
     onItemStatusChange: handleUpdateItemStatus,
+    onConversionItemChange: handleConversionItemChange,
   };
 
   return (

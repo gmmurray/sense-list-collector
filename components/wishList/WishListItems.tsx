@@ -20,6 +20,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { Box } from '@mui/system';
 import CenteredMessage from '../shared/CenteredMessage';
+import ConvertItemDialog from './ConvertItemDialog';
 import { FullscreenDialog } from '../shared/FullscreenDialog';
 import GridViewSelector from '../shared/GridViewSelector';
 import SortIcon from '@mui/icons-material/Sort';
@@ -158,10 +159,15 @@ const WishListItems = () => {
   );
 
   const handleStatusFilterChange = useCallback(
-    (value: 'need' | 'own') => {
+    (value: 'need' | 'own' | 'all') => {
       if (!onFilterChange) return;
 
-      const newValue = value === statusFilter ? undefined : value;
+      let newValue: 'need' | 'own' | undefined;
+      if (value === 'all') {
+        newValue = undefined;
+      } else {
+        newValue = value === statusFilter ? undefined : value;
+      }
 
       onFilterChange('statusFilter', newValue);
       handleStatusFilterClose();
@@ -387,6 +393,12 @@ const WishListItems = () => {
         onClose={handleStatusFilterClose}
       >
         <MenuItem
+          selected={statusFilter === undefined}
+          onClick={() => handleStatusFilterChange('all')}
+        >
+          all
+        </MenuItem>
+        <MenuItem
           selected={statusFilter === 'need'}
           onClick={() => handleStatusFilterChange('need')}
         >
@@ -421,6 +433,7 @@ const WishListItems = () => {
           </MenuItem>
         ))}
       </Menu>
+      <ConvertItemDialog />
     </div>
   );
 };
