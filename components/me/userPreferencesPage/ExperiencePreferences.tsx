@@ -59,6 +59,26 @@ const ExperiencePreferences = () => {
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
+      <ListItem>
+        <ListItemText primary="Hide owned wish list items by default" />
+        <ListItemSecondaryAction>
+          <IconButton
+            disabled={updateMutation.isLoading}
+            onClick={() =>
+              handleChange(
+                'hideWishListOwned',
+                !documentUser?.experience?.hideWishListOwned,
+              )
+            }
+          >
+            {documentUser?.experience?.hideWishListOwned ? (
+              <CheckBoxIcon />
+            ) : (
+              <CheckBoxOutlineBlankIcon />
+            )}
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
     </List>
   );
 };

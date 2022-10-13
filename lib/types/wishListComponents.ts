@@ -12,7 +12,6 @@ export const wishListItemSortOptions = [
 export const baseCategoryFilters = ['none', 'all'];
 
 export type WishListItemsState = {
-  listId: string;
   editorOpen: boolean;
   editorLoading: boolean;
   editorInitialValue?: IWishListItem;

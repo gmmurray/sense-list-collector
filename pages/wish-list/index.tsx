@@ -56,7 +56,7 @@ const WishListPage = () => {
     }
 
     return (
-      <WishListItemProvider listId={wishList.userId}>
+      <WishListItemProvider>
         <WishListItems />
       </WishListItemProvider>
     );

@@ -12,11 +12,14 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import {
+  IWishListItem,
+  getOwnedItemStatusColor,
+} from '../../entities/wishList';
 import React, { useCallback } from 'react';
 
 import { Box } from '@mui/system';
 import CheckIcon from '@mui/icons-material/Check';
-import { IWishListItem } from '../../entities/wishList';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
@@ -49,8 +52,6 @@ const getPriorityIcon = (
     return null;
   }
 };
-
-const getOwnStatusColor = (theme: Theme) => theme.palette.success.light + '60';
 
 type WishListItemProps = {
   item: IWishListItem;
@@ -96,7 +97,9 @@ const WishListItem = ({ item }: WishListItemProps) => {
                 flexDirection: 'column',
                 height: '100%',
                 bgcolor:
-                  item.status === 'own' ? getOwnStatusColor(theme) : undefined,
+                  item.status === 'own'
+                    ? getOwnedItemStatusColor(theme)
+                    : undefined,
               }}
             >
               <Grid container>
@@ -115,7 +118,7 @@ const WishListItem = ({ item }: WishListItemProps) => {
                 </Grid>
               </Grid>
               <Typography sx={{ mb: 1.5, mt: 'auto' }} color="text.secondary">
-                ${item.price === undefined ? '--' : item.price}
+                {item.price === undefined ? '--' : `$${item.price}`}
               </Typography>
             </CardContent>
           </Box>
@@ -124,7 +127,9 @@ const WishListItem = ({ item }: WishListItemProps) => {
           sx={{
             mt: 'auto',
             bgcolor:
-              item.status === 'own' ? getOwnStatusColor(theme) : undefined,
+              item.status === 'own'
+                ? getOwnedItemStatusColor(theme)
+                : undefined,
           }}
         >
           <Tooltip

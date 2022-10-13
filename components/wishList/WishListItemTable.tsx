@@ -9,11 +9,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  useTheme,
 } from '@mui/material';
+import {
+  IWishListItem,
+  getOwnedItemStatusColor,
+} from '../../entities/wishList';
 import React, { useCallback } from 'react';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { IWishListItem } from '../../entities/wishList';
 import LinkIcon from '@mui/icons-material/Link';
 import { useWishListItemsContext } from './WishListItemsContext';
 
@@ -22,6 +26,7 @@ type WishListItemTableProps = {
 };
 
 const WishListItemTable = ({ items }: WishListItemTableProps) => {
+  const theme = useTheme();
   const { onEditorToggle, onDelete, editorLoading } = useWishListItemsContext();
 
   const handleLinkClick = useCallback(
@@ -49,6 +54,7 @@ const WishListItemTable = ({ items }: WishListItemTableProps) => {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
+            <TableCell align="right">Status</TableCell>
             <TableCell align="right">Category</TableCell>
             <TableCell align="right">Price</TableCell>
             <TableCell align="right">Priority</TableCell>
@@ -63,12 +69,17 @@ const WishListItemTable = ({ items }: WishListItemTableProps) => {
                 sx={{
                   '&:last-child td, &:last-child th': { border: 0 },
                   cursor: 'pointer',
+                  bgcolor:
+                    item.status === 'own'
+                      ? getOwnedItemStatusColor(theme)
+                      : undefined,
                 }}
                 onClick={() => onEditorToggle!(true, item)}
               >
                 <TableCell component="th" scope="row">
                   {item.name}
                 </TableCell>
+                <TableCell align="right">{item.status ?? '--'}</TableCell>
                 <TableCell align="right">{item.category ?? '--'}</TableCell>
                 <TableCell align="right">
                   {item.price ? `$${item.price}` : '--'}

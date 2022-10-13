@@ -29,6 +29,7 @@ export interface IUserDocument {
   createdAt: Date;
   experience: {
     preferTables: boolean;
+    hideWishListOwned: boolean;
   };
   profile?: {
     avatar?: string;
@@ -50,6 +51,7 @@ export const createDefaultUser = (userId: string): IUserDocument => ({
   categories: [],
   experience: {
     preferTables: false,
+    hideWishListOwned: true,
   },
 });
 

@@ -13,13 +13,15 @@ import {
   performIdentifiableFirestoreQuery,
 } from '../lib/helpers/firestoreHelpers';
 
+import { Theme } from '@mui/material';
 import { User } from 'firebase/auth';
 import { firebaseDB } from '../config/firebase';
 import pickBy from 'lodash.pickby';
 
 export const WishListItemPriorities = ['low', 'medium', 'high'];
 export const WishListItemStatuses = ['need', 'own'];
-
+export const getOwnedItemStatusColor = (theme: Theme) =>
+  theme.palette.success.light + '60';
 export interface IWishListItem {
   id: string;
   name: string;

@@ -24,12 +24,9 @@ import { useGetWishListItemsQuery } from '../../lib/queries/wishList/wishListQue
 import { useSnackbarAlert } from '../shared/SnackbarAlert';
 import { useUserContext } from '../../lib/hoc/withUser/userContext';
 
-type WishListProviderProps = {
-  listId: string;
-} & React.PropsWithChildren;
+type WishListProviderProps = {} & React.PropsWithChildren;
 
 const defaultWishListItemsState: WishListItemsState = {
-  listId: '',
   editorOpen: false,
   editorLoading: false,
   editorInitialValue: undefined,
@@ -64,10 +61,7 @@ const filterThenSort = (
   options: WishListItemsState['listOptions'],
 ) => sortWishListItems(filterWishListItems(items, options), options);
 
-export const WishListItemProvider = ({
-  listId,
-  children,
-}: WishListProviderProps) => {
+export const WishListItemProvider = ({ children }: WishListProviderProps) => {
   const { documentUser } = useUserContext();
   const snackbarContext = useSnackbarAlert();
 
@@ -82,8 +76,16 @@ export const WishListItemProvider = ({
 
   const [contextState, setContextState] = useState({
     ...defaultWishListItemsState,
-    listId,
   });
+
+  useEffect(() => {
+    if (documentUser && !documentUser.experience.hideWishListOwned) {
+      setContextState(state => ({
+        ...state,
+        listOptions: { ...state.listOptions, statusFilter: undefined },
+      }));
+    }
+  }, [documentUser]);
 
   useEffect(() => {
     searchEngine = new Fuse(wishListItems, {
