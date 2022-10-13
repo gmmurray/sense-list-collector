@@ -15,9 +15,10 @@ export const collectionQueryKeys = {
       'latest-user-collections',
       { userId, count },
     ] as const,
+  collection: () => [...collectionQueryKeys.all, 'collection'],
   singleCollection: (collectionId?: string, userId?: string) =>
     [
-      ...collectionQueryKeys.all,
+      ...collectionQueryKeys.collection(),
       'single-collection',
       { collectionId, userId },
     ] as const,

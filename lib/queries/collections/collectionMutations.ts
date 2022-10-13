@@ -162,11 +162,9 @@ export const useUpdateCollectionFavoriteItemsMutation = () =>
     {
       onSuccess: async () => {
         await reactQueryClient.invalidateQueries(
-          collectionQueryKeys.singleCollection(),
+          collectionQueryKeys.collection(),
         );
-        await reactQueryClient.invalidateQueries(
-          itemQueryKeys.itemsInCollection(),
-        );
+        await reactQueryClient.invalidateQueries(itemQueryKeys.all);
       },
     },
   );
