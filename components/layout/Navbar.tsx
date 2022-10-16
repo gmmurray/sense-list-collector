@@ -103,7 +103,7 @@ const Navbar = () => {
     <AppBar position="static" sx={{ mb: 2 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Link href="/" passHref>
+          <Link href={user ? '/home' : '/'} passHref>
             <Typography
               component={MUILink}
               variant="h6"
@@ -156,7 +156,7 @@ const Navbar = () => {
               ))}
             </Menu>
           </Box>
-          <Link href="/" passHref>
+          <Link href={user ? '/home' : '/'} passHref>
             <Typography
               component={MUILink}
               variant="h5"
@@ -165,7 +165,6 @@ const Navbar = () => {
                 mr: 2,
                 display: { xs: 'flex', md: 'none' },
                 flexGrow: 1,
-                fontFamily: 'monospace',
                 fontWeight: 700,
                 letterSpacing: '.3rem',
                 color: 'inherit',
