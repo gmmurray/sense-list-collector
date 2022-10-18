@@ -1,8 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
+
 import { Button, Grid, Paper, Typography } from '@mui/material';
 
 import { Box } from '@mui/system';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import containersImage from '../public/containers_stock.jpg';
 import withUser from '../lib/hoc/withUser';
 
 const HomePage = () => {
@@ -13,11 +17,19 @@ const HomePage = () => {
           sx={{
             height: '100%',
             minHeight: '30vh',
+            maxHeight: '50vh',
             display: 'flex',
             alignItems: 'end',
           }}
         >
-          <Typography variant="h2">Collectionist</Typography>
+          <img
+            src="/containers_stock.jpg"
+            alt="Containers image"
+            style={{ maxHeight: '50vh', width: '100%' }}
+          />
+          <Typography variant="h2" sx={{ position: 'absolute' }}>
+            Collectionist
+          </Typography>
         </Box>
       </Grid>
       <Grid item xs={12}>
