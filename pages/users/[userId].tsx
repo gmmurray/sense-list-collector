@@ -46,7 +46,9 @@ const UserProfilePage = () => {
           <Grid item>
             <Typography variant="h2">{queryResult.profile.username}</Typography>
             <Link href={`/explore?userId=${queryResult.userId}`} passHref>
-              <MUILink underline="hover">hi</MUILink>
+              <MUILink color="secondary" underline="hover">
+                Explore
+              </MUILink>
             </Link>
           </Grid>
           <Grid item xs={12}>

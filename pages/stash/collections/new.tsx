@@ -117,7 +117,9 @@ const NewCollection = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Link href="/stash/collections" passHref>
-          <Button startIcon={<ArrowBackIcon />}>Back to collections</Button>
+          <Button startIcon={<ArrowBackIcon />} color="secondary">
+            Back to collections
+          </Button>
         </Link>
       </Grid>
       <Grid item xs={12}>
@@ -162,7 +164,7 @@ const NewCollection = () => {
             </Grid>
             <Grid item xs={12} md={2} display="flex">
               {!imageFile ? (
-                <Button variant="outlined" component="label">
+                <Button variant="outlined" component="label" color="secondary">
                   Upload file
                   <input
                     hidden
@@ -172,7 +174,11 @@ const NewCollection = () => {
                   />
                 </Button>
               ) : (
-                <Button variant="outlined" onClick={handleFileRemove}>
+                <Button
+                  variant="outlined"
+                  onClick={handleFileRemove}
+                  color="secondary"
+                >
                   Remove file
                 </Button>
               )}
@@ -243,8 +249,8 @@ const NewCollection = () => {
                     createCollectionAndLoadImageMutation.isLoading
                   }
                   variant="outlined"
-                  color="error"
-                  sx={{ ml: 2 }}
+                  color="warning"
+                  sx={{ ml: 1 }}
                 >
                   Cancel
                 </Button>

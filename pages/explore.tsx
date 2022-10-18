@@ -163,7 +163,7 @@ const ExplorePage = () => {
                     icon={searchSettings.hasItems ? <CheckIcon /> : undefined}
                     label="1 or more items"
                     onClick={handleToggleItemsFilter}
-                    color={searchSettings.hasItems ? 'primary' : 'default'}
+                    color={searchSettings.hasItems ? 'secondary' : 'default'}
                   />
                   {(profileMap.size > 0 || !!searchSettings.userId) && (
                     <ConditionalTooltip
@@ -178,7 +178,7 @@ const ExplorePage = () => {
                         icon={searchSettings.userId ? <CheckIcon /> : undefined}
                         label="Specific user"
                         onClick={handleUserFilterClick}
-                        color={searchSettings.userId ? 'primary' : 'default'}
+                        color={searchSettings.userId ? 'secondary' : 'default'}
                       />
                     </ConditionalTooltip>
                   )}

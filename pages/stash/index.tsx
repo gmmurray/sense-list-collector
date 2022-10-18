@@ -46,7 +46,7 @@ const Stash = () => {
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <ButtonGroup disableElevation>
+        <ButtonGroup disableElevation color="secondary">
           <Button
             variant={currentView === 'all' ? 'contained' : 'outlined'}
             onClick={handleViewChange('all')}

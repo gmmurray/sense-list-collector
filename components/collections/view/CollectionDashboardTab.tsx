@@ -9,8 +9,6 @@ import {
 import React, { Fragment, useState } from 'react';
 
 import CenteredLoadingIndicator from '../../shared/CenteredLoadingIndicator';
-import Link from 'next/link';
-import { Timestamp } from 'firebase/firestore';
 import ViewCollectionItemDialog from './ViewCollectionItemDialog';
 import { getDateStringFromFirestoreTimestamp } from '../../../lib/helpers/firestoreHelpers';
 import { sortByTimestamp } from '../../../lib/helpers/timestampSort';

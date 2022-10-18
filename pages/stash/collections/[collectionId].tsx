@@ -78,7 +78,9 @@ const ViewCollection = () => {
       <Grid item xs={12}>
         {authUser && (
           <Link href={'/stash/collections'} passHref>
-            <Button startIcon={<ArrowBackIcon />}>Back to collections</Button>
+            <Button startIcon={<ArrowBackIcon />} color="secondary">
+              Back to collections
+            </Button>
           </Link>
         )}
       </Grid>
@@ -87,14 +89,16 @@ const ViewCollection = () => {
           <Typography variant="h2" component="h1">
             {collection?.name ?? 'Collection'}
           </Typography>
-          <Box display="flex">
-            <Avatar alt={userProfile?.username} src={userProfile?.avatar} />
-            <Link href={`/users/${collection.userId}`} passHref>
-              <Button sx={{ ml: 1 }}>
-                {userProfile?.username ?? 'View user'}
-              </Button>
-            </Link>
-          </Box>
+          {userProfile && (
+            <Box display="flex" sx={{ mt: 1 }}>
+              <Avatar alt={userProfile?.username} src={userProfile?.avatar} />
+              <Link href={`/users/${collection.userId}`} passHref>
+                <Button sx={{ ml: 1 }} color="secondary">
+                  {userProfile?.username ?? 'View user'}
+                </Button>
+              </Link>
+            </Box>
+          )}
         </Grid>
       )}
       <Grid item xs={12}>

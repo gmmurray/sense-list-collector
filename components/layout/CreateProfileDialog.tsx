@@ -183,7 +183,12 @@ const CreateProfileDialog = () => {
             )}
             <Box sx={{ mt: 2 }}>
               {!avatarFile && (
-                <Button variant="contained" disableElevation component="label">
+                <Button
+                  variant="contained"
+                  disableElevation
+                  component="label"
+                  color="secondary"
+                >
                   Upload
                   <input
                     hidden
@@ -198,6 +203,7 @@ const CreateProfileDialog = () => {
                   variant="outlined"
                   onClick={handleFileRemove}
                   sx={{ ml: 2 }}
+                  color="secondary"
                 >
                   Clear
                 </Button>

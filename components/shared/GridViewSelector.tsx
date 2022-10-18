@@ -17,7 +17,7 @@ const GridViewSelector = ({
     <Fragment>
       <Tooltip title="Grid view">
         <IconButton
-          color={isGridView ? 'primary' : undefined}
+          color={isGridView ? 'secondary' : undefined}
           onClick={() => onGridViewChange(true)}
         >
           <GridViewIcon />
@@ -25,7 +25,7 @@ const GridViewSelector = ({
       </Tooltip>
       <Tooltip title="Table view">
         <IconButton
-          color={!isGridView ? 'primary' : undefined}
+          color={!isGridView ? 'secondary' : undefined}
           onClick={() => onGridViewChange(false)}
         >
           <ViewListIcon />

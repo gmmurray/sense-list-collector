@@ -299,7 +299,12 @@ const UserProfilePage = () => {
             )}
             <Box sx={{ mt: 2 }}>
               {!avatarState.file && (
-                <Button variant="contained" disableElevation component="label">
+                <Button
+                  variant="contained"
+                  disableElevation
+                  component="label"
+                  color="secondary"
+                >
                   Upload
                   <input
                     hidden
@@ -315,6 +320,7 @@ const UserProfilePage = () => {
                     variant="contained"
                     disableElevation
                     onClick={handleAvatarSave}
+                    color="secondary"
                   >
                     Save
                   </Button>
@@ -333,6 +339,7 @@ const UserProfilePage = () => {
                 <Button
                   startIcon={<AddPhotoAlternateIcon />}
                   onClick={handleUseAuthImage}
+                  color="secondary"
                 >
                   Use my auth image
                 </Button>

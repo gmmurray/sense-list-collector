@@ -17,7 +17,7 @@ const GalleryViewSelector = ({
     <Fragment>
       <Tooltip title="Gallery view">
         <IconButton
-          color={isGalleryView ? 'primary' : undefined}
+          color={isGalleryView ? 'secondary' : undefined}
           onClick={() => onGalleryViewChange(true)}
         >
           <CollectionsIcon />
@@ -25,7 +25,7 @@ const GalleryViewSelector = ({
       </Tooltip>
       <Tooltip title="Table view">
         <IconButton
-          color={!isGalleryView ? 'primary' : undefined}
+          color={!isGalleryView ? 'secondary' : undefined}
           onClick={() => onGalleryViewChange(false)}
         >
           <ViewListIcon />

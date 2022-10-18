@@ -99,7 +99,9 @@ const NewItem = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Link href="/stash/items" passHref>
-          <Button startIcon={<ArrowBackIcon />}>Back to items</Button>
+          <Button startIcon={<ArrowBackIcon />} color="secondary">
+            Back to items
+          </Button>
         </Link>
       </Grid>
       <Grid item xs={12}>

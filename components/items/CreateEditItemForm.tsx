@@ -152,7 +152,7 @@ const CreateEditItemForm = ({
         </Grid>
         <Grid item xs={12} md={2} display="flex">
           {!imageFile ? (
-            <Button variant="outlined" component="label">
+            <Button variant="outlined" component="label" color="secondary">
               Upload file
               <input
                 hidden
@@ -220,8 +220,8 @@ const CreateEditItemForm = ({
               <Button
                 disabled={isLoading}
                 variant="outlined"
-                color="error"
-                sx={{ ml: 2 }}
+                color="warning"
+                sx={{ ml: 1 }}
               >
                 Cancel
               </Button>
@@ -231,8 +231,8 @@ const CreateEditItemForm = ({
             <Button
               disabled={isLoading}
               variant="outlined"
-              color="error"
-              sx={{ ml: 2 }}
+              color="warning"
+              sx={{ ml: 1 }}
               onClick={handleFormReset}
             >
               Reset

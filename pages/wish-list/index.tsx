@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import { Box } from '@mui/system';
 import CenteredLoadingIndicator from '../../components/shared/CenteredLoadingIndicator';
 import { LoadingButton } from '@mui/lab';
 import { Typography } from '@mui/material';
@@ -63,12 +64,12 @@ const WishListPage = () => {
   };
 
   return (
-    <div>
+    <Box flex="1">
       <Typography variant="h2" component="h1">
         Wish list
       </Typography>
       {renderContent()}
-    </div>
+    </Box>
   );
 };
 

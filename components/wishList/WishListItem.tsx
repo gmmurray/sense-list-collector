@@ -149,16 +149,18 @@ const WishListItem = ({ item }: WishListItemProps) => {
             rel="noreferrer"
             style={{ textDecoration: 'none' }}
           >
-            <Button size="small">View link</Button>
+            <Button size="small" color="secondary">
+              View link
+            </Button>
           </a>
           <Button
             size="small"
-            color="error"
+            color="warning"
             onClick={() => itemsContext.onDelete!(item.id)}
             disabled={itemsContext.editorLoading}
             sx={{ ml: 2 }}
           >
-            remove
+            Delete
           </Button>
         </CardActions>
       </Card>

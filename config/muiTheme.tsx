@@ -5,6 +5,12 @@ export const getTheme = (mode: 'light' | 'dark') =>
   createTheme({
     palette: {
       mode,
+      secondary: {
+        main: '#d01f10',
+      },
+      primary: {
+        main: '#0041fa',
+      },
     },
   });
 

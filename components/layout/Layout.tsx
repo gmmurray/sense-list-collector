@@ -21,7 +21,13 @@ const Layout = ({ children }: LayoutProps) => {
       <Navbar />
       <Container
         maxWidth="xl"
-        sx={{ pb: 2, flex: 1, display: 'flex', alignItems: 'stretch' }}
+        sx={{
+          pb: 2,
+          flex: 1,
+          display: 'flex',
+          alignItems: 'stretch',
+          width: undefined,
+        }}
       >
         {children}
       </Container>

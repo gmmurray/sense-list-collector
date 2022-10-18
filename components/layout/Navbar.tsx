@@ -100,7 +100,7 @@ const Navbar = () => {
   }, [handleCloseUserMenu, router, user]);
 
   return (
-    <AppBar position="static" sx={{ mb: 2 }}>
+    <AppBar position="static" enableColorOnDark sx={{ mb: 2 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link href={user ? '/home' : '/'} passHref>

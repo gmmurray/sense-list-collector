@@ -272,7 +272,7 @@ const WishListItemForm = () => {
               disabled={editorLoading}
               variant="outlined"
               onClick={() => onEditorToggle!(false)}
-              color="error"
+              color="warning"
               sx={{ ml: 2 }}
             >
               Cancel

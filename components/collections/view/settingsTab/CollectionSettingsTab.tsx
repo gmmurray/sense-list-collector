@@ -211,7 +211,11 @@ const CollectionSettingsTab = () => {
               </Grid>
               <Grid item xs={12} md={2} display="flex">
                 {!imageFile ? (
-                  <Button variant="outlined" component="label">
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    color="secondary"
+                  >
                     Upload file
                     <input
                       hidden
@@ -296,8 +300,8 @@ const CollectionSettingsTab = () => {
                     deleteCollectionMutation.isLoading
                   }
                   variant="outlined"
-                  color="error"
-                  sx={{ ml: 2 }}
+                  color="warning"
+                  sx={{ ml: 1 }}
                   onClick={handleFormReset}
                 >
                   Reset
@@ -324,7 +328,7 @@ const CollectionSettingsTab = () => {
         <Divider sx={{ mb: 2 }} />
         <LoadingButton
           variant="contained"
-          color="error"
+          color="warning"
           onClick={handleDeleteCollection}
           loading={deleteCollectionMutation.isLoading}
         >

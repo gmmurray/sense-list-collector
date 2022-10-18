@@ -93,7 +93,7 @@ const WishListItemTable = ({ items }: WishListItemTableProps) => {
                     <LinkIcon />
                   </IconButton>
                   <IconButton
-                    color="error"
+                    color="warning"
                     disabled={editorLoading}
                     onClick={e => handleDeleteClick(e, item.id)}
                   >

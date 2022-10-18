@@ -217,13 +217,20 @@ const ManageCollectionItemsList = ({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={6} display="flex">
-        <Button
+        {/* <Button
           variant="outlined"
           onClick={handleIsAddModeToggle}
           startIcon={isAddMode ? <RemoveIcon /> : <AddIcon />}
         >
           {isAddMode ? 'Remove' : 'Add'}
-        </Button>
+        </Button> */}
+        <IconButton onClick={handleIsAddModeToggle}>
+          {isAddMode ? (
+            <RemoveIcon color="secondary" />
+          ) : (
+            <AddIcon color="secondary" />
+          )}
+        </IconButton>
         <TextField
           placeholder="Search"
           fullWidth
@@ -246,7 +253,7 @@ const ManageCollectionItemsList = ({
       <Grid item xs={12} md={6} display="flex">
         <Button
           variant="contained"
-          color="error"
+          color="warning"
           onClick={() => setSelectedItemIds([])}
           startIcon={<ClearIcon />}
           disabled={selectedItemIds.length === 0}

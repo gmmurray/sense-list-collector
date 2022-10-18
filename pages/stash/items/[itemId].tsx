@@ -183,7 +183,7 @@ const ViewItem = () => {
           <Divider sx={{ mb: 2 }} />
           <LoadingButton
             variant="contained"
-            color="error"
+            color="warning"
             onClick={handleDeleteItem}
             loading={deleteItemMutation.isLoading}
           >
@@ -198,7 +198,9 @@ const ViewItem = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Link href="/stash/items" passHref>
-          <Button startIcon={<ArrowBackIcon />}>Back to items</Button>
+          <Button startIcon={<ArrowBackIcon />} color="secondary">
+            Back to items
+          </Button>
         </Link>
       </Grid>
       <Grid item xs={12}>
