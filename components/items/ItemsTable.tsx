@@ -11,6 +11,7 @@ import {
 import React, { useCallback } from 'react';
 
 import { IItemWithId } from '../../entities/item';
+import { appRoutes } from '../../lib/constants/routes';
 import { useRouter } from 'next/router';
 
 const nullableFieldTemplate = (value?: string | number) => {
@@ -26,7 +27,7 @@ type ItemsTableProps = {
 const ItemsTable = ({ items }: ItemsTableProps) => {
   const router = useRouter();
   const handleRowClick = useCallback(
-    (id: string) => () => router.push(`/stash/items/${id}`),
+    (id: string) => () => router.push(appRoutes.stash.items.view.path(id)),
     [router],
   );
   return (

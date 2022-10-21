@@ -22,9 +22,11 @@ import CenteredMessage from '../../../components/shared/CenteredMessage';
 import CreateEditItemForm from '../../../components/items/CreateEditItemForm';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
+import { appRoutes } from '../../../lib/constants/routes';
 import { getItemPrimaryImageUrl } from '../../../lib/constants/images';
 import { getStringFromStringOrArray } from '../../../lib/helpers/stringHelpers';
 import { useGetUserItemQuery } from '../../../lib/queries/items/itemQueries';
+import usePageTitle from '../../../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
@@ -59,6 +61,8 @@ const ViewItem = () => {
     getStringFromStringOrArray(itemId),
     documentUser?.userId,
   );
+
+  usePageTitle(appRoutes.stash.items.view.title(item?.name));
 
   const [fileUploadPercent, setFileUploadPercent] = useState<number | null>(
     null,
@@ -125,7 +129,7 @@ const ViewItem = () => {
         itemId: item?.id,
       });
       snackbarContext.send('Item deleted', 'success');
-      router.push('/stash/items');
+      router.push(appRoutes.stash.items.path());
     } catch (error) {
       console.log(error);
       snackbarContext.send('Error deleting item', 'error');
@@ -198,7 +202,7 @@ const ViewItem = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Link href="/stash/items" passHref>
+        <Link href={appRoutes.stash.items.path()} passHref>
           <Button startIcon={<ArrowBackIcon />} color="secondary">
             Back to items
           </Button>

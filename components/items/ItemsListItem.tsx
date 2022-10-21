@@ -9,6 +9,7 @@ import {
 import { IItemWithId } from '../../entities/item';
 import Link from 'next/link';
 import React from 'react';
+import { appRoutes } from '../../lib/constants/routes';
 import { getItemPrimaryImageUrl } from '../../lib/constants/images';
 
 type ItemsListItemProps = {
@@ -19,7 +20,7 @@ const ItemsListItem = ({ item }: ItemsListItemProps) => {
   return (
     <Fade in timeout={500}>
       <Card sx={{ height: '100%' }} elevation={4}>
-        <Link href={`/stash/items/${item.id}`} passHref>
+        <Link href={appRoutes.stash.items.view.path(item.id)} passHref>
           <CardActionArea sx={{ display: 'flex', justifyContent: 'start' }}>
             <CardMedia
               component="img"

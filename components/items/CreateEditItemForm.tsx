@@ -11,6 +11,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FormikContextType } from 'formik';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
+import { appRoutes } from '../../lib/constants/routes';
 import { useUpdateUserCategoryMutation } from '../../lib/queries/users/userMutations';
 import { useUserContext } from '../../lib/hoc/withUser/userContext';
 
@@ -216,7 +217,7 @@ const CreateEditItemForm = ({
         </Grid>
         <Grid item>
           {!isEdit && (
-            <Link href="/stash/items" passHref>
+            <Link href={appRoutes.stash.items.path()} passHref>
               <Button
                 disabled={isLoading}
                 variant="outlined"

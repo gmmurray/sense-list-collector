@@ -4,18 +4,21 @@ import firebaseApp, { firebaseAuth } from '../config/firebase';
 import { Box } from '@mui/system';
 import Link from 'next/link';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { appRoutes } from '../lib/constants/routes';
 import { firebaseUiConfig } from '../config/firebaseUI';
 import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
+import usePageTitle from '../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 
 const SignInPage = () => {
+  usePageTitle(appRoutes.auth.title);
   const [user] = useAuthState(firebaseAuth);
   const router = useRouter();
   useEffect(() => {
     if (user) {
-      router.push('/home');
+      router.push(appRoutes.home.path);
     }
   }, [router, user]);
   return (
@@ -52,7 +55,7 @@ const SignInPage = () => {
           uiConfig={firebaseUiConfig}
           firebaseAuth={getAuth(firebaseApp)}
         />
-        <Link href="/" passHref>
+        <Link href={appRoutes.landing.path} passHref>
           <Button color="inherit">Back</Button>
         </Link>
       </Box>

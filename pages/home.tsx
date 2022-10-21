@@ -5,12 +5,13 @@ import { Button, Container, Grid, Paper, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Link from 'next/link';
 import React from 'react';
+import { appRoutes } from '../lib/constants/routes';
+import usePageTitle from '../lib/hooks/usePageTitle';
 import withLayout from '../lib/hoc/layout/withLayout';
 import withUser from '../lib/hoc/withUser';
 
-const blankSpace = (num: number) => [...Array(num)].map(() => <>&nbsp;</>);
-
 const HomePage = () => {
+  usePageTitle(appRoutes.home.title);
   return (
     <Container
       sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}
@@ -57,7 +58,7 @@ const HomePage = () => {
                     p: 2,
                   }}
                 >
-                  <Link href="/explore" passHref>
+                  <Link href={appRoutes.explore.path} passHref>
                     <Button sx={{ px: 0, textTransform: 'none' }}>
                       <Typography variant="h4">Explore</Typography>
                     </Button>
@@ -75,7 +76,7 @@ const HomePage = () => {
                     p: 2,
                   }}
                 >
-                  <Link href="/stash" passHref>
+                  <Link href={appRoutes.stash.path} passHref>
                     <Button sx={{ px: 0, textTransform: 'none' }}>
                       <Typography variant="h4">Stash</Typography>
                     </Button>
@@ -92,7 +93,7 @@ const HomePage = () => {
                     p: 2,
                   }}
                 >
-                  <Link href="/wish-list" passHref>
+                  <Link href={appRoutes.wishList.path} passHref>
                     <Button sx={{ px: 0, textTransform: 'none' }}>
                       <Typography variant="h4">Wish list</Typography>
                     </Button>

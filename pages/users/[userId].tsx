@@ -15,7 +15,9 @@ import CenteredMessage from '../../components/shared/CenteredMessage';
 import Link from 'next/link';
 import React from 'react';
 import { USER_PAGE_COLLECTION_LIMIT } from '../../entities/user';
+import { appRoutes } from '../../lib/constants/routes';
 import { useGetUserProfilePageQuery } from '../../lib/queries/users/userQueries';
+import usePageTitle from '../../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 import withLayout from '../../lib/hoc/layout/withLayout';
 
@@ -24,6 +26,8 @@ const UserProfilePage = () => {
   const { data: queryResult, isLoading } = useGetUserProfilePageQuery(
     getStringFromStringOrArray(router.query.userId),
   );
+
+  usePageTitle(appRoutes.users.view.title(queryResult?.profile.username));
 
   if (isLoading) return <CenteredLoadingIndicator />;
 
@@ -46,7 +50,10 @@ const UserProfilePage = () => {
           </Grid>
           <Grid item>
             <Typography variant="h2">{queryResult.profile.username}</Typography>
-            <Link href={`/explore?userId=${queryResult.userId}`} passHref>
+            <Link
+              href={appRoutes.explore.query.userId(queryResult.userId)}
+              passHref
+            >
               <MUILink color="secondary" underline="hover">
                 Explore
               </MUILink>
@@ -66,8 +73,22 @@ const UserProfilePage = () => {
           </Grid>
         )}
         <Grid item xs={6}>
-          <Link href="/">
-            <Typography variant="overline">Collections</Typography>
+          <Link href={appRoutes.stash.collections.path()} passHref>
+            <MUILink color="inherit" underline="hover">
+              <Typography
+                variant="overline"
+                sx={
+                  {
+                    // ':hover': {
+                    //   textDecoration: 'underline',
+                    //   cursor: 'pointer',
+                    // },
+                  }
+                }
+              >
+                Collections
+              </Typography>
+            </MUILink>
           </Link>
           <Typography variant="body1">{collectionCountString}</Typography>
         </Grid>

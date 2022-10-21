@@ -3,6 +3,7 @@ import { PropsWithChildren, useEffect } from 'react';
 import { UserContext, UserContextType } from './userContext';
 
 import { AuthPageSettings } from '../../types/authTypes';
+import { appRoutes } from '../../constants/routes';
 import firebaseApp from '../../../config/firebase';
 import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -25,7 +26,7 @@ const UserContextProvider = ({
 
   useEffect(() => {
     if (!userLoading && !user && !settings?.isPublic) {
-      router.push('/auth');
+      router.push(appRoutes.auth.path);
     }
   }, [userLoading, user, router, settings?.isPublic]);
 

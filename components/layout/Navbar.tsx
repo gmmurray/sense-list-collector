@@ -21,26 +21,35 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { appRoutes } from '../../lib/constants/routes';
 import { firebaseAuth } from '../../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useGetUserProfileQuery } from '../../lib/queries/users/userQueries';
 import { useRouter } from 'next/router';
 
-const links: { name: string; to: string; auth: boolean }[] = [
+const links: {
+  name: string;
+  to: string;
+  auth: boolean;
+  active: (route: string) => boolean;
+}[] = [
   {
     name: 'Explore',
-    to: '/explore',
+    to: appRoutes.explore.path,
     auth: false,
+    active: route => route.includes(appRoutes.explore.path),
   },
   {
     name: 'Stash',
-    to: '/stash',
+    to: appRoutes.stash.path,
     auth: true,
+    active: route => route.includes(appRoutes.stash.path),
   },
   {
     name: 'Wish List',
-    to: '/wish-list',
+    to: appRoutes.wishList.path,
     auth: true,
+    active: route => route.includes(appRoutes.wishList.path),
   },
 ];
 
@@ -84,18 +93,18 @@ const Navbar = () => {
   }, []);
 
   const handleSettingsClick = useCallback(() => {
-    router.push('/me');
+    router.push(appRoutes.me.path);
     handleCloseUserMenu();
   }, [handleCloseUserMenu, router]);
 
   const handleLogoutClick = useCallback(() => {
     firebaseAuth.signOut();
-    router.push('/auth');
+    router.push(appRoutes.auth.path);
   }, [router]);
 
   const handleProfileClick = useCallback(() => {
     if (!user) return;
-    router.push(`/users/${user?.uid}`);
+    router.push(appRoutes.users.view.path(user.uid));
     handleCloseUserMenu();
   }, [handleCloseUserMenu, router, user]);
 
@@ -103,7 +112,10 @@ const Navbar = () => {
     <AppBar position="static" enableColorOnDark sx={{ mb: 2 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Link href={user ? '/home' : '/'} passHref>
+          <Link
+            href={user ? appRoutes.home.path : appRoutes.landing.path}
+            passHref
+          >
             <Typography
               component={MUILink}
               variant="h6"
@@ -177,7 +189,13 @@ const Navbar = () => {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {availableLinks.map((link, key) => (
               <Link key={key} href={link.to} passHref>
-                <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                <Button
+                  sx={{
+                    my: 2,
+                    display: 'block',
+                    color: link.active(router.pathname) ? 'white' : 'grey.500',
+                  }}
+                >
                   {link.name}
                 </Button>
               </Link>
@@ -231,7 +249,7 @@ const Navbar = () => {
             </Box>
           )}
           {!userLoading && !user && (
-            <Link href="/auth" passHref>
+            <Link href={appRoutes.auth.path} passHref>
               <Button sx={{ color: 'inherit' }}>Login</Button>
             </Link>
           )}

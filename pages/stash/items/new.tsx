@@ -13,7 +13,9 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CreateEditItemForm from '../../../components/items/CreateEditItemForm';
 import Link from 'next/link';
+import { appRoutes } from '../../../lib/constants/routes';
 import { useFormik } from 'formik';
+import usePageTitle from '../../../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
@@ -31,6 +33,7 @@ const validationSchema = yup.object({
 });
 
 const NewItem = () => {
+  usePageTitle(appRoutes.stash.items.new.title);
   const router = useRouter();
   const { documentUser } = useUserContext();
   const snackbarContext = useSnackbarAlert();
@@ -61,7 +64,7 @@ const NewItem = () => {
             });
 
         snackbarContext.send('Item created', 'success');
-        router.push(`/stash/items/${createdId}`);
+        router.push(appRoutes.stash.items.view.path(createdId));
       } catch (error) {
         console.log(error);
         snackbarContext.send('Error creating item', 'error');
@@ -99,7 +102,7 @@ const NewItem = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Link href="/stash/items" passHref>
+        <Link href={appRoutes.stash.items.path()} passHref>
           <Button startIcon={<ArrowBackIcon />} color="secondary">
             Back to items
           </Button>

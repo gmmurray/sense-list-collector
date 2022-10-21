@@ -14,6 +14,7 @@ import React, { useCallback } from 'react';
 import { ICollectionWithId } from '../../entities/collection';
 import PublicIcon from '@mui/icons-material/Public';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
+import { appRoutes } from '../../lib/constants/routes';
 import { getDateStringFromFirestoreTimestamp } from '../../lib/helpers/firestoreHelpers';
 import { useRouter } from 'next/router';
 
@@ -24,7 +25,8 @@ type CollectionsTableProps = {
 const CollectionsTable = ({ collections }: CollectionsTableProps) => {
   const router = useRouter();
   const handleRowClick = useCallback(
-    (id: string) => () => router.push(`/stash/collections/${id}`),
+    (id: string) => () =>
+      router.push(appRoutes.stash.collections.view.path(id)),
     [router],
   );
 

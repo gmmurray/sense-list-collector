@@ -7,6 +7,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { FullscreenDialog } from '../shared/FullscreenDialog';
 import { LoadingButton } from '@mui/lab';
+import { appRoutes } from '../../lib/constants/routes';
 import { useConvertWishListItemMutation } from '../../lib/queries/wishList/wishListMutations';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../shared/SnackbarAlert';
@@ -51,7 +52,7 @@ const ConvertItemDialog = () => {
         includeDeletion: conversionItem.includeDeletion,
       });
       snackbar.send('Added to stash', 'success');
-      router.push(`/stash/items/${itemId}`);
+      router.push(appRoutes.stash.items.view.path(itemId));
     } catch (error) {
       console.log(error);
       snackbar.send('Error converting item', 'error');
@@ -91,6 +92,7 @@ const ConvertItemDialog = () => {
               includeDeletion ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
             }
             onClick={handleToggleDeletion}
+            color="secondary"
           >
             Remove from wish list
           </Button>

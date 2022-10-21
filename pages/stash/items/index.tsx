@@ -6,12 +6,15 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GridViewSelector from '../../../components/shared/GridViewSelector';
 import ItemsList from '../../../components/items/ItemsList';
 import Link from 'next/link';
+import { appRoutes } from '../../../lib/constants/routes';
 import { useGetLatestUserItemsQuery } from '../../../lib/queries/items/itemQueries';
+import usePageTitle from '../../../lib/hooks/usePageTitle';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
 import withLayout from '../../../lib/hoc/layout/withLayout';
 import withUser from '../../../lib/hoc/withUser';
 
 const ViewItems = () => {
+  usePageTitle(appRoutes.stash.items.title);
   const { documentUser } = useUserContext();
   const { data: items, isLoading: itemsLoading } = useGetLatestUserItemsQuery(
     documentUser?.userId,
@@ -24,7 +27,7 @@ const ViewItems = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Link href="/stash" passHref>
+        <Link href={appRoutes.stash.path} passHref>
           <Button startIcon={<ArrowBackIcon />} color="secondary">
             Back to stash
           </Button>
@@ -37,7 +40,7 @@ const ViewItems = () => {
       </Grid>
       <Grid item xs={12} display="flex">
         <Box>
-          <Link href="/stash/items/new" passHref>
+          <Link href={appRoutes.stash.items.new.path()} passHref>
             <Button startIcon={<AddIcon />}>New</Button>
           </Link>
         </Box>

@@ -11,13 +11,16 @@ import React, { useCallback, useState } from 'react';
 import CollectionsList from '../../components/collections/CollectionsList';
 import ItemsList from '../../components/items/ItemsList';
 import Link from 'next/link';
+import { appRoutes } from '../../lib/constants/routes';
 import { useGetLatestUserCollectionsQuery } from '../../lib/queries/collections/collectionQueries';
 import { useGetLatestUserItemsQuery } from '../../lib/queries/items/itemQueries';
+import usePageTitle from '../../lib/hooks/usePageTitle';
 import { useUserContext } from '../../lib/hoc/withUser/userContext';
 import withLayout from '../../lib/hoc/layout/withLayout';
 import withUser from '../../lib/hoc/withUser';
 
 const Stash = () => {
+  usePageTitle(appRoutes.stash.title);
   const { authUser } = useUserContext();
   const [currentView, setCurrentView] = useState<
     'all' | 'collections' | 'items'
@@ -76,7 +79,7 @@ const Stash = () => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Link href="/stash/collections" passHref>
+            <Link href={appRoutes.stash.collections.path()} passHref>
               <MUILink underline="hover">View all</MUILink>
             </Link>
           </Grid>
@@ -101,7 +104,7 @@ const Stash = () => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Link href="/stash/items" passHref>
+            <Link href={appRoutes.stash.items.path()} passHref>
               <MUILink underline="hover">View all</MUILink>
             </Link>
           </Grid>

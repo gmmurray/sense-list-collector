@@ -37,15 +37,18 @@ import ConditionalTooltip from '../components/shared/ConditionalTooltip';
 import { ICollectionSearchOptions } from '../lib/types/collectionSearchTypes';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
+import { appRoutes } from '../lib/constants/routes';
 import { getCollectionCoverImageUrl } from '../lib/constants/images';
 import { getStringFromStringOrArray } from '../lib/helpers/stringHelpers';
 import { reactQueryClient } from '../config/reactQuery';
 import { uniqueElements } from '../lib/helpers/arrayHelpers';
+import usePageTitle from '../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 import withLayout from '../lib/hoc/layout/withLayout';
 import withUser from '../lib/hoc/withUser';
 
 const ExplorePage = () => {
+  usePageTitle(appRoutes.explore.title);
   const router = useRouter();
   const [searchSettings, setSearchSettings] =
     useState<ICollectionSearchOptions>({});
@@ -194,7 +197,10 @@ const ExplorePage = () => {
                           alignItems="flex-start"
                           secondaryAction={
                             c.profile ? (
-                              <Link href={`/users/${c.userId}`} passHref>
+                              <Link
+                                href={appRoutes.users.view.path(c.userId)}
+                                passHref
+                              >
                                 <Tooltip title={c.profile?.username}>
                                   <IconButton>
                                     <Avatar src={c.profile?.avatar} />
@@ -205,7 +211,10 @@ const ExplorePage = () => {
                           }
                           disablePadding
                         >
-                          <Link href={`/stash/collections/${c.id}`} passHref>
+                          <Link
+                            href={appRoutes.stash.collections.view.path(c.id)}
+                            passHref
+                          >
                             <ListItemButton>
                               <ListItemAvatar>
                                 <Avatar

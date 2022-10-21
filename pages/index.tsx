@@ -2,17 +2,20 @@ import { Box, Button, Typography } from '@mui/material';
 
 import Link from 'next/link';
 import type { NextPage } from 'next';
+import { appRoutes } from '../lib/constants/routes';
 import { firebaseAuth } from '../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
+import usePageTitle from '../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 
 const LandingPage: NextPage = () => {
+  usePageTitle(appRoutes.landing.title);
   const [user] = useAuthState(firebaseAuth);
   const router = useRouter();
   useEffect(() => {
     if (user) {
-      router.push('/home');
+      router.push(appRoutes.home.path);
     }
   }, [router, user]);
 
@@ -36,10 +39,10 @@ const LandingPage: NextPage = () => {
         <Typography variant="h2">Collect.</Typography>
       </Box>
       <Box>
-        <Link href="/explore" passHref>
+        <Link href={appRoutes.explore.path} passHref>
           <Button color="inherit">Explore</Button>
         </Link>
-        <Link href="/auth" passHref>
+        <Link href={appRoutes.auth.path} passHref>
           <Button color="inherit">Login/Register</Button>
         </Link>
       </Box>

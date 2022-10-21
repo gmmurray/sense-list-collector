@@ -20,7 +20,9 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
+import { appRoutes } from '../../../lib/constants/routes';
 import { useFormik } from 'formik';
+import usePageTitle from '../../../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
@@ -39,6 +41,7 @@ const validationSchema = yup.object({
 });
 
 const NewCollection = () => {
+  usePageTitle(appRoutes.stash.collections.new.title);
   const router = useRouter();
   const { documentUser } = useUserContext();
   const snackbarContext = useSnackbarAlert();
@@ -70,7 +73,9 @@ const NewCollection = () => {
             });
 
         snackbarContext.send('Collection created', 'success');
-        router.push(`/stash/collections/${createdId}?tab=3`);
+        router.push(
+          `${appRoutes.stash.collections.view.path(createdId)}?tab=3`,
+        );
       } catch (error) {
         console.log(error);
         snackbarContext.send('Error creating collection', 'error');
@@ -117,7 +122,7 @@ const NewCollection = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Link href="/stash/collections" passHref>
+        <Link href={appRoutes.stash.collections.path()} passHref>
           <Button startIcon={<ArrowBackIcon />} color="secondary">
             Back to collections
           </Button>
@@ -243,7 +248,7 @@ const NewCollection = () => {
               </LoadingButton>
             </Grid>
             <Grid item>
-              <Link href="/stash/collections" passHref>
+              <Link href={appRoutes.stash.collections.path()} passHref>
                 <Button
                   disabled={
                     createCollectionMutation.isLoading ||

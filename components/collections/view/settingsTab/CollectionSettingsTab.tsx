@@ -24,6 +24,7 @@ import {
 
 import { LoadingButton } from '@mui/lab';
 import ManageCollectionItemsList from './ManageCollectionItemsList';
+import { appRoutes } from '../../../../lib/constants/routes';
 import { useCollectionTabContext } from '../CollectionTabContext';
 import { useFormik } from 'formik';
 import { useGetLatestUserItemsQuery } from '../../../../lib/queries/items/itemQueries';
@@ -154,7 +155,7 @@ const CollectionSettingsTab = () => {
         collectionId: collection?.id,
       });
       snackbarContext.send('Collection deleted', 'success');
-      router.push('/stash/collections');
+      router.push(appRoutes.stash.collections.path());
     } catch (error) {
       console.log(error);
       snackbarContext.send('Error deleting collection', 'error');

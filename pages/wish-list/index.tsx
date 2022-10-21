@@ -6,14 +6,17 @@ import { LoadingButton } from '@mui/lab';
 import { Typography } from '@mui/material';
 import { WishListItemProvider } from '../../components/wishList/WishListItemsContext';
 import WishListItems from '../../components/wishList/WishListItems';
+import { appRoutes } from '../../lib/constants/routes';
 import { useCreateWishListMutation } from '../../lib/queries/wishList/wishListMutations';
 import { useGetWishListQuery } from '../../lib/queries/wishList/wishListQueries';
+import usePageTitle from '../../lib/hooks/usePageTitle';
 import { useSnackbarAlert } from '../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../lib/hoc/withUser/userContext';
 import withLayout from '../../lib/hoc/layout/withLayout';
 import withUser from '../../lib/hoc/withUser';
 
 const WishListPage = () => {
+  usePageTitle(appRoutes.wishList.title);
   const { documentUser } = useUserContext();
   const snackbarContext = useSnackbarAlert();
 

@@ -9,11 +9,13 @@ import CollectionTabProvider from '../../../components/collections/view/Collecti
 import Link from 'next/link';
 import React from 'react';
 import ViewCollectionTabs from '../../../components/collections/view/ViewCollectionTabs';
+import { appRoutes } from '../../../lib/constants/routes';
 import { getCollectionCoverImageUrl } from '../../../lib/constants/images';
 import { getStringFromStringOrArray } from '../../../lib/helpers/stringHelpers';
 import { useGetCollectionQuery } from '../../../lib/queries/collections/collectionQueries';
 import { useGetItemsInCollectionQuery } from '../../../lib/queries/items/itemQueries';
 import { useGetUserProfileQuery } from '../../../lib/queries/users/userQueries';
+import usePageTitle from '../../../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
 import withLayout from '../../../lib/hoc/layout/withLayout';
@@ -31,6 +33,8 @@ const ViewCollection = () => {
       getStringFromStringOrArray(collectionId),
       authUser?.uid,
     );
+
+  usePageTitle(appRoutes.stash.collections.view.title(collection?.name));
 
   const { data: collectionItems, isLoading: collectionItemsLoading } =
     useGetItemsInCollectionQuery(collection);
@@ -78,7 +82,7 @@ const ViewCollection = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         {authUser && (
-          <Link href={'/stash/collections'} passHref>
+          <Link href={appRoutes.stash.collections.path()} passHref>
             <Button startIcon={<ArrowBackIcon />} color="secondary">
               Back to collections
             </Button>
@@ -93,7 +97,10 @@ const ViewCollection = () => {
           {userProfile && (
             <Box display="flex" sx={{ mt: 1 }}>
               <Avatar alt={userProfile?.username} src={userProfile?.avatar} />
-              <Link href={`/users/${collection.userId}`} passHref>
+              <Link
+                href={appRoutes.users.view.path(collection.userId)}
+                passHref
+              >
                 <Button sx={{ ml: 1 }} color="secondary">
                   {userProfile?.username ?? 'View user'}
                 </Button>
