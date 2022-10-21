@@ -8,6 +8,7 @@ import ItemsList from '../../../components/items/ItemsList';
 import Link from 'next/link';
 import { useGetLatestUserItemsQuery } from '../../../lib/queries/items/itemQueries';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withLayout from '../../../lib/hoc/layout/withLayout';
 import withUser from '../../../lib/hoc/withUser';
 
 const ViewItems = () => {
@@ -58,4 +59,4 @@ const ViewItems = () => {
   );
 };
 
-export default withUser(ViewItems);
+export default withLayout(withUser(ViewItems));

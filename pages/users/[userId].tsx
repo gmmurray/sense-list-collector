@@ -17,6 +17,7 @@ import React from 'react';
 import { USER_PAGE_COLLECTION_LIMIT } from '../../entities/user';
 import { useGetUserProfilePageQuery } from '../../lib/queries/users/userQueries';
 import { useRouter } from 'next/router';
+import withLayout from '../../lib/hoc/layout/withLayout';
 
 const UserProfilePage = () => {
   const router = useRouter();
@@ -79,4 +80,4 @@ const UserProfilePage = () => {
   );
 };
 
-export default UserProfilePage;
+export default withLayout(UserProfilePage);

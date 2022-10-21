@@ -16,6 +16,7 @@ import { useGetItemsInCollectionQuery } from '../../../lib/queries/items/itemQue
 import { useGetUserProfileQuery } from '../../../lib/queries/users/userQueries';
 import { useRouter } from 'next/router';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withLayout from '../../../lib/hoc/layout/withLayout';
 import withUser from '../../../lib/hoc/withUser';
 
 const ViewCollection = () => {
@@ -108,4 +109,4 @@ const ViewCollection = () => {
   );
 };
 
-export default withUser(ViewCollection, { isPublic: true });
+export default withLayout(withUser(ViewCollection, { isPublic: true }));

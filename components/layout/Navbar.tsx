@@ -120,7 +120,7 @@ const Navbar = () => {
                 textDecoration: 'none',
               }}
             >
-              Collector
+              Collectionist
             </Typography>
           </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -171,7 +171,7 @@ const Navbar = () => {
                 textDecoration: 'none',
               }}
             >
-              Collector
+              Collectionist
             </Typography>
           </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>

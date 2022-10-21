@@ -42,6 +42,7 @@ import { getStringFromStringOrArray } from '../lib/helpers/stringHelpers';
 import { reactQueryClient } from '../config/reactQuery';
 import { uniqueElements } from '../lib/helpers/arrayHelpers';
 import { useRouter } from 'next/router';
+import withLayout from '../lib/hoc/layout/withLayout';
 import withUser from '../lib/hoc/withUser';
 
 const ExplorePage = () => {
@@ -276,6 +277,8 @@ const ExplorePage = () => {
   );
 };
 
-export default withUser(ExplorePage, {
-  isPublic: true,
-});
+export default withLayout(
+  withUser(ExplorePage, {
+    isPublic: true,
+  }),
+);

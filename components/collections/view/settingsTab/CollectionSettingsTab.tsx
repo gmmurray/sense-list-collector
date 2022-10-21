@@ -175,140 +175,144 @@ const CollectionSettingsTab = () => {
         <Typography variant="h5">Details</Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container>
-          <form onSubmit={formik.handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <FormikTextField
-                  name="name"
-                  label="Name"
-                  formik={formik}
-                  inputProps={{ variant: 'standard', fullWidth: true }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormikTextField
-                  name="description"
-                  label="Description"
-                  formik={formik}
-                  inputProps={{
-                    variant: 'standard',
-                    fullWidth: true,
-                    multiline: true,
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={10}>
-                <FormikTextField
-                  name="coverImageUrl"
-                  label="Cover Image URL"
-                  formik={formik}
-                  inputProps={{
-                    variant: 'standard',
-                    fullWidth: true,
-                    disabled: !!imageFile,
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={2} display="flex">
-                {!imageFile ? (
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    color="secondary"
-                  >
-                    Upload file
-                    <input
-                      hidden
-                      accept="image/*"
-                      type="file"
-                      onChange={handleFileChange}
-                    />
-                  </Button>
-                ) : (
-                  <Button variant="outlined" onClick={handleFileRemove}>
-                    Remove file
-                  </Button>
-                )}
-              </Grid>
-              {formik.values.coverImageUrl &&
-                !imageFile &&
-                formik.values.coverImageUrl !==
-                  formik.initialValues.coverImageUrl && (
+          <Grid item xs={12}>
+            <form onSubmit={formik.handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormikTextField
+                    name="name"
+                    label="Name"
+                    formik={formik}
+                    inputProps={{ variant: 'standard', fullWidth: true }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormikTextField
+                    name="description"
+                    label="Description"
+                    formik={formik}
+                    inputProps={{
+                      variant: 'standard',
+                      fullWidth: true,
+                      multiline: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={10}>
+                  <FormikTextField
+                    name="coverImageUrl"
+                    label="Cover Image URL"
+                    formik={formik}
+                    inputProps={{
+                      variant: 'standard',
+                      fullWidth: true,
+                      disabled: !!imageFile,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={2} display="flex">
+                  {!imageFile ? (
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      color="secondary"
+                    >
+                      Upload file
+                      <input
+                        hidden
+                        accept="image/*"
+                        type="file"
+                        onChange={handleFileChange}
+                      />
+                    </Button>
+                  ) : (
+                    <Button variant="outlined" onClick={handleFileRemove}>
+                      Remove file
+                    </Button>
+                  )}
+                </Grid>
+                {formik.values.coverImageUrl &&
+                  !imageFile &&
+                  formik.values.coverImageUrl !==
+                    formik.initialValues.coverImageUrl && (
+                    <Grid item xs={12}>
+                      <Typography variant="caption">Preview</Typography>
+                      <img
+                        src={formik.values.coverImageUrl}
+                        style={{
+                          height: '200px',
+                          width: '100%',
+                          objectFit: 'contain',
+                        }}
+                        alt="Image preview"
+                      />
+                    </Grid>
+                  )}
+                {!!imageFile && (
                   <Grid item xs={12}>
-                    <Typography variant="caption">Preview</Typography>
+                    <Typography variant="caption">Image upload</Typography>
                     <img
-                      src={formik.values.coverImageUrl}
+                      src={URL.createObjectURL(imageFile)}
                       style={{
                         height: '200px',
                         width: '100%',
                         objectFit: 'contain',
                       }}
-                      alt="Image preview"
+                      alt="Image upload"
                     />
                   </Grid>
                 )}
-              {!!imageFile && (
+                {!!imageFile && imageUploadPercent !== null && (
+                  <Grid item xs={12}>
+                    <Typography variant="overline">
+                      Uploading image...
+                    </Typography>
+                    <LinearProgress
+                      value={imageUploadPercent}
+                      variant="determinate"
+                    />
+                  </Grid>
+                )}
                 <Grid item xs={12}>
-                  <Typography variant="caption">Image upload</Typography>
-                  <img
-                    src={URL.createObjectURL(imageFile)}
-                    style={{
-                      height: '200px',
-                      width: '100%',
-                      objectFit: 'contain',
-                    }}
-                    alt="Image upload"
+                  <FormikCheckbox
+                    name="isPublic"
+                    label="Public"
+                    formik={formik}
+                    inputProps={{}}
                   />
                 </Grid>
-              )}
-              {!!imageFile && imageUploadPercent !== null && (
-                <Grid item xs={12}>
-                  <Typography variant="overline">Uploading image...</Typography>
-                  <LinearProgress
-                    value={imageUploadPercent}
-                    variant="determinate"
-                  />
+                <Grid item>
+                  <LoadingButton
+                    type="submit"
+                    loading={
+                      updateCollectionMutation.isLoading ||
+                      updateCollectionWithImageMutation.isLoading
+                    }
+                    variant="contained"
+                    disableElevation
+                  >
+                    Save
+                  </LoadingButton>
                 </Grid>
-              )}
-              <Grid item xs={12}>
-                <FormikCheckbox
-                  name="isPublic"
-                  label="Public"
-                  formik={formik}
-                  inputProps={{}}
-                />
+                <Grid item>
+                  <Button
+                    disabled={
+                      updateCollectionMutation.isLoading ||
+                      updateCollectionWithImageMutation.isLoading ||
+                      updateCollectionItemsMutation.isLoading ||
+                      deleteCollectionMutation.isLoading
+                    }
+                    variant="outlined"
+                    color="warning"
+                    sx={{ ml: 1 }}
+                    onClick={handleFormReset}
+                  >
+                    Reset
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item>
-                <LoadingButton
-                  type="submit"
-                  loading={
-                    updateCollectionMutation.isLoading ||
-                    updateCollectionWithImageMutation.isLoading
-                  }
-                  variant="contained"
-                  disableElevation
-                >
-                  Save
-                </LoadingButton>
-              </Grid>
-              <Grid item>
-                <Button
-                  disabled={
-                    updateCollectionMutation.isLoading ||
-                    updateCollectionWithImageMutation.isLoading ||
-                    updateCollectionItemsMutation.isLoading ||
-                    deleteCollectionMutation.isLoading
-                  }
-                  variant="outlined"
-                  color="warning"
-                  sx={{ ml: 1 }}
-                  onClick={handleFormReset}
-                >
-                  Reset
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
+            </form>
+          </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>

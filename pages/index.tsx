@@ -1,10 +1,11 @@
+import { Box, Button, Typography } from '@mui/material';
+
+import Link from 'next/link';
 import type { NextPage } from 'next';
 import { firebaseAuth } from '../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Button, Typography } from '@mui/material';
-import Link from 'next/link';
 
 const LandingPage: NextPage = () => {
   const [user] = useAuthState(firebaseAuth);
@@ -24,6 +25,8 @@ const LandingPage: NextPage = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         pl: '20vw',
+        background:
+          'linear-gradient(0deg, rgba(0,65,250,1) 0%, rgba(208,31,16,1) 100%)',
       }}
     >
       <Box>
@@ -34,10 +37,10 @@ const LandingPage: NextPage = () => {
       </Box>
       <Box>
         <Link href="/explore" passHref>
-          <Button>Explore</Button>
+          <Button color="inherit">Explore</Button>
         </Link>
         <Link href="/auth" passHref>
-          <Button>Login/Register</Button>
+          <Button color="inherit">Login/Register</Button>
         </Link>
       </Box>
     </Box>

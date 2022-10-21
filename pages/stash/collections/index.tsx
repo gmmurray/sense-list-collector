@@ -9,6 +9,7 @@ import GridViewSelector from '../../../components/shared/GridViewSelector';
 import Link from 'next/link';
 import { useGetLatestUserCollectionsQuery } from '../../../lib/queries/collections/collectionQueries';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withLayout from '../../../lib/hoc/layout/withLayout';
 import withUser from '../../../lib/hoc/withUser';
 
 const ViewCollections = () => {
@@ -57,4 +58,4 @@ const ViewCollections = () => {
   );
 };
 
-export default withUser(ViewCollections);
+export default withLayout(withUser(ViewCollections));

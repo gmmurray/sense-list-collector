@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { useGetLatestUserCollectionsQuery } from '../../lib/queries/collections/collectionQueries';
 import { useGetLatestUserItemsQuery } from '../../lib/queries/items/itemQueries';
 import { useUserContext } from '../../lib/hoc/withUser/userContext';
+import withLayout from '../../lib/hoc/layout/withLayout';
 import withUser from '../../lib/hoc/withUser';
 
 const Stash = () => {
@@ -113,4 +114,4 @@ const Stash = () => {
   );
 };
 
-export default withUser(Stash);
+export default withLayout(withUser(Stash));

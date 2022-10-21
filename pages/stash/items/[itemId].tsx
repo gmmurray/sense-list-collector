@@ -28,6 +28,7 @@ import { useGetUserItemQuery } from '../../../lib/queries/items/itemQueries';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withLayout from '../../../lib/hoc/layout/withLayout';
 import withUser from '../../../lib/hoc/withUser';
 
 const validationSchema = yup.object({
@@ -210,4 +211,4 @@ const ViewItem = () => {
   );
 };
 
-export default withUser(ViewItem);
+export default withLayout(withUser(ViewItem));

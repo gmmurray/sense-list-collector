@@ -17,6 +17,7 @@ import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbarAlert } from '../../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import withLayout from '../../../lib/hoc/layout/withLayout';
 import withUser from '../../../lib/hoc/withUser';
 
 const validationSchema = yup.object({
@@ -123,4 +124,4 @@ const NewItem = () => {
   );
 };
 
-export default withUser(NewItem);
+export default withLayout(withUser(NewItem));

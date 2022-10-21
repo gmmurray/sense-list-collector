@@ -2,6 +2,7 @@ import React from 'react';
 import ResponsiveTabPage from '../components/shared/ResponsiveTabPage';
 import UserPreferencesPage from '../components/me/userPreferencesPage/UserPreferencesPage';
 import UserProfilePage from '../components/me/userProfilePage/UserProfilePage';
+import withLayout from '../lib/hoc/layout/withLayout';
 import withUser from '../lib/hoc/withUser';
 
 const pages = [
@@ -17,4 +18,4 @@ const UserSettingsPage = () => {
   return <ResponsiveTabPage pages={pages} />;
 };
 
-export default withUser(UserSettingsPage);
+export default withLayout(withUser(UserSettingsPage));

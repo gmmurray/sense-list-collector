@@ -10,6 +10,7 @@ import { useCreateWishListMutation } from '../../lib/queries/wishList/wishListMu
 import { useGetWishListQuery } from '../../lib/queries/wishList/wishListQueries';
 import { useSnackbarAlert } from '../../components/shared/SnackbarAlert';
 import { useUserContext } from '../../lib/hoc/withUser/userContext';
+import withLayout from '../../lib/hoc/layout/withLayout';
 import withUser from '../../lib/hoc/withUser';
 
 const WishListPage = () => {
@@ -73,4 +74,4 @@ const WishListPage = () => {
   );
 };
 
-export default withUser(WishListPage);
+export default withLayout(withUser(WishListPage));
