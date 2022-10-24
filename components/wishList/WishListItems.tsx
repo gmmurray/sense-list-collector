@@ -183,7 +183,7 @@ const WishListItems = () => {
       if (sortBy === newSortBy) {
         newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
       } else {
-        newSortOrder = 'asc';
+        newSortOrder = 'desc';
       }
 
       onSortChange(newSortBy, newSortOrder);
@@ -193,7 +193,7 @@ const WishListItems = () => {
   );
 
   const sortIcon =
-    sortOrder === 'asc' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />;
+    sortOrder === 'desc' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />;
 
   const renderItems = useCallback(() => {
     if (gridView) {

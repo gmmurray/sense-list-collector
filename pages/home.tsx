@@ -28,9 +28,12 @@ const HomePage = () => {
             <img
               src="/containers_stock.jpg"
               alt="Containers image"
-              style={{ maxHeight: '50vh', width: '100%' }}
+              style={{ maxHeight: '50vh', width: '100%', borderRadius: 4 }}
             />
-            <Typography variant="h2" sx={{ position: 'absolute' }}>
+            <Typography
+              variant="h2"
+              sx={{ position: 'absolute', color: 'white', pl: 1 }}
+            >
               Collectionist
             </Typography>
           </Box>
@@ -57,6 +60,7 @@ const HomePage = () => {
                     height: '100%',
                     p: 2,
                   }}
+                  elevation={4}
                 >
                   <Link href={appRoutes.explore.path} passHref>
                     <Button sx={{ px: 0, textTransform: 'none' }}>
@@ -75,6 +79,7 @@ const HomePage = () => {
                     height: '100%',
                     p: 2,
                   }}
+                  elevation={4}
                 >
                   <Link href={appRoutes.stash.path} passHref>
                     <Button sx={{ px: 0, textTransform: 'none' }}>
@@ -92,6 +97,7 @@ const HomePage = () => {
                     height: '100%',
                     p: 2,
                   }}
+                  elevation={4}
                 >
                   <Link href={appRoutes.wishList.path} passHref>
                     <Button sx={{ px: 0, textTransform: 'none' }}>

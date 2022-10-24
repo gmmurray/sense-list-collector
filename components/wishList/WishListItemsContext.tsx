@@ -304,16 +304,20 @@ export const WishListItemProvider = ({ children }: WishListProviderProps) => {
   );
 
   const handleReset = useCallback(() => {
+    const statusFilter =
+      documentUser?.experience.hideWishListOwned === false
+        ? undefined
+        : defaultWishListItemsState.listOptions.statusFilter;
     setContextState(state => ({
       ...state,
       searchValue: defaultWishListItemsState.searchValue,
-      listOptions: { ...defaultWishListItemsState.listOptions },
-      filteredItems: filterThenSort(
-        state.items,
-        defaultWishListItemsState.listOptions,
-      ),
+      listOptions: { ...defaultWishListItemsState.listOptions, statusFilter },
+      filteredItems: filterThenSort(state.items, {
+        ...defaultWishListItemsState.listOptions,
+        statusFilter,
+      }),
     }));
-  }, []);
+  }, [documentUser?.experience.hideWishListOwned]);
 
   const handleConversionItemChange = useCallback(
     (conversionItem: WishListItemsState['conversionItem']) =>

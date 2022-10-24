@@ -1,11 +1,10 @@
-import { Box, Grid, Typography } from '@mui/material';
-import React, { Fragment, useCallback } from 'react';
-
 import CenteredLoadingIndicator from '../shared/CenteredLoadingIndicator';
 import CenteredMessage from '../shared/CenteredMessage';
 import CollectionsListItem from './CollectionsListItem';
 import CollectionsTable from './CollectionsTable';
+import { Grid } from '@mui/material';
 import { ICollectionWithId } from '../../entities/collection';
+import React from 'react';
 
 type CollectionsListProps = {
   collections: ICollectionWithId[];

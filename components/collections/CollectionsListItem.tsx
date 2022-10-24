@@ -4,10 +4,15 @@ import {
   CardContent,
   CardMedia,
   Fade,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 
+import { Box } from '@mui/system';
 import { ICollectionWithId } from '../../entities/collection';
 import Link from 'next/link';
+import PublicIcon from '@mui/icons-material/Public';
+import PublicOffIcon from '@mui/icons-material/PublicOff';
 import React from 'react';
 import { appRoutes } from '../../lib/constants/routes';
 import { getCollectionCoverImageUrl } from '../../lib/constants/images';
@@ -32,7 +37,19 @@ const CollectionsListItem = ({ collection }: CollectionsListItemProps) => {
               height="300"
               sx={{ objectFit: 'contain', pt: 2 }}
             />
-            <CardContent>{collection.name}</CardContent>
+            <CardContent sx={{ display: 'flex' }}>
+              <Box>
+                <Typography variant="h6">{collection.name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {collection.itemIds.length} item(s)
+                </Typography>
+              </Box>
+              <Box sx={{ ml: 'auto' }}>
+                <Tooltip title={collection.isPublic ? 'Public' : 'Private'}>
+                  {collection.isPublic ? <PublicIcon /> : <PublicOffIcon />}
+                </Tooltip>
+              </Box>
+            </CardContent>
           </CardActionArea>
         </Link>
       </Card>

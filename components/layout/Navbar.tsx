@@ -193,7 +193,10 @@ const Navbar = () => {
                   sx={{
                     my: 2,
                     display: 'block',
-                    color: link.active(router.pathname) ? 'white' : 'grey.500',
+                    color: link.active(router.pathname) ? 'white' : 'grey.400',
+                    [':hover']: {
+                      color: 'white',
+                    },
                   }}
                 >
                   {link.name}

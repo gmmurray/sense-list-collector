@@ -38,7 +38,8 @@ const CollectionsTable = ({ collections }: CollectionsTableProps) => {
             <TableCell>Name</TableCell>
             <TableCell align="right">Public</TableCell>
             <TableCell align="right">Item(s)</TableCell>
-            <TableCell align="right">Updated</TableCell>
+            <TableCell align="right">Last updated</TableCell>
+            <TableCell align="right">Created</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -63,6 +64,9 @@ const CollectionsTable = ({ collections }: CollectionsTableProps) => {
                 <TableCell align="right">{c.itemIds?.length ?? 0}</TableCell>
                 <TableCell align="right">
                   {getDateStringFromFirestoreTimestamp(c.updatedAt)}
+                </TableCell>
+                <TableCell align="right">
+                  {getDateStringFromFirestoreTimestamp(c.createdAt)}
                 </TableCell>
               </TableRow>
             </Fade>
