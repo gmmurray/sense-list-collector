@@ -22,7 +22,7 @@ export type ItemsListState = ManagedListState<
   ItemsListFilterDefinition
 >;
 
-export const useItemsList = (items: IItemWithId[]) => {
+export const useItemsList = (items: IItemWithId[] | undefined) => {
   return useManagedList<
     IItemWithId,
     ItemsListState['sortBy'],

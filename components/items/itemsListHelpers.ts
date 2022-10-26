@@ -64,7 +64,7 @@ export const filterItemsList = (
 
   return items.filter(item => {
     let include = true;
-    console.log(category);
+
     if (category) {
       if (category === 'none') {
         include = include && !item.category;

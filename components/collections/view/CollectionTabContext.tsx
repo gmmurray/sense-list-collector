@@ -6,7 +6,7 @@ import { IItemWithId } from '../../../entities/item';
 type CollectionTabContextType = {
   collection?: ICollectionWithId;
   collectionLoading: boolean;
-  items: IItemWithId[];
+  items?: IItemWithId[];
   itemsLoading: boolean;
   isOwner: boolean;
 };
@@ -26,7 +26,7 @@ export const useCollectionTabContext = () => useContext(CollectionTabContext);
 type CollectionTabProviderProps = {
   collection: ICollectionWithId;
   collectionLoading: boolean;
-  items: IItemWithId[];
+  items?: IItemWithId[];
   itemsLoading: boolean;
   isOwner: boolean;
 } & PropsWithChildren;

@@ -87,16 +87,16 @@ const CollectionItemsTab = () => {
   );
 
   const itemCategories = uniqueElements(
-    items.map(item => item.category),
+    (items ?? []).map(item => item.category),
   ) as string[];
 
   if (itemsLoading) {
     return <CenteredLoadingIndicator />;
-  } else if (items.length === 0) {
+  } else if ((items ?? []).length === 0) {
     return <CenteredMessage message="No items in this collection" />;
   }
 
-  const selectedItem = items.filter(i => i.id === selectedId)[0];
+  const selectedItem = (items ?? []).filter(i => i.id === selectedId)[0];
 
   let itemCategoryMenuOptions = itemCategories.map(c => ({
     title: c,
@@ -104,7 +104,7 @@ const CollectionItemsTab = () => {
     selected: filter.category === c,
   }));
 
-  if (items.some(item => !item.category)) {
+  if ((items ?? []).some(item => !item.category)) {
     itemCategoryMenuOptions = [
       {
         title: 'no category',

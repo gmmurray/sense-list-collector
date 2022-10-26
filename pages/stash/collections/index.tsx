@@ -31,7 +31,7 @@ import withUser from '../../../lib/hoc/withUser';
 const ViewCollections = () => {
   usePageTitle(appRoutes.stash.collections.title);
   const { documentUser } = useUserContext();
-  const { data: collections = [], isLoading: collectionsLoading } =
+  const { data: collections, isLoading: collectionsLoading } =
     useGetLatestUserCollectionsQuery(documentUser?.userId);
   const [isGridView, setIsGridView] = useState(
     !documentUser?.experience?.preferTables,

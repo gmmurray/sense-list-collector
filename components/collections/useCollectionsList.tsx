@@ -28,7 +28,9 @@ export type CollectionListState = ManagedListState<
   CollectionsListFilterDefinition
 >;
 
-export const useCollectionsList = (collections: ICollectionWithId[]) =>
+export const useCollectionsList = (
+  collections: ICollectionWithId[] | undefined,
+) =>
   useManagedList<
     ICollectionWithId,
     CollectionListState['sortBy'],

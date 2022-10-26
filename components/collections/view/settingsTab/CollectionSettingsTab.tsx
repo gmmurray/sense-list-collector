@@ -48,7 +48,7 @@ const CollectionSettingsTab = () => {
   const { authUser } = useUserContext();
   const {
     collection,
-    items: collectionItems,
+    items: collectionItems = [],
     itemsLoading: collectionItemsLoading,
   } = useCollectionTabContext();
   const snackbarContext = useSnackbarAlert();

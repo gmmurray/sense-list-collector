@@ -67,7 +67,7 @@ const ViewCollection = () => {
           <CollectionTabProvider
             collection={collection}
             collectionLoading={collectionLoading}
-            items={collectionItems ?? []}
+            items={collectionItems}
             itemsLoading={collectionItemsLoading}
             isOwner={isOwner}
           >

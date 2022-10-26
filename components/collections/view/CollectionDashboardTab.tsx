@@ -17,7 +17,7 @@ import { useCollectionTabContext } from './CollectionTabContext';
 const DASHBOARD_ITEMS_COUNT = 3;
 
 const CollectionDashboardTab = () => {
-  const { collection, items, itemsLoading } = useCollectionTabContext();
+  const { collection, items = [], itemsLoading } = useCollectionTabContext();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
 

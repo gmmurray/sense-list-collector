@@ -48,7 +48,7 @@ type UseManagedListResult<R, S, F extends filterDefinition> = {
 };
 
 type UseManagedListParams<R, S, F extends filterDefinition> = {
-  baseList: R[];
+  baseList: R[] | undefined;
   defaultSort: S;
   defaultOrder: SortDir;
   filter: F;
@@ -66,21 +66,23 @@ export function useManagedList<R, S, F extends filterDefinition>({
   filterAndSortFunction,
   searchFunction,
 }: UseManagedListParams<R, S, F>): UseManagedListResult<R, S, F> {
+  const managedList = useMemo(() => baseList ?? [], [baseList]);
+
   const [listState, setListState] = useState(
     getDefaultState<R, S, F>(defaultSort, defaultOrder, filter),
   );
 
   const searchEngine = useMemo(
-    () => new Fuse(baseList, { keys: searchKeys }),
-    [baseList, searchKeys],
+    () => new Fuse(managedList, { keys: searchKeys }),
+    [managedList, searchKeys],
   );
 
   useEffect(() => {
     setListState(state => ({
       ...state,
-      result: filterAndSortFunction(baseList, state),
+      result: filterAndSortFunction(managedList, state),
     }));
-  }, [baseList, filterAndSortFunction]);
+  }, [filterAndSortFunction, managedList]);
 
   const handleSearch = useCallback(
     (search?: string) => {
@@ -90,18 +92,13 @@ export function useManagedList<R, S, F extends filterDefinition>({
           searchValue: search,
         };
         const result = filterAndSortFunction(
-          searchFunction(
-            baseList,
-            searchEngine,
-            //getSearchEngine<R>(baseList, searchKeys),
-            newState.searchValue,
-          ),
+          searchFunction(managedList, searchEngine, newState.searchValue),
           newState,
         );
         return { ...newState, result };
       });
     },
-    [baseList, filterAndSortFunction, searchEngine, searchFunction],
+    [filterAndSortFunction, managedList, searchEngine, searchFunction],
   );
 
   const handleSortChange = useCallback(
@@ -135,7 +132,7 @@ export function useManagedList<R, S, F extends filterDefinition>({
           } as F,
         };
         const toProcess = searchFunction(
-          baseList,
+          managedList,
           searchEngine,
           newState.searchValue,
         );
@@ -147,7 +144,7 @@ export function useManagedList<R, S, F extends filterDefinition>({
         };
       });
     },
-    [baseList, filterAndSortFunction, searchEngine, searchFunction],
+    [filterAndSortFunction, managedList, searchEngine, searchFunction],
   );
 
   const handleReset = useCallback(() => {
@@ -158,14 +155,14 @@ export function useManagedList<R, S, F extends filterDefinition>({
         filter,
       );
 
-      const result = filterAndSortFunction(baseList, newState);
+      const result = filterAndSortFunction(managedList, newState);
 
       return {
         ...newState,
         result,
       };
     });
-  }, [defaultSort, defaultOrder, filter, filterAndSortFunction, baseList]);
+  }, [defaultSort, defaultOrder, filter, filterAndSortFunction, managedList]);
 
   return {
     result: listState.result,
