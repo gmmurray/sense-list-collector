@@ -2,8 +2,6 @@ import {
   Button,
   ButtonGroup,
   Grid,
-  Menu,
-  MenuItem,
   TextField,
   Typography,
 } from '@mui/material';
@@ -16,13 +14,12 @@ import React, { useCallback, useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { Box } from '@mui/system';
 import ClearIcon from '@mui/icons-material/Clear';
 import CollectionsList from '../../../components/collections/CollectionsList';
 import GridViewSelector from '../../../components/shared/GridViewSelector';
 import Link from 'next/link';
+import ListMenuOptions from '../../../components/shared/ListMenuOptions';
 import SortIcon from '@mui/icons-material/Sort';
 import { appRoutes } from '../../../lib/constants/routes';
 import { useGetLatestUserCollectionsQuery } from '../../../lib/queries/collections/collectionQueries';
@@ -41,7 +38,7 @@ const ViewCollections = () => {
   );
 
   const {
-    collections: visibleCollections,
+    result: visibleCollections,
     sort,
     filter,
     onSearch,
@@ -94,9 +91,6 @@ const ViewCollections = () => {
     },
     [filter, handleAnchorToggle, onFilter],
   );
-
-  const sortIcon =
-    sort.order === 'desc' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />;
 
   return (
     <Grid container spacing={2}>
@@ -183,60 +177,52 @@ const ViewCollections = () => {
           loading={collectionsLoading}
         />
       </Grid>
-      <Menu
-        anchorEl={anchors.isPublic}
-        open={!!anchors.isPublic}
+      <ListMenuOptions
+        anchor={anchors.isPublic}
         onClose={() => handleAnchorToggle(null, 'isPublic')}
-      >
-        <MenuItem
-          onClick={() => handleFilterChange('isPublic', true)}
-          selected={filter.isPublic}
-        >
-          public
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleFilterChange('isPublic', false)}
-          selected={filter.isPublic === false}
-        >
-          private
-        </MenuItem>
-      </Menu>
-      <Menu
-        anchorEl={anchors.hasItems}
-        open={!!anchors.hasItems}
+        onOptionClick={value => handleFilterChange('isPublic', value)}
+        options={[
+          {
+            title: 'public',
+            value: true,
+            selected: filter.isPublic === true,
+          },
+          {
+            title: 'private',
+            value: false,
+            selected: filter.isPublic === false,
+          },
+        ]}
+      />
+      <ListMenuOptions
+        anchor={anchors.hasItems}
         onClose={() => handleAnchorToggle(null, 'hasItems')}
-      >
-        <MenuItem
-          onClick={() => handleFilterChange('hasItems', true)}
-          selected={filter.hasItems}
-        >
-          1+ items
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleFilterChange('hasItems', false)}
-          selected={filter.hasItems === false}
-        >
-          0 items
-        </MenuItem>
-      </Menu>
-      <Menu
-        anchorEl={anchors.sort}
-        open={!!anchors.sort}
+        onOptionClick={value => handleFilterChange('hasItems', value)}
+        options={[
+          {
+            title: '1+ items',
+            value: true,
+            selected: filter.hasItems === true,
+          },
+          {
+            title: '0 items',
+            value: false,
+            selected: filter.hasItems === false,
+          },
+        ]}
+      />
+      <ListMenuOptions
+        anchor={anchors.sort}
         onClose={() => handleAnchorToggle(null, 'sort')}
-      >
-        {collectionsListSortOptions.map((option, key) => (
-          <MenuItem
-            key={key}
-            onClick={() => handleSortChange(option)}
-            selected={sort.by === option}
-          >
-            <Box display="flex" width="100%">
-              <Box>{option}</Box>
-              {sort.by === option && <Box ml="auto">{sortIcon}</Box>}
-            </Box>
-          </MenuItem>
-        ))}
-      </Menu>
+        onOptionClick={handleSortChange}
+        options={collectionsListSortOptions.map(option => ({
+          title: option,
+          value: option,
+          selected: sort.by === option,
+        }))}
+        showSortIcon
+        sortDir={sort.order}
+      />
     </Grid>
   );
 };

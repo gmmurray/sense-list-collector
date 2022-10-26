@@ -4,6 +4,7 @@ import {
   CardContent,
   CardMedia,
   Fade,
+  Typography,
 } from '@mui/material';
 
 import { IItemWithId } from '../../entities/item';
@@ -31,9 +32,13 @@ const ItemsListItem = ({ item }: ItemsListItemProps) => {
                 height: '150px',
                 minWidth: '200px',
                 maxWidth: '200px',
+                p: 1,
               }}
             />
-            <CardContent>{item.name}</CardContent>
+            <CardContent>
+              <Typography variant="h6">{item.name}</Typography>
+              <Typography variant="body2">{item.category}</Typography>
+            </CardContent>
           </CardActionArea>
         </Link>
       </Card>

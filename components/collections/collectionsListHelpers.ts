@@ -46,22 +46,22 @@ const filterCollectionList = (
   collections: ICollectionWithId[],
   options: CollectionListState,
 ): ICollectionWithId[] => {
-  const { isPublicFilter, hasItemsFilter: itemsFilter } = options;
+  const { filter } = options;
   return collections.filter(collection => {
     let include = true;
 
-    if (isPublicFilter) {
+    if (filter.isPublic) {
       // undefined = any, true = only true, false = only false
       include = include && collection.isPublic;
     }
 
-    if (isPublicFilter === false) {
+    if (filter.isPublic === false) {
       include = include && !collection.isPublic;
     }
 
-    if (itemsFilter) {
+    if (filter.hasItems) {
       include = include && collection.itemIds.length > 0;
-    } else if (itemsFilter === false) {
+    } else if (filter.hasItems === false) {
       include = include && collection.itemIds.length === 0;
     }
 

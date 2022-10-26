@@ -83,7 +83,7 @@ const WishListItem = ({ item }: WishListItemProps) => {
             image={item.image}
             alt={item.name}
             height="200"
-            sx={{ objectFit: 'contain' }}
+            sx={{ objectFit: 'contain', p: 1 }}
           />
           <Box
             display="flex"

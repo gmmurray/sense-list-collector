@@ -36,7 +36,6 @@ import {
   resolveIdentifiableFirestoreSnapshotDocs,
 } from '../lib/helpers/firestoreHelpers';
 
-import { MAX_QUERY_LIMIT } from '../lib/constants/firestoreConstants';
 import { firebaseDB } from '../config/firebase';
 import pickBy from 'lodash.pickby';
 import { uniqueElements } from '../lib/helpers/arrayHelpers';

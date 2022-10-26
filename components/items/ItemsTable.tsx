@@ -12,6 +12,7 @@ import React, { useCallback } from 'react';
 
 import { IItemWithId } from '../../entities/item';
 import { appRoutes } from '../../lib/constants/routes';
+import { getDateStringFromFirestoreTimestamp } from '../../lib/helpers/firestoreHelpers';
 import { useRouter } from 'next/router';
 
 const nullableFieldTemplate = (value?: string | number) => {
@@ -40,6 +41,8 @@ const ItemsTable = ({ items }: ItemsTableProps) => {
             <TableCell align="right">Rating</TableCell>
             <TableCell align="right">Price ($)</TableCell>
             <TableCell align="right">Collection(s)</TableCell>
+            <TableCell align="right">Last updated</TableCell>
+            <TableCell align="right">Created</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -67,6 +70,12 @@ const ItemsTable = ({ items }: ItemsTableProps) => {
                 </TableCell>
                 <TableCell align="right">
                   {nullableFieldTemplate(item.collectionIds?.length)}
+                </TableCell>
+                <TableCell align="right">
+                  {getDateStringFromFirestoreTimestamp(item.updatedAt)}
+                </TableCell>
+                <TableCell align="right">
+                  {getDateStringFromFirestoreTimestamp(item.createdAt)}
                 </TableCell>
               </TableRow>
             </Fade>

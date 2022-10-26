@@ -35,7 +35,7 @@ const CollectionsListItem = ({ collection }: CollectionsListItemProps) => {
               image={getCollectionCoverImageUrl(collection)}
               alt={collection.name}
               height="300"
-              sx={{ objectFit: 'contain', pt: 2 }}
+              sx={{ objectFit: 'contain', p: 1 }}
             />
             <CardContent sx={{ display: 'flex' }}>
               <Box>
