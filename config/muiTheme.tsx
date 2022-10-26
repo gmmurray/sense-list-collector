@@ -1,8 +1,13 @@
 import { PropsWithChildren, useMemo } from 'react';
-import { ThemeProvider, createTheme, useMediaQuery } from '@mui/material';
+import {
+  ThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+  useMediaQuery,
+} from '@mui/material';
 
-export const getTheme = (mode: 'light' | 'dark') =>
-  createTheme({
+export const getTheme = (mode: 'light' | 'dark') => {
+  const theme = createTheme({
     palette: {
       mode,
       secondary: {
@@ -13,6 +18,8 @@ export const getTheme = (mode: 'light' | 'dark') =>
       },
     },
   });
+  return responsiveFontSizes(theme);
+};
 
 export const CustomThemeProvider = ({ children }: PropsWithChildren) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
