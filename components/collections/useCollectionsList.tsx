@@ -28,22 +28,31 @@ export type CollectionListState = ManagedListState<
   CollectionsListFilterDefinition
 >;
 
-export const useCollectionsList = (
-  collections: ICollectionWithId[] | undefined,
-) =>
-  useManagedList<
+const searchKeys = ['name', 'description'];
+
+const defaultSort = 'last updated';
+
+const defaultOrder = 'desc';
+const filter = {
+  isPublic: undefined,
+  hasItems: undefined,
+};
+
+export const useCollectionsList = (baseList: ICollectionWithId[]) => {
+  const filterAndSortFunction = useCallback(filterAndSortCollectionsList, []);
+  const searchFunction = useCallback(searchCollectionsList, []);
+
+  return useManagedList<
     ICollectionWithId,
     CollectionListState['sortBy'],
     CollectionListState['filter']
   >({
-    baseList: collections,
-    defaultSort: 'last updated',
-    defaultOrder: 'desc',
-    filter: {
-      isPublic: undefined,
-      hasItems: undefined,
-    },
-    searchKeys: ['name', 'description'],
-    filterAndSortFunction: filterAndSortCollectionsList,
-    searchFunction: searchCollectionsList,
+    baseList,
+    defaultSort,
+    defaultOrder,
+    filter,
+    searchKeys,
+    filterAndSortFunction,
+    searchFunction,
   });
+};

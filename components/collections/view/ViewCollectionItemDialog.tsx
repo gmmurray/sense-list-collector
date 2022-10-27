@@ -133,7 +133,11 @@ const ViewCollectionItemDialog = ({
           <Grid item xs={12} textAlign="center" sx={{ minHeight: '200px' }}>
             <img
               src={getItemPrimaryImageUrl(item)}
-              style={{ objectFit: 'contain', maxWidth: '100%' }}
+              style={{
+                objectFit: 'contain',
+                maxWidth: '100%',
+                maxHeight: '75vh',
+              }}
               alt={item.name}
             />
           </Grid>

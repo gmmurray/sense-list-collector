@@ -96,7 +96,7 @@ const CollectionItemsTab = () => {
     return <CenteredMessage message="No items in this collection" />;
   }
 
-  const selectedItem = (items ?? []).filter(i => i.id === selectedId)[0];
+  const selectedItem = items.filter(i => i.id === selectedId)[0];
 
   let itemCategoryMenuOptions = itemCategories.map(c => ({
     title: c,
@@ -104,7 +104,7 @@ const CollectionItemsTab = () => {
     selected: filter.category === c,
   }));
 
-  if ((items ?? []).some(item => !item.category)) {
+  if (items.some(item => !item.category)) {
     itemCategoryMenuOptions = [
       {
         title: 'no category',

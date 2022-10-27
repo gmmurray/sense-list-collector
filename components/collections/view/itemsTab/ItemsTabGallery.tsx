@@ -40,6 +40,7 @@ const ItemsTabGallery = ({ items, onItemClick }: ItemsTabGalleryProps) => {
                 src={getItemPrimaryImageUrl(item)}
                 style={{
                   objectFit: 'contain',
+                  maxHeight: '50vh',
                 }}
                 alt={item.name}
               />

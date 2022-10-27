@@ -36,7 +36,7 @@ const ViewCollection = () => {
 
   usePageTitle(appRoutes.stash.collections.view.title(collection?.name));
 
-  const { data: collectionItems, isLoading: collectionItemsLoading } =
+  const { data: collectionItems = [], isLoading: collectionItemsLoading } =
     useGetItemsInCollectionQuery(collection);
   const { data: userProfile, isLoading: userProfileLoading } =
     useGetUserProfileQuery(collection?.userId);

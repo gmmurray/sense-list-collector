@@ -8,6 +8,7 @@ import {
 } from './collectionItemsListHelpers';
 
 import { IItemWithId } from '../../../../entities/item';
+import { useCallback } from 'react';
 
 export const collectionItemsListSortOptions = [
   'name',
@@ -26,19 +27,31 @@ export type CollectionItemsListState = ManagedListState<
   CollectionItemsListFilterDefinition
 >;
 
-export const useCollectionItemsList = (items: IItemWithId[] | undefined) =>
-  useManagedList<
+const defaultSort = 'name';
+const defaultOrder = 'asc';
+const filter = {
+  category: undefined,
+};
+const searchKeys = ['name', 'description', 'category'];
+
+export const useCollectionItemsList = (baseList: IItemWithId[]) => {
+  const filterAndSortFunction = useCallback(
+    filterAndSortCollectionItemsList,
+    [],
+  );
+  const searchFunction = useCallback(searchCollectionItemsList, []);
+
+  return useManagedList<
     IItemWithId,
     CollectionItemsListState['sortBy'],
     CollectionItemsListState['filter']
   >({
-    baseList: items,
-    defaultSort: 'name',
-    defaultOrder: 'asc',
-    filter: {
-      category: undefined,
-    },
-    searchKeys: ['name', 'description', 'category'],
-    filterAndSortFunction: filterAndSortCollectionItemsList,
-    searchFunction: searchCollectionItemsList,
+    baseList,
+    defaultSort,
+    defaultOrder,
+    filter,
+    searchKeys,
+    filterAndSortFunction,
+    searchFunction,
   });
+};

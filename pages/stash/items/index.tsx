@@ -3,7 +3,6 @@ import {
   Button,
   ButtonGroup,
   Grid,
-  Menu,
   TextField,
   Typography,
 } from '@mui/material';
@@ -33,9 +32,8 @@ import withUser from '../../../lib/hoc/withUser';
 const ViewItems = () => {
   usePageTitle(appRoutes.stash.items.title);
   const { documentUser } = useUserContext();
-  const { data: items, isLoading: itemsLoading } = useGetLatestUserItemsQuery(
-    documentUser?.userId,
-  );
+  const { data: items = [], isLoading: itemsLoading } =
+    useGetLatestUserItemsQuery(documentUser?.userId);
 
   const [isGridView, setIsGridView] = useState(
     !documentUser?.experience?.preferTables,
@@ -106,7 +104,7 @@ const ViewItems = () => {
   );
 
   const itemCategories = uniqueElements(
-    (items ?? []).map(item => item.category),
+    items.map(item => item.category),
   ) as string[];
 
   let itemCategoryMenuOptions = itemCategories.map(c => ({
@@ -115,7 +113,7 @@ const ViewItems = () => {
     selected: filter.category === c,
   }));
 
-  if ((items ?? []).some(item => !item.category)) {
+  if (items.some(item => !item.category)) {
     itemCategoryMenuOptions = [
       {
         title: 'no category',
