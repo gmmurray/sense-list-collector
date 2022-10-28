@@ -11,6 +11,7 @@ import { IItemWithId } from '../../../../entities/item';
 import { useCallback } from 'react';
 
 export const collectionItemsListSortOptions = [
+  `owner's choice`,
   'name',
   'category',
   'last updated',
@@ -21,23 +22,38 @@ type CollectionItemsListFilterDefinition = {
   category?: string;
 };
 
-export type CollectionItemsListState = ManagedListState<
+type baseListState = ManagedListState<
   IItemWithId,
   typeof collectionItemsListSortOptions[number],
   CollectionItemsListFilterDefinition
 >;
 
-const defaultSort = 'name';
+export type CollectionItemsListState = {
+  itemPositionMap: Map<string, number>;
+} & baseListState;
+
+const defaultSort = `owner's choice`;
 const defaultOrder = 'asc';
 const filter = {
   category: undefined,
 };
 const searchKeys = ['name', 'description', 'category'];
 
-export const useCollectionItemsList = (baseList: IItemWithId[]) => {
+export const useCollectionItemsList = (
+  baseList: IItemWithId[],
+  ordinalIds: string[],
+) => {
   const filterAndSortFunction = useCallback(
-    filterAndSortCollectionItemsList,
-    [],
+    (items: IItemWithId[], options: baseListState) => {
+      const itemPositionMap = new Map(
+        ordinalIds.map((id, index) => [id, index]),
+      );
+      return filterAndSortCollectionItemsList(items, {
+        ...options,
+        itemPositionMap,
+      });
+    },
+    [ordinalIds],
   );
   const searchFunction = useCallback(searchCollectionItemsList, []);
 

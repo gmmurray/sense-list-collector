@@ -38,6 +38,10 @@ export const sortCollectionItemsList = (
       ]);
       break;
     }
+    case `owner's choice`: {
+      result = sortFunc(item => options.itemPositionMap.get(item.id));
+      break;
+    }
     default: {
       result = sortFunc(item => item[sortBy]?.toLocaleLowerCase());
     }

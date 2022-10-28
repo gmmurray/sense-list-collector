@@ -167,7 +167,6 @@ const ViewItem = () => {
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h5">Details</Typography>
-          <Divider />
         </Grid>
         <Grid item xs={12}>
           <CreateEditItemForm
@@ -184,8 +183,10 @@ const ViewItem = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h5">Danger zone</Typography>
           <Divider sx={{ mb: 2 }} />
+          <Typography variant="h5" gutterBottom>
+            Danger zone
+          </Typography>
           <LoadingButton
             variant="contained"
             color="warning"

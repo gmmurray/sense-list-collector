@@ -92,8 +92,9 @@ const ViewCollection = () => {
       {!collectionLoading && collection && (
         <Grid item xs={12}>
           <Typography variant="h2" component="h1">
-            {collection?.name ?? 'Collection'}
+            {collection.name}
           </Typography>
+          <Typography variant="body2">{collection.description}</Typography>
           {userProfile && (
             <Box display="flex" sx={{ mt: 1 }}>
               <Avatar alt={userProfile?.username} src={userProfile?.avatar} />

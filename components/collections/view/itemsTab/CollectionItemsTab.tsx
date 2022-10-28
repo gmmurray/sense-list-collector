@@ -42,7 +42,7 @@ const CollectionItemsTab = () => {
     onFilter,
     onReset,
     searchValue,
-  } = useCollectionItemsList(items);
+  } = useCollectionItemsList(items, collection?.itemIds ?? []);
 
   const [anchors, setAnchors] = useState<{
     sort: HTMLButtonElement | null;

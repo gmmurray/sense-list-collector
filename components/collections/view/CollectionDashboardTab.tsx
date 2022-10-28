@@ -39,48 +39,57 @@ const CollectionDashboardTab = () => {
 
   const selectedItem = items.filter(i => i.id === selectedId)[0];
 
+  const renderItemsCards = () => {
+    if (itemsLoading) {
+      return (
+        <Grid item xs={12}>
+          <CenteredLoadingIndicator height="20vh" size={40} />
+        </Grid>
+      );
+    }
+
+    if (!showItems) return null;
+
+    return (
+      <Fragment>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="h4">Latest items</Typography>
+            <List>
+              {newItems.map(item => (
+                <ListItem key={item.id} disablePadding>
+                  <ListItemButton onClick={() => setSelectedId(item.id)}>
+                    {item.name}
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </Grid>
+        {favoriteItems.length > 0 && (
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="h4">Favorite items</Typography>
+              <List>
+                {favoriteItems.map(item => (
+                  <ListItem key={item.id} disablePadding>
+                    <ListItemButton onClick={() => setSelectedId(item.id)}>
+                      {item.name}
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          </Grid>
+        )}
+      </Fragment>
+    );
+  };
+
   return (
     <Fragment>
       <Grid container spacing={2}>
-        {showItems && (
-          <Fragment>
-            <Grid item xs={12}>
-              {!itemsLoading && (
-                <Paper sx={{ p: 2 }}>
-                  <Typography variant="h4">Latest items</Typography>
-                  <List>
-                    {newItems.map(item => (
-                      <ListItem key={item.id} disablePadding>
-                        <ListItemButton onClick={() => setSelectedId(item.id)}>
-                          {item.name}
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Paper>
-              )}
-              {itemsLoading && (
-                <CenteredLoadingIndicator height="20vh" size={40} />
-              )}
-            </Grid>
-            {!itemsLoading && favoriteItems.length > 0 && (
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2 }}>
-                  <Typography variant="h4">Favorite items</Typography>
-                  <List>
-                    {favoriteItems.map(item => (
-                      <ListItem key={item.id} disablePadding>
-                        <ListItemButton onClick={() => setSelectedId(item.id)}>
-                          {item.name}
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Paper>
-              </Grid>
-            )}
-          </Fragment>
-        )}
+        {renderItemsCards()}
         <Grid item xs={6}>
           <Paper
             sx={{

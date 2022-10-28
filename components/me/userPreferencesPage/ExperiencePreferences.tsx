@@ -13,6 +13,7 @@ import { IUserDocument } from '../../../entities/user';
 import { useSnackbarAlert } from '../../shared/SnackbarAlert';
 import { useUpdateUserExperienceMutation } from '../../../lib/queries/users/userMutations';
 import { useUserContext } from '../../../lib/hoc/withUser/userContext';
+import { userExperiencePreferences } from '../../../lib/constants/userExperiencePreferences';
 
 const ExperiencePreferences = () => {
   const snackbar = useSnackbarAlert();
@@ -39,46 +40,25 @@ const ExperiencePreferences = () => {
 
   return (
     <List>
-      <ListItem>
-        <ListItemText primary="Prefer table view" />
-        <ListItemSecondaryAction>
-          <IconButton
-            disabled={updateMutation.isLoading}
-            onClick={() =>
-              handleChange(
-                'preferTables',
-                !documentUser?.experience?.preferTables,
-              )
-            }
-          >
-            {documentUser?.experience?.preferTables ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )}
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="Hide owned wish list items by default" />
-        <ListItemSecondaryAction>
-          <IconButton
-            disabled={updateMutation.isLoading}
-            onClick={() =>
-              handleChange(
-                'hideWishListOwned',
-                !documentUser?.experience?.hideWishListOwned,
-              )
-            }
-          >
-            {documentUser?.experience?.hideWishListOwned ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )}
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
+      {userExperiencePreferences.map(pref => (
+        <ListItem key={pref.key}>
+          <ListItemText primary={pref.primary} secondary={pref.secondary} />
+          <ListItemSecondaryAction>
+            <IconButton
+              disabled={updateMutation.isLoading}
+              onClick={() =>
+                handleChange(pref.key, !documentUser?.experience[pref.key])
+              }
+            >
+              {documentUser?.experience[pref.key] ? (
+                <CheckBoxIcon />
+              ) : (
+                <CheckBoxOutlineBlankIcon />
+              )}
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      ))}
     </List>
   );
 };

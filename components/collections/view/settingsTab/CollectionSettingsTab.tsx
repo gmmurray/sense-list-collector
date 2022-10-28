@@ -174,7 +174,6 @@ const CollectionSettingsTab = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Typography variant="h5">Details</Typography>
-        <Divider sx={{ mb: 2 }} />
         <Grid container>
           <Grid item xs={12}>
             <form onSubmit={formik.handleSubmit}>
@@ -317,8 +316,8 @@ const CollectionSettingsTab = () => {
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="h5">Items</Typography>
         <Divider sx={{ mb: 2 }} />
+        <Typography variant="h5">Items</Typography>
         <ManageCollectionItemsList
           collection={collection}
           collectionItems={collectionItems}
@@ -329,8 +328,10 @@ const CollectionSettingsTab = () => {
         />
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="h5">Danger zone</Typography>
         <Divider sx={{ mb: 2 }} />
+        <Typography variant="h5" gutterBottom>
+          Danger zone
+        </Typography>
         <LoadingButton
           variant="contained"
           color="warning"

@@ -201,6 +201,19 @@ export const updateItemsOnCollection = async (
   return await batch.commit();
 };
 
+export const updateCollectionItemsProperty = async (
+  itemIds: string[],
+  collectionId?: string,
+) => {
+  if (!collectionId) throw new Error('Collection not found');
+
+  const ref = doc(collectionsCollection, collectionId);
+
+  await updateDoc(ref, {
+    itemIds,
+  });
+};
+
 // many collections to one item (used within a loop)
 export const updateItemsOnCollectionWithinBatch = (
   collectionId: string,

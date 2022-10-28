@@ -7,6 +7,7 @@ import {
   deleteCollection,
   updateCollection,
   updateCollectionFavoriteItems,
+  updateCollectionItemsProperty,
   updateItemsOnCollection,
 } from '../../../entities/collection';
 import { deleteObject, getStorage, listAll, ref } from 'firebase/storage';
@@ -16,6 +17,7 @@ import {
   saveFirebaseCollectionImageParams,
 } from '../../../entities/firebaseFiles';
 
+import { arrayMoveImmutable } from 'array-move';
 import { collectionQueryKeys } from './collectionQueries';
 import { itemQueryKeys } from '../items/itemQueries';
 import { reactQueryClient } from '../../../config/reactQuery';
@@ -195,6 +197,45 @@ export const useDeleteCollectionMutation = () =>
       await Promise.all([
         ...imagesToDelete.items.map(oldRef => deleteObject(oldRef)),
       ]);
+    },
+    {
+      onSuccess: async () =>
+        await Promise.all([
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all),
+          reactQueryClient.invalidateQueries(itemQueryKeys.all),
+        ]),
+    },
+  );
+
+export const useUpdateCollectionItemOrderMutation = () =>
+  useMutation(
+    async ({
+      currList,
+      itemId,
+      direction,
+      collectionId,
+    }: {
+      currList: string[];
+      itemId: string;
+      direction: 'up' | 'down';
+      collectionId?: string;
+    }) => {
+      const currIndex = currList.indexOf(itemId);
+      let result: string[] = [];
+      // use the original order if the itemId does not exist in the array or it is an invalid move
+      if (
+        currIndex === -1 ||
+        (direction === 'up' && currIndex === 0) ||
+        (direction === 'down' && currIndex === currList.length - 0)
+      ) {
+        result = [...currList];
+      } else {
+        const newIndex = direction === 'up' ? currIndex - 1 : currIndex + 1;
+
+        result = arrayMoveImmutable(currList, currIndex, newIndex);
+      }
+
+      return await updateCollectionItemsProperty(result, collectionId);
     },
     {
       onSuccess: async () =>

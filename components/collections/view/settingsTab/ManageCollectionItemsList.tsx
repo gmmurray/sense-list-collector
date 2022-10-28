@@ -13,10 +13,20 @@ import {
   ListItemIcon,
   ListItemText,
   TextField,
+  Tooltip,
 } from '@mui/material';
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, {
+  Fragment,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import CenteredLoadingIndicator from '../../../shared/CenteredLoadingIndicator';
 import CenteredMessage from '../../../shared/CenteredMessage';
 import CheckIcon from '@mui/icons-material/Check';
@@ -27,9 +37,11 @@ import { IItemWithId } from '../../../../entities/item';
 import InfoIcon from '@mui/icons-material/Info';
 import { LoadingButton } from '@mui/lab';
 import RemoveIcon from '@mui/icons-material/Remove';
+import SortIcon from '@mui/icons-material/Sort';
 import ViewCollectionItemDialog from '../ViewCollectionItemDialog';
 import debounce from 'lodash.debounce';
 import { getItemPrimaryImageUrl } from '../../../../lib/constants/images';
+import { useUpdateCollectionItemOrderMutation } from '../../../../lib/queries/collections/collectionMutations';
 
 type ManageCollectionItemsListProps = {
   collection: ICollectionWithId;
@@ -51,10 +63,14 @@ const ManageCollectionItemsList = ({
   onSave,
 }: ManageCollectionItemsListProps) => {
   const [isAddMode, setIsAddMode] = useState(false);
+  const [isReorderMode, setIsReorderMode] = useState(false);
   const [visibleItems, setVisibleItems] = useState(collectionItems);
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [viewItemId, setViewItemId] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState('');
+
+  const updateCollectionItemOrderMutation =
+    useUpdateCollectionItemOrderMutation();
 
   const listItems = isAddMode ? userItems : collectionItems;
 
@@ -107,6 +123,13 @@ const ManageCollectionItemsList = ({
     [],
   );
 
+  const handleReset = useCallback(() => {
+    setVisibleItems(collectionItems);
+    setSelectedItemIds([]);
+    setViewItemId(null);
+    setSearchValue('');
+  }, [collectionItems]);
+
   useEffect(() => {
     const search = debounce(() => {
       const items =
@@ -119,11 +142,38 @@ const ManageCollectionItemsList = ({
     search();
   }, [listItems, searchValue]);
 
+  const handleToggleReorderMode = useCallback(() => {
+    const newValue = !isReorderMode;
+
+    if (newValue) {
+      handleReset();
+    }
+
+    setIsReorderMode(newValue);
+  }, [handleReset, isReorderMode]);
+
+  const handleReorderClick = useCallback(
+    async (itemId: string, direction: 'up' | 'down') => {
+      if (!collection) return;
+
+      await updateCollectionItemOrderMutation.mutateAsync({
+        currList: collection.itemIds,
+        itemId,
+        direction,
+        collectionId: collection.id,
+      });
+    },
+    [collection, updateCollectionItemOrderMutation],
+  );
+
   if (itemsLoading) {
     return <CenteredLoadingIndicator />;
   }
 
   const viewItem = listItems.filter(item => item.id === viewItemId)[0];
+  const positionMap = new Map(
+    (collection.itemIds ?? []).map((id, index) => [id, index]),
+  );
 
   const renderContent = () => {
     if (collectionItems.length === 0 && !isAddMode) {
@@ -134,155 +184,214 @@ const ManageCollectionItemsList = ({
 
     return (
       <List sx={{ mb: 5 }}>
-        <ListItem disablePadding>
-          <ListItemIcon sx={{ px: 2 }} onClick={handleSelectAllClick}>
-            <Checkbox
-              checked={
-                selectedItemIds.length === visibleItems.length &&
-                visibleItems.length !== 0
-              }
-              edge="start"
+        {!isReorderMode && (
+          <ListItem disablePadding>
+            <ListItemIcon sx={{ px: 2 }} onClick={handleSelectAllClick}>
+              <Checkbox
+                checked={
+                  selectedItemIds.length === visibleItems.length &&
+                  visibleItems.length !== 0
+                }
+                edge="start"
+              />
+            </ListItemIcon>
+            <ListItemText
+              primary={isAddMode ? 'Other items' : 'Current items'}
+              secondary={`${selectedItemIds.length}/${listItems.length} item(s) selected`}
+              secondaryTypographyProps={{
+                sx: {
+                  ml: 'auto',
+                },
+              }}
+              sx={{ display: 'flex' }}
             />
-          </ListItemIcon>
-          <ListItemText
-            primary={isAddMode ? 'Other items' : 'Current items'}
-            secondary={`${selectedItemIds.length}/${listItems.length} item(s) selected`}
-            secondaryTypographyProps={{
-              sx: {
-                ml: 'auto',
-              },
-            }}
-            sx={{ display: 'flex' }}
-          />
-        </ListItem>
+          </ListItem>
+        )}
         {visibleItems.length === 0 && (
           <CenteredMessage message="Could not find item" />
         )}
-        {visibleItems.map((item, index) => {
-          const isSelected = selectedItemIds.includes(item.id);
-          return (
-            <Fragment key={item.id}>
-              <Fade in timeout={500}>
-                <ListItem
-                  alignItems="flex-start"
-                  secondaryAction={
-                    <IconButton onClick={() => setViewItemId(item.id)}>
-                      <InfoIcon />
-                    </IconButton>
-                  }
-                  disablePadding
+        {visibleItems
+          .sort((a, b) =>
+            (positionMap.get(a.id) ?? 0) > (positionMap.get(b.id) ?? 0)
+              ? 1
+              : -1,
+          )
+          .map((item, index) => {
+            const isSelected = selectedItemIds.includes(item.id);
+            const position = positionMap.get(item.id);
+
+            const InnerContentWrapper = ({ children }: PropsWithChildren) => {
+              if (isReorderMode) {
+                return <Fragment>{children}</Fragment>;
+              }
+
+              return (
+                <ListItemButton
+                  onClick={() => handleItemSelect(item.id, !isSelected)}
                 >
-                  <ListItemButton
-                    onClick={() => handleItemSelect(item.id, !isSelected)}
-                  >
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={isSelected}
-                        tabIndex={-1}
-                        disableRipple
-                      />
-                    </ListItemIcon>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt={item.name}
-                        src={getItemPrimaryImageUrl(item)}
-                        sx={{ height: 56 }}
-                        imgProps={{ sx: { objectFit: 'contain' } }}
-                        variant="square"
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={item.name}
-                      secondary={item.description}
-                      secondaryTypographyProps={{
-                        sx: {
-                          overflow: 'hidden',
-                          maxWidth: '90%',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        },
-                      }}
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      checked={isSelected}
+                      tabIndex={-1}
+                      disableRipple
                     />
-                  </ListItemButton>
-                </ListItem>
-              </Fade>
-              {index < visibleItems.length - 1 && <Divider />}
-            </Fragment>
-          );
-        })}
+                  </ListItemIcon>
+                  {children}
+                </ListItemButton>
+              );
+            };
+
+            return (
+              <Fragment key={item.id}>
+                <Fade in timeout={500}>
+                  <ListItem
+                    alignItems="flex-start"
+                    secondaryAction={
+                      isReorderMode ? (
+                        <ButtonGroup
+                          size="small"
+                          color="inherit"
+                          variant="contained"
+                          disableElevation
+                          sx={{ color: 'black' }}
+                        >
+                          <Button
+                            disabled={
+                              position === 0 ||
+                              updateCollectionItemOrderMutation.isLoading
+                            }
+                            onClick={() => handleReorderClick(item.id, 'up')}
+                          >
+                            <ArrowDropUpIcon />
+                          </Button>
+                          <Button
+                            disabled={
+                              position === collectionItems.length - 1 ||
+                              updateCollectionItemOrderMutation.isLoading
+                            }
+                            onClick={() => handleReorderClick(item.id, 'down')}
+                          >
+                            <ArrowDropDownIcon />
+                          </Button>
+                        </ButtonGroup>
+                      ) : (
+                        <IconButton onClick={() => setViewItemId(item.id)}>
+                          <InfoIcon />
+                        </IconButton>
+                      )
+                    }
+                    disablePadding
+                  >
+                    <InnerContentWrapper>
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={item.name}
+                          src={getItemPrimaryImageUrl(item)}
+                          sx={{ height: 56 }}
+                          imgProps={{ sx: { objectFit: 'contain' } }}
+                          variant="square"
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={item.name}
+                        secondary={item.description}
+                        secondaryTypographyProps={{
+                          sx: {
+                            overflow: 'hidden',
+                            maxWidth: isReorderMode ? '60%' : '90%',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          },
+                        }}
+                      />
+                    </InnerContentWrapper>
+                  </ListItem>
+                </Fade>
+                {index < visibleItems.length - 1 && <Divider />}
+              </Fragment>
+            );
+          })}
       </List>
     );
   };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={6} display="flex">
-        {/* <Button
-          variant="outlined"
-          onClick={handleIsAddModeToggle}
-          startIcon={isAddMode ? <RemoveIcon /> : <AddIcon />}
-        >
-          {isAddMode ? 'Remove' : 'Add'}
-        </Button> */}
-        <IconButton onClick={handleIsAddModeToggle}>
-          {isAddMode ? (
-            <RemoveIcon color="secondary" />
-          ) : (
-            <AddIcon color="secondary" />
-          )}
-        </IconButton>
-        <TextField
-          placeholder="Search"
-          fullWidth
-          variant="standard"
-          sx={{ ml: 2 }}
-          value={searchValue}
-          onChange={handleSearchValueChange}
-          InputProps={{
-            endAdornment: (
-              <IconButton
-                onClick={() => setSearchValue('')}
-                disabled={searchValue === ''}
-              >
-                <ClearIcon />
+        <Tooltip title={isReorderMode ? 'Stop reordering' : 'Reorder items'}>
+          <IconButton color="inherit" onClick={handleToggleReorderMode}>
+            {isReorderMode ? <ClearIcon /> : <SortIcon />}
+          </IconButton>
+        </Tooltip>
+        {!isReorderMode && (
+          <Fragment>
+            <Tooltip title={isAddMode ? 'Remove items' : 'Add items'}>
+              <IconButton onClick={handleIsAddModeToggle}>
+                {isAddMode ? (
+                  <RemoveIcon color="secondary" />
+                ) : (
+                  <AddIcon color="secondary" />
+                )}
               </IconButton>
-            ),
-          }}
-        />
+            </Tooltip>
+            <TextField
+              placeholder="Search"
+              fullWidth
+              variant="standard"
+              sx={{ ml: 2 }}
+              value={searchValue}
+              onChange={handleSearchValueChange}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setSearchValue('')}
+                    disabled={searchValue === ''}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Fragment>
+        )}
       </Grid>
       <Grid item xs={12} md={6} display="flex">
-        <Button
-          variant="contained"
-          color="warning"
-          onClick={() => setSelectedItemIds([])}
-          startIcon={<ClearIcon />}
-          disabled={selectedItemIds.length === 0}
-          sx={{
-            ml: {
-              xs: undefined,
-              md: 'auto',
-            },
-          }}
-        >
-          Cancel
-        </Button>
-        <LoadingButton
-          loading={saveLoading}
-          variant="contained"
-          onClick={handleSaveChanges}
-          startIcon={<CheckIcon />}
-          disabled={selectedItemIds.length === 0}
-          sx={{
-            ml: {
-              xs: 'auto',
-              md: 2,
-            },
-          }}
-        >
-          {`${isAddMode ? 'Add' : 'Remove'}`}
-        </LoadingButton>
+        {!isReorderMode && (
+          <Fragment>
+            <Button
+              size="small"
+              color="warning"
+              onClick={() => setSelectedItemIds([])}
+              startIcon={<ClearIcon />}
+              disabled={selectedItemIds.length === 0}
+              sx={{
+                ml: {
+                  xs: undefined,
+                  md: 'auto',
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              loading={saveLoading}
+              size="small"
+              onClick={handleSaveChanges}
+              startIcon={<CheckIcon />}
+              disabled={selectedItemIds.length === 0}
+              sx={{
+                ml: {
+                  xs: 'auto',
+                  md: 2,
+                },
+              }}
+            >
+              {`${isAddMode ? 'Add' : 'Remove'}`}
+            </LoadingButton>
+          </Fragment>
+        )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} style={{ paddingTop: isReorderMode ? 0 : undefined }}>
         {renderContent()}
       </Grid>
       <ViewCollectionItemDialog
