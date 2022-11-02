@@ -8,6 +8,7 @@ import {
   updateCollection,
   updateCollectionFavoriteItems,
   updateCollectionItemsProperty,
+  updateCollectionLikes,
   updateItemsOnCollection,
 } from '../../../entities/collection';
 import { deleteObject, getStorage, listAll, ref } from 'firebase/storage';
@@ -170,6 +171,24 @@ export const useUpdateCollectionFavoriteItemsMutation = () =>
       },
     },
   );
+
+export function useUpdateCollectionLikesMutation() {
+  return useMutation(
+    ({
+      collectionId,
+      userId,
+      isAdditive,
+    }: {
+      collectionId: string;
+      userId: string;
+      isAdditive: boolean;
+    }) => updateCollectionLikes(collectionId, userId, isAdditive),
+    {
+      onSuccess: () =>
+        reactQueryClient.invalidateQueries(collectionQueryKeys.all),
+    },
+  );
+}
 
 export const useDeleteCollectionMutation = () =>
   useMutation(

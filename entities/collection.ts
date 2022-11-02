@@ -53,6 +53,7 @@ export interface ICollection {
   coverImageUrl?: string;
   itemIds: string[];
   favoriteItemIds: string[];
+  likedByUserIds: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -185,6 +186,18 @@ export const updateCollectionFavoriteItems = async (
     updatedAt: Timestamp.now(),
   });
 };
+
+export async function updateCollectionLikes(
+  collectionId: string,
+  userId: string,
+  isAdditive: boolean,
+) {
+  const ref = doc(collectionsCollection, collectionId);
+
+  await updateDoc(ref, {
+    likedByUserIds: isAdditive ? arrayUnion(userId) : arrayRemove(userId),
+  });
+}
 
 // one collection to many items
 export const updateItemsOnCollection = async (

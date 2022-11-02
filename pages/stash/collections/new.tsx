@@ -100,6 +100,7 @@ const NewCollection = () => {
       coverImageUrl: '',
       itemIds: [],
       favoriteItemIds: [],
+      likedByUserIds: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     },
