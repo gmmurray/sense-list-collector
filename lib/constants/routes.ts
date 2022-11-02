@@ -2,6 +2,9 @@ const PAGE_TITLE_SUFFIX = ' - Collectionist';
 
 const createPageTitle = (title: string) => title + PAGE_TITLE_SUFFIX;
 
+export const createQueryRoute = (route: string, query: Record<string, any>) =>
+  `${route}?${new URLSearchParams(query).toString()}`;
+
 export const appRoutes = {
   landing: {
     path: '/' as const,
@@ -15,7 +18,8 @@ export const appRoutes = {
     path: '/explore' as const,
     title: createPageTitle('Explore'),
     query: {
-      userId: (id: string) => appRoutes.explore.path + `?userId=${id}`,
+      userId: (userId: string) =>
+        createQueryRoute(appRoutes.explore.path, { userId }),
     },
   },
   stash: {
@@ -31,6 +35,13 @@ export const appRoutes = {
       view: {
         path: (id: string) => appRoutes.stash.collections.path() + `/${id}`,
         title: (name?: string) => createPageTitle(name ?? 'View collection'),
+        query: {
+          tab: (collectionId: string, tab: string) =>
+            createQueryRoute(
+              appRoutes.stash.collections.view.path(collectionId),
+              { tab },
+            ),
+        },
       },
     },
     items: {
@@ -64,5 +75,11 @@ export const appRoutes = {
   auth: {
     path: '/auth' as const,
     title: createPageTitle('Get started'),
+    query: {
+      redirectTo: (redirectTo?: string) =>
+        redirectTo
+          ? createQueryRoute(appRoutes.auth.path, { redirectTo })
+          : appRoutes.auth.path,
+    },
   },
 };

@@ -73,9 +73,7 @@ const NewCollection = () => {
             });
 
         snackbarContext.send('Collection created', 'success');
-        router.push(
-          `${appRoutes.stash.collections.view.path(createdId)}?tab=3`,
-        );
+        router.push(appRoutes.stash.collections.view.query.tab(createdId, '3'));
       } catch (error) {
         console.log(error);
         snackbarContext.send('Error creating collection', 'error');

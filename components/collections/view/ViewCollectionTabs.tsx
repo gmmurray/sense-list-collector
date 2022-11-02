@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
-import CollectionDashboardTab from './CollectionDashboardTab';
+import CollectionDashboardTab from './dashboardTab/CollectionDashboardTab';
 import CollectionItemsTab from './itemsTab/CollectionItemsTab';
 import CollectionSettingsTab from './settingsTab/CollectionSettingsTab';
 import { Tab } from '@mui/material';

@@ -31,6 +31,10 @@ import {
 } from './item';
 import { IUserDocument, getUserProfiles } from './user';
 import {
+  deleteCollectionCommentWithinBatch,
+  getCommentsInCollection,
+} from './collectionComments';
+import {
   performIdentifiableFirestoreDocRetrieval,
   performIdentifiableFirestoreQuery,
   resolveIdentifiableFirestoreSnapshotDocs,
@@ -264,6 +268,12 @@ export const deleteCollection = async (
 
   collection.itemIds.forEach(itemId =>
     updateCollectionsOnItemWithinBatch(itemId, [collection.id], false, batch),
+  );
+
+  const comments = await getCommentsInCollection(collection.id);
+
+  comments.forEach(comment =>
+    deleteCollectionCommentWithinBatch(comment.id, collection.id, batch),
   );
 
   batch.delete(doc(collectionsCollection, collection.id));

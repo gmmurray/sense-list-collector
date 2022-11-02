@@ -117,4 +117,6 @@ const ViewCollection = () => {
   );
 };
 
-export default withLayout(withUser(ViewCollection, { isPublic: true }));
+export default withLayout(withUser(ViewCollection, { isPublic: true }), {
+  isPublicPage: true,
+});

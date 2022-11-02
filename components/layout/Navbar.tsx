@@ -53,7 +53,11 @@ const links: {
   },
 ];
 
-const Navbar = () => {
+type Props = {
+  isPublicPage?: boolean;
+};
+
+const Navbar = ({ isPublicPage }: Props) => {
   const [user, userLoading] = useAuthState(firebaseAuth);
   const router = useRouter();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -99,7 +103,13 @@ const Navbar = () => {
 
   const handleLogoutClick = useCallback(() => {
     firebaseAuth.signOut();
-    router.push(appRoutes.auth.path);
+    if (isPublicPage && typeof window !== 'undefined') {
+      window.location.reload();
+    }
+  }, [isPublicPage]);
+
+  const handleLoginClick = useCallback(() => {
+    router.push(appRoutes.auth.query.redirectTo(router.asPath));
   }, [router]);
 
   const handleProfileClick = useCallback(() => {
@@ -252,9 +262,9 @@ const Navbar = () => {
             </Box>
           )}
           {!userLoading && !user && (
-            <Link href={appRoutes.auth.path} passHref>
-              <Button sx={{ color: 'inherit' }}>Login</Button>
-            </Link>
+            <Button sx={{ color: 'inherit' }} onClick={handleLoginClick}>
+              Login
+            </Button>
           )}
         </Toolbar>
       </Container>

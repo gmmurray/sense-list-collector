@@ -7,7 +7,8 @@ import Footer from '../../../components/layout/Footer';
 import Navbar from '../../../components/layout/Navbar';
 
 type LayoutSettings = {
-  useCustomContainer: boolean;
+  useCustomContainer?: boolean;
+  isPublicPage?: boolean;
 };
 
 const withLayout =
@@ -31,7 +32,7 @@ const withLayout =
       <Box
         sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
       >
-        <Navbar />
+        <Navbar isPublicPage={settings && settings.isPublicPage} />
         {renderContent()}
         <Footer />
         <CreateProfileDialog />

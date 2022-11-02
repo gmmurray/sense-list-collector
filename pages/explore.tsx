@@ -290,4 +290,5 @@ export default withLayout(
   withUser(ExplorePage, {
     isPublic: true,
   }),
+  { isPublicPage: true },
 );

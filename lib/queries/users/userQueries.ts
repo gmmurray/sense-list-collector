@@ -2,14 +2,15 @@ import {
   USER_PAGE_COLLECTION_LIMIT,
   getUserDocument,
   getUserProfile,
+  getUserProfileWithUserId,
 } from '../../../entities/user';
+import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { IUserPageResult } from '../../types/UserPageResult';
 import { USER_DOCUMENT_NOT_FOUND_ERROR } from '../../constants/errors';
 import { getDateFromFirestoreTimestamp } from '../../helpers/firestoreHelpers';
 import { getLatestUserCollections } from '../../../entities/collection';
 import { uniqueElements } from '../../helpers/arrayHelpers';
-import { useQuery } from '@tanstack/react-query';
 
 export const userQueryKeys = {
   all: ['users'] as const,
@@ -24,8 +25,20 @@ export const useGetUserQuery = (userId?: string) =>
   });
 
 export const useGetUserProfileQuery = (userId?: string) =>
-  useQuery(userQueryKeys.profile(userId), () => getUserProfile(userId), {
-    enabled: !!userId,
+  useQuery(
+    userQueryKeys.profile(userId),
+    () => getUserProfileWithUserId(userId),
+    {
+      enabled: !!userId,
+    },
+  );
+
+export const useGetUserProfilesQueries = (userIds: string[]) =>
+  useQueries({
+    queries: userIds.map(id => ({
+      queryKey: userQueryKeys.profile(id),
+      queryFn: () => getUserProfileWithUserId(id),
+    })),
   });
 
 export const useGetUserProfilePageQuery = (userId?: string) =>

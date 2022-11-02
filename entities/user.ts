@@ -23,6 +23,16 @@ import {
 import { RequiredProps } from '../lib/types/typeModifiers';
 import { firebaseDB } from '../config/firebase';
 
+export interface IUserProfile {
+  avatar?: string;
+  username: string;
+  bio?: string;
+}
+
+export interface IUserProfileWithUserId extends IUserProfile {
+  userId: string;
+}
+
 export interface IUserDocument {
   userId: string;
   categories: string[];
@@ -31,11 +41,7 @@ export interface IUserDocument {
     preferTables: boolean;
     hideWishListOwned: boolean;
   };
-  profile?: {
-    avatar?: string;
-    username: string;
-    bio?: string;
-  };
+  profile?: IUserProfile;
 }
 
 export const USER_DOCUMENT_BIO_MAX_LENGTH = 1000;
@@ -122,6 +128,16 @@ export const getUserProfile = async (userId?: string) => {
   if (!user.profile) throw new Error('Profile could not be found');
 
   return user.profile as RequiredProps<IUserDocument>['profile'];
+};
+
+export const getUserProfileWithUserId = async (
+  userId?: string,
+): Promise<IUserProfileWithUserId> => {
+  const profile = await getUserProfile(userId);
+  return {
+    ...profile,
+    userId: userId!,
+  };
 };
 
 export const getUserProfiles = async (id: string[]) => {

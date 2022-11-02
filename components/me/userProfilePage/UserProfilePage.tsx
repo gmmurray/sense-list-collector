@@ -90,8 +90,8 @@ const UserProfilePage = () => {
   const handleUsernameReset = useCallback(() => {
     if (!documentUser) return;
 
-    handleUsernameValueChange(documentUser.profile?.username ?? '');
-  }, [documentUser, handleUsernameValueChange]);
+    setUsernameState({ value: documentUser.profile?.username ?? '' });
+  }, [documentUser]);
 
   const handleBioValueChange = useCallback(
     (value: string) => setBioState(state => ({ ...state, value })),
@@ -187,6 +187,12 @@ const UserProfilePage = () => {
         setUsernameState(state => ({
           ...state,
           message: `Username must be ${USER_DOCUMENT_USERNAME_LENGTH.min}-${USER_DOCUMENT_USERNAME_LENGTH.max} characters`,
+        }));
+        return;
+      } else if (usernameState.value.includes(' ')) {
+        setUsernameState(state => ({
+          ...state,
+          message: `Username must not include any spaces`,
         }));
         return;
       }

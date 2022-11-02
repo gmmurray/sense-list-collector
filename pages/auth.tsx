@@ -7,6 +7,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { appRoutes } from '../lib/constants/routes';
 import { firebaseUiConfig } from '../config/firebaseUI';
 import { getAuth } from 'firebase/auth';
+import { getStringFromStringOrArray } from '../lib/helpers/stringHelpers';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
 import usePageTitle from '../lib/hooks/usePageTitle';
@@ -18,9 +19,13 @@ const SignInPage = () => {
   const router = useRouter();
   useEffect(() => {
     if (user) {
-      router.push(appRoutes.home.path);
+      const redirectTo = router.query.redirectTo
+        ? getStringFromStringOrArray(router.query.redirectTo)
+        : appRoutes.home.path;
+      router.push(redirectTo);
     }
   }, [router, user]);
+
   return (
     <Box
       sx={{
@@ -56,7 +61,7 @@ const SignInPage = () => {
           firebaseAuth={getAuth(firebaseApp)}
         />
         <Link href={appRoutes.landing.path} passHref>
-          <Button color="inherit">Back</Button>
+          <Button color="inherit">Home</Button>
         </Link>
       </Box>
     </Box>
