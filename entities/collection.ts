@@ -49,6 +49,7 @@ export interface ICollection {
   userId: string;
   description: string;
   isPublic: boolean;
+  allowComments: boolean;
   coverImageUrl?: string;
   itemIds: string[];
   favoriteItemIds: string[];

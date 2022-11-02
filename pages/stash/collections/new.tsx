@@ -96,6 +96,7 @@ const NewCollection = () => {
       userId: documentUser?.userId ?? '',
       description: '',
       isPublic: false,
+      allowComments: false,
       coverImageUrl: '',
       itemIds: [],
       favoriteItemIds: [],
@@ -225,12 +226,24 @@ const NewCollection = () => {
               </Grid>
             )}
             <Grid item xs={12}>
-              <FormikCheckbox
-                name="isPublic"
-                label="Public"
-                formik={formik}
-                inputProps={{}}
-              />
+              <Grid container>
+                <Grid item>
+                  <FormikCheckbox
+                    name="isPublic"
+                    label="Public"
+                    formik={formik}
+                    inputProps={{}}
+                  />
+                </Grid>
+                <Grid item>
+                  <FormikCheckbox
+                    name="allowComments"
+                    label="Show comments"
+                    formik={formik}
+                    inputProps={{}}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item>
               <LoadingButton

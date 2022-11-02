@@ -45,7 +45,9 @@ const CollectionDashboardTab = () => {
           />
         )}
         <DashboardDefaultCards collection={collection} />
-        <DashboardCommentsCard collection={collection} />
+        {collection.allowComments && (
+          <DashboardCommentsCard collection={collection} />
+        )}
       </Grid>
       <ViewCollectionItemDialog
         collection={collection}
