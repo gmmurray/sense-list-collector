@@ -11,4 +11,5 @@ export interface ICollectionCommentListResult {
   collectionId: string;
   data: ICollectionCommentWithId[];
   nextCursor?: QueryDocumentSnapshot<DocumentData>;
+  hasNext: boolean;
 }

@@ -107,7 +107,9 @@ export async function getCommentsInCollectionLimited(
 
   const snapshot = await getDocs(q);
 
-  const data = snapshot.docs.reduce(
+  const slicedSnapshot = snapshot.docs.slice(0, COLLECTION_COMMENTS_PAGE_SIZE);
+
+  const data = slicedSnapshot.reduce(
     (filtered: FirebaseCollectionCommentWithId[], doc) => {
       if (doc.exists()) {
         filtered.push(new FirebaseCollectionCommentWithId(doc));
@@ -116,16 +118,11 @@ export async function getCommentsInCollectionLimited(
     },
     [],
   );
-
-  let nextCursor =
-    snapshot.docs.length !== COLLECTION_COMMENTS_PAGE_SIZE + 1
-      ? undefined
-      : snapshot.docs[COLLECTION_COMMENTS_PAGE_SIZE - 1];
-
   return {
-    data: data.slice(0, COLLECTION_COMMENTS_PAGE_SIZE),
+    data: data,
     collectionId: options.collectionId,
-    nextCursor,
+    nextCursor: slicedSnapshot[slicedSnapshot.length - 1],
+    hasNext: snapshot.docs.length === COLLECTION_COMMENTS_PAGE_SIZE + 1,
   };
 }
 

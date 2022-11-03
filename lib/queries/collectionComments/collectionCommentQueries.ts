@@ -14,10 +14,10 @@ export const collectionCommentQueryKeys = {
     'by-collection',
     { collectionId },
   ],
-  byCollectionLimited: (options?: ICollectionCommentListOptions) => [
+  byCollectionLimited: (collectionId: string) => [
     ...collectionCommentQueryKeys.all,
     'by-collection',
-    { ...(options ?? {}) },
+    { collectionId },
   ],
 };
 
@@ -29,11 +29,9 @@ export function useGetCommentsForCollectionQuery(collectionId: string) {
 
 export function useGetCommentsForCollectionLimitedQuery(collectionId: string) {
   return useInfiniteQuery({
-    queryKey: collectionCommentQueryKeys.byCollectionLimited(),
+    queryKey: collectionCommentQueryKeys.byCollectionLimited(collectionId),
     queryFn: ({ pageParam = { collectionId } }) =>
       getCommentsInCollectionLimited(pageParam),
-    getNextPageParam: last => {
-      return last.nextCursor ? last : undefined;
-    },
+    getNextPageParam: last => (last.hasNext ? last : undefined),
   });
 }

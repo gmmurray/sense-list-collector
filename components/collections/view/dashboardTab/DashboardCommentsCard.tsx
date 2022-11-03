@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   useCreateCollectionCommentMutation,
   useDeleteCollectionCommentMutation,
@@ -59,7 +59,10 @@ export default function DashboardCommentsCard(props: Props) {
 
   const commentsLoading = status === 'loading';
 
-  const comments = (commentPages?.pages.map(page => page.data) ?? []).flat();
+  const comments = useMemo(
+    () => (commentPages?.pages.map(page => page.data) ?? []).flat(),
+    [commentPages?.pages],
+  );
 
   const createCommentMutation = useCreateCollectionCommentMutation(
     props.collection.id,
