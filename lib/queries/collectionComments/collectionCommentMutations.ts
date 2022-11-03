@@ -16,7 +16,7 @@ export const useCreateCollectionCommentMutation = (collectionId: string) =>
     {
       onSuccess: () =>
         reactQueryClient.invalidateQueries(
-          collectionCommentQueryKeys.byCollection(collectionId),
+          collectionCommentQueryKeys.byCollectionLimited(),
         ),
     },
   );
@@ -36,7 +36,7 @@ export const useUpdateCollectionCommentLikesMutation = (collectionId: string) =>
     {
       onSuccess: () =>
         reactQueryClient.invalidateQueries(
-          collectionCommentQueryKeys.byCollection(collectionId),
+          collectionCommentQueryKeys.byCollectionLimited(),
         ),
     },
   );
@@ -47,7 +47,7 @@ export const useDeleteCollectionCommentMutation = (collectionId: string) =>
     {
       onSuccess: () =>
         reactQueryClient.invalidateQueries(
-          collectionCommentQueryKeys.byCollection(collectionId),
+          collectionCommentQueryKeys.byCollectionLimited(),
         ),
     },
   );

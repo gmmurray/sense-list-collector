@@ -19,6 +19,7 @@ import {
 import Avatar from '@mui/material/Avatar';
 import { COLLECTION_COMMENT_MAX_LENGTH } from '../../../../entities/collectionComments';
 import CenteredLoadingIndicator from '../../../shared/CenteredLoadingIndicator';
+import CenteredMessage from '../../../shared/CenteredMessage';
 import ConditionalTooltip from '../../../shared/ConditionalTooltip';
 import DashboardCard from './DashboardCard';
 import { ICollectionWithId } from '../../../../entities/collection';
@@ -28,12 +29,13 @@ import Link from 'next/link';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
+import { LoadingButton } from '@mui/lab';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ReactTimeago from 'react-timeago';
 import { appRoutes } from '../../../../lib/constants/routes';
 import { getDateFromFirestoreTimestamp } from '../../../../lib/helpers/firestoreHelpers';
 import { uniqueElements } from '../../../../lib/helpers/arrayHelpers';
-import { useGetCommentsForCollectionQuery } from '../../../../lib/queries/collectionComments/collectionCommentQueries';
+import { useGetCommentsForCollectionLimitedQuery } from '../../../../lib/queries/collectionComments/collectionCommentQueries';
 import { useGetUserProfilesQueries } from '../../../../lib/queries/users/userQueries';
 import { useSnackbarAlert } from '../../../shared/SnackbarAlert';
 import { useUserContext } from '../../../../lib/hoc/withUser/userContext';
@@ -45,8 +47,19 @@ type Props = {
 export default function DashboardCommentsCard(props: Props) {
   const { documentUser } = useUserContext();
   const snackbar = useSnackbarAlert();
-  const { data: comments = [], isLoading: commentsLoading } =
-    useGetCommentsForCollectionQuery(props.collection.id);
+
+  const {
+    data: commentPages,
+    fetchNextPage,
+    hasNextPage,
+    status,
+    isFetchingNextPage,
+    isFetching,
+  } = useGetCommentsForCollectionLimitedQuery(props.collection.id);
+
+  const commentsLoading = status === 'loading';
+
+  const comments = (commentPages?.pages.map(page => page.data) ?? []).flat();
 
   const createCommentMutation = useCreateCollectionCommentMutation(
     props.collection.id,
@@ -227,6 +240,7 @@ export default function DashboardCommentsCard(props: Props) {
             </Fade>
           )}
         </ListItem>
+        {comments.length === 0 && <CenteredMessage message="No comments yet" />}
         {comments.map(comment => (
           <Fade key={comment.id} in timeout={500}>
             <ListItem
@@ -286,6 +300,18 @@ export default function DashboardCommentsCard(props: Props) {
           </Fade>
         ))}
       </List>
+      {comments.length > 0 && hasNextPage && (
+        <Box width="100%" textAlign="center">
+          <LoadingButton
+            loading={isFetchingNextPage}
+            disabled={isFetching}
+            onClick={() => fetchNextPage()}
+            color="inherit"
+          >
+            More
+          </LoadingButton>
+        </Box>
+      )}
       <Menu
         anchorEl={commentMenu?.anchor}
         open={!!commentMenu?.anchor}

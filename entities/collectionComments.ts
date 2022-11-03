@@ -1,6 +1,7 @@
 import {
   DocumentData,
   DocumentSnapshot,
+  QueryConstraint,
   Timestamp,
   WriteBatch,
   addDoc,
@@ -10,10 +11,16 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  limit,
   orderBy,
   query,
+  startAfter,
   updateDoc,
 } from 'firebase/firestore';
+import {
+  ICollectionCommentListOptions,
+  ICollectionCommentListResult,
+} from '../lib/types/collectionCommentListTypes';
 
 import { collectionsCollection } from './collection';
 import { languageFilter } from '../config/languageFilter';
@@ -48,6 +55,8 @@ export class FirebaseCollectionCommentWithId
 
 export const COLLECTION_COMMENT_MAX_LENGTH = 140;
 
+export const COLLECTION_COMMENTS_PAGE_SIZE = 10;
+
 export const COLLECTION_COMMENT_COLLECTION_NAME = 'collectionComments';
 
 export const collectionCommentsCollection = (collectionId: string) =>
@@ -78,6 +87,41 @@ export async function getCommentsInCollection(collectionId: string) {
     },
     [],
   );
+}
+
+export async function getCommentsInCollectionLimited(
+  options: ICollectionCommentListOptions,
+): Promise<ICollectionCommentListResult> {
+  const cursors: QueryConstraint[] = [];
+
+  if (options.nextCursor) {
+    cursors.push(startAfter(options.nextCursor));
+  }
+
+  const q = query(
+    collectionCommentsCollection(options.collectionId),
+    orderBy('createdAt', 'desc'),
+    ...cursors,
+    limit(COLLECTION_COMMENTS_PAGE_SIZE),
+  );
+
+  const snapshot = await getDocs(q);
+
+  const data = snapshot.docs.reduce(
+    (filtered: FirebaseCollectionCommentWithId[], doc) => {
+      if (doc.exists()) {
+        filtered.push(new FirebaseCollectionCommentWithId(doc));
+      }
+      return filtered;
+    },
+    [],
+  );
+
+  return {
+    data,
+    collectionId: options.collectionId,
+    nextCursor: snapshot.docs[COLLECTION_COMMENTS_PAGE_SIZE - 1],
+  };
 }
 
 export async function createCollectionComment(

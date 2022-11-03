@@ -299,17 +299,17 @@ export const searchCollections = async (
   options: ICollectionSearchOptions,
 ): Promise<ICollectionSearchResult> => {
   const conditions: QueryConstraint[] = [];
-
+  const cursors: QueryConstraint[] = [];
   if (options.userId) {
     conditions.push(where('userId', '==', options.userId));
   }
 
   if (options.lastElement && !options.firstElement) {
-    conditions.push(startAfter(options.lastElement));
+    cursors.push(startAfter(options.lastElement));
   }
 
   if (options.firstElement && !options.lastElement) {
-    conditions.push(endBefore(options.firstElement));
+    cursors.push(endBefore(options.firstElement));
   }
 
   if (options.hasItems) {
@@ -322,6 +322,7 @@ export const searchCollections = async (
     where('isPublic', '==', true),
     ...conditions,
     orderBy('updatedAt', 'desc'),
+    ...cursors,
     limit(COLLECTION_SEARCH_PAGE_SIZE),
   );
 
