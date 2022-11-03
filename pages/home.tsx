@@ -23,12 +23,24 @@ const HomePage = () => {
             sx={{
               display: 'flex',
               alignItems: 'end',
+              minHeight: {
+                xs: '30vh',
+                md: '50vh',
+              },
             }}
           >
-            <img
+            <Box
+              component="img"
               src="/containers_stock.jpg"
               alt="Containers image"
-              style={{ maxHeight: '50vh', width: '100%', borderRadius: 4 }}
+              sx={{
+                height: {
+                  xs: '30vh',
+                  md: '50vh',
+                },
+                width: '100%',
+                borderRadius: 1,
+              }}
             />
             <Typography
               variant="h2"
