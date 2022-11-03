@@ -1,4 +1,5 @@
 import {
+  COLLECTION_COMMENTS_PAGE_SIZE,
   getCommentsInCollection,
   getCommentsInCollectionLimited,
 } from '../../../entities/collectionComments';

@@ -102,7 +102,7 @@ export async function getCommentsInCollectionLimited(
     collectionCommentsCollection(options.collectionId),
     orderBy('createdAt', 'desc'),
     ...cursors,
-    limit(COLLECTION_COMMENTS_PAGE_SIZE),
+    limit(COLLECTION_COMMENTS_PAGE_SIZE + 1),
   );
 
   const snapshot = await getDocs(q);
@@ -117,10 +117,15 @@ export async function getCommentsInCollectionLimited(
     [],
   );
 
+  let nextCursor =
+    snapshot.docs.length !== COLLECTION_COMMENTS_PAGE_SIZE + 1
+      ? undefined
+      : snapshot.docs[COLLECTION_COMMENTS_PAGE_SIZE - 1];
+
   return {
-    data,
+    data: data.slice(0, COLLECTION_COMMENTS_PAGE_SIZE),
     collectionId: options.collectionId,
-    nextCursor: snapshot.docs[COLLECTION_COMMENTS_PAGE_SIZE - 1],
+    nextCursor,
   };
 }
 
