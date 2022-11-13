@@ -6,6 +6,10 @@ import { Button, Grid, Typography } from '@mui/material';
 import { IItem, ITEM_DESCRIPTION_MAX_LENGTH } from '../../../entities/item';
 import React, { useCallback, useState } from 'react';
 import {
+  getStringFromStringOrArray,
+  stringHasValue,
+} from '../../../lib/helpers/stringHelpers';
+import {
   useCreateItemMutation,
   useCreateItemWithImageMutation,
 } from '../../../lib/queries/items/itemMutations';
@@ -46,6 +50,10 @@ const NewItem = () => {
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const fromCollectionId = getStringFromStringOrArray(
+    router.query.collectionId,
+  );
+
   const onSubmit = useCallback(
     async (values: IItem) => {
       if (!documentUser) return;
@@ -64,7 +72,10 @@ const NewItem = () => {
             });
 
         snackbarContext.send('Item created', 'success');
-        router.push(appRoutes.stash.items.view.path(createdId));
+        const newRoute = stringHasValue(fromCollectionId)
+          ? appRoutes.stash.collections.view.path(fromCollectionId)
+          : appRoutes.stash.items.view.path(createdId);
+        router.push(newRoute);
       } catch (error) {
         console.log(error);
         snackbarContext.send('Error creating item', 'error');
@@ -75,6 +86,7 @@ const NewItem = () => {
       createItemMutation,
       createItemWithImageMutation,
       documentUser,
+      fromCollectionId,
       imageFile,
       router,
       snackbarContext,
@@ -91,7 +103,7 @@ const NewItem = () => {
       category: undefined,
       images: [],
       rating: undefined,
-      collectionIds: [],
+      collectionIds: stringHasValue(fromCollectionId) ? [fromCollectionId] : [],
       createdAt: new Date(),
       updatedAt: new Date(),
     },

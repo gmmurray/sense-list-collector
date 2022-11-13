@@ -50,6 +50,12 @@ export const appRoutes = {
       new: {
         path: () => appRoutes.stash.items.path() + '/new',
         title: createPageTitle('New item'),
+        query: {
+          collectionId: (collectionId: string) =>
+            createQueryRoute(appRoutes.stash.items.new.path(), {
+              collectionId,
+            }),
+        },
       },
       view: {
         path: (id: string) => appRoutes.stash.items.path() + `/${id}`,

@@ -12,6 +12,7 @@ import { FormikContextType } from 'formik';
 import Link from 'next/link';
 import { LoadingButton } from '@mui/lab';
 import { appRoutes } from '../../lib/constants/routes';
+import { useGetLatestUserCollectionsQuery } from '../../lib/queries/collections/collectionQueries';
 import { useUpdateUserCategoryMutation } from '../../lib/queries/users/userMutations';
 import { useUserContext } from '../../lib/hoc/withUser/userContext';
 
@@ -35,6 +36,8 @@ const CreateEditItemForm = ({
   const { documentUser } = useUserContext();
 
   const updateUserCategoryMutation = useUpdateUserCategoryMutation();
+  const { data: userCollections = [], isLoading: userCollectionsLoading } =
+    useGetLatestUserCollectionsQuery(documentUser?.userId, 10);
 
   const [categoryOptions, setCategoryOptions] = useState<
     CreatableAutocompleteOption[]
@@ -84,6 +87,11 @@ const CreateEditItemForm = ({
     formik.resetForm();
     handleFileRemove();
   }, [formik, handleFileRemove]);
+
+  const collectionOptions = userCollections.map(c => ({
+    name: c.name,
+    value: c.id,
+  }));
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -139,6 +147,22 @@ const CreateEditItemForm = ({
             }}
           />
         </Grid>
+        {collectionOptions.length > 0 && (
+          <Grid item xs={12}>
+            <FormikSelect
+              formik={formik}
+              name="collectionIds"
+              label="Collections"
+              options={collectionOptions}
+              inputProps={{
+                fullWidth: true,
+                variant: 'standard',
+                disabled: userCollectionsLoading,
+              }}
+              multiple
+            />
+          </Grid>
+        )}
         <Grid item xs={12} md={10}>
           <FormikTextField
             name="primaryImageUrl"

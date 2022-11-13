@@ -96,12 +96,14 @@ export function FormikSelect<T>({
   label,
   options,
   inputProps,
+  multiple = false,
 }: {
   formik: FormikContextType<T>;
   name: string;
   label: string;
   options: { name: string; value: string }[];
   inputProps: FormControlProps;
+  multiple?: boolean;
 }) {
   const { values, touched, errors, handleChange } = formik;
 
@@ -122,6 +124,7 @@ export function FormikSelect<T>({
         label={label}
         value={value}
         onChange={handleChange}
+        multiple={multiple}
       >
         <MenuItem value={undefined}>select</MenuItem>
         {options.map((option, key) => (

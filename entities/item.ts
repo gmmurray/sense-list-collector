@@ -77,19 +77,6 @@ export const getUserItem = async (
   throw new Error('Not found');
 };
 
-// export const getItemWithCollections = async (
-//   itemId: string,
-//   userId?: string,
-// ): Promise<IItemWithCollections | undefined> => {
-//   const item = await getUserItem(itemId);
-
-//   if (!item) return undefined;
-
-//   const collections = await getCollectionsContainingItem(itemId, userId);
-
-//   return { ...item, collections };
-// };
-
 export const getItemsInCollection = async (
   collection?: ICollectionWithId,
 ): Promise<IItemWithId[]> => {
@@ -155,13 +142,7 @@ export const createItemWithRef = async (
 
   await setDoc(ref, clean);
 
-  if (item.collectionIds.length) {
-    const batch = writeBatch(firebaseDB);
-    item.collectionIds.forEach(id =>
-      updateItemsOnCollectionWithinBatch(id, [ref.id], batch, true),
-    );
-    await batch.commit();
-  }
+  await updateItemCollections(ref, item.collectionIds);
 
   return ref.id;
 };
@@ -175,7 +156,39 @@ export const updateItem = async (item: IItemWithId) => {
     updatedAt: Timestamp.now(),
   });
 
+  const prevItemValue = await getUserItem(item.id, item.userId);
+
+  await updateItemCollections(
+    ref,
+    item.collectionIds,
+    prevItemValue.collectionIds,
+  );
+
   return await setDoc(ref, clean);
+};
+
+export const updateItemCollections = async (
+  ref: DocumentReference<DocumentData>,
+  newCollections: string[] = [],
+  oldCollections: string[] = [],
+) => {
+  const collectionsToAdd = newCollections.filter(
+    collectionId => !oldCollections.includes(collectionId),
+  );
+  const collectionsToRemove = oldCollections.filter(
+    collectionId => !oldCollections.includes(collectionId),
+  );
+
+  if (collectionsToAdd.length || collectionsToRemove.length) {
+    const batch = writeBatch(firebaseDB);
+    collectionsToAdd.forEach(collectionId =>
+      updateItemsOnCollectionWithinBatch(collectionId, [ref.id], batch, true),
+    );
+    collectionsToRemove.forEach(collectionId =>
+      updateItemsOnCollectionWithinBatch(collectionId, [ref.id], batch, false),
+    );
+    await batch.commit();
+  }
 };
 
 // one item to many collections
@@ -230,17 +243,11 @@ export const createNewItemRef = () => doc(itemsCollection);
 export const deleteItem = async (itemId?: string, userId?: string) => {
   if (!itemId || !userId) throw new Error('Error deleting item');
 
+  const ref = doc(itemsCollection, itemId);
+
   const item = await getUserItem(itemId, userId);
 
-  const batch = writeBatch(firebaseDB);
-
-  item.collectionIds.forEach(collectionId =>
-    updateItemsOnCollectionWithinBatch(collectionId, [item.id], batch, false),
-  );
-
-  batch.delete(doc(itemsCollection, item.id));
-
-  return await batch.commit();
+  await updateItemCollections(ref, [], item.collectionIds);
 };
 
 export const createItemFromWishList = (

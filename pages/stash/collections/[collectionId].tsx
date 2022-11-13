@@ -115,10 +115,22 @@ const ViewCollection = () => {
       </Grid>
       {!collectionLoading && collection && (
         <Grid item xs={12}>
-          <Box>
+          <Box display="flex" width="100%">
             <Typography variant="h2" component="h1">
               {collection.name}
             </Typography>
+            {isOwner && (
+              <Link
+                href={appRoutes.stash.items.new.query.collectionId(
+                  collection.id,
+                )}
+                passHref
+              >
+                <Button sx={{ ml: 'auto' }} variant="text">
+                  Add new item
+                </Button>
+              </Link>
+            )}
           </Box>
           <Box>
             <LikeIndicator

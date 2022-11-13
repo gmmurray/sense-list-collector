@@ -24,7 +24,11 @@ export const useCreateItemMutation = () =>
     ({ item, userId }: { item: IItem; userId: string }) =>
       createItem(item, userId),
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(itemQueryKeys.all()),
+      onSuccess: () =>
+        Promise.all([
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+        ]),
     },
   );
 
@@ -61,7 +65,11 @@ export const useCreateItemWithImageMutation = () =>
       }
     },
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(itemQueryKeys.all()),
+      onSuccess: () => () =>
+        Promise.all([
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+        ]),
     },
   );
 
