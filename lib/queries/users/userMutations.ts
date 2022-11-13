@@ -32,7 +32,7 @@ export const useUpdateUserCategoryMutation = () =>
       userId?: string;
     }) => updateUserCategory(category, isAdditive, userId),
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all),
+      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all()),
     },
   );
 
@@ -48,7 +48,7 @@ export const useUpdateUserExperienceMutation = () =>
       userId?: string;
     }) => updateUserExperience(key, value, userId),
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all),
+      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all()),
     },
   );
 
@@ -72,7 +72,7 @@ export const useCreateUserProfileMutation = () =>
       await createUserProfile({ ...profile, avatar: avatarUrl }, userId);
     },
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all),
+      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all()),
     },
   );
 
@@ -87,7 +87,9 @@ export const useUpdateUserProfileItemMutation = () =>
       value: string;
       userId?: string;
     }) => updateUserProfile(key, value, userId),
-    { onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all) },
+    {
+      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all()),
+    },
   );
 
 export const useUpdateUserProfileAvatarMutation = () =>
@@ -123,7 +125,7 @@ export const useUpdateUserProfileAvatarMutation = () =>
       }
     },
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all),
+      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all()),
     },
   );
 
@@ -131,5 +133,7 @@ export const useUpdateUserUsernameMutation = () =>
   useMutation(
     ({ username, userId }: { username: string; userId: string }) =>
       updateUserUsername(username, userId),
-    { onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all) },
+    {
+      onSuccess: () => reactQueryClient.invalidateQueries(userQueryKeys.all()),
+    },
   );

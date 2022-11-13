@@ -2668,6 +2668,11 @@ react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-query-keys@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-query-keys/-/react-query-keys-1.0.2.tgz#44b25f234fb25f457f5454244b9b68ef91e6eafe"
+  integrity sha512-4xsWajmAwRHkHkPA3vKVOYkjitMm4WywBg2Hx85jqCffS1nVQHhnrdm36bX1bbg/t6Ls1RZA0GXMrHu8YR5NNA==
+
 react-timeago@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/react-timeago/-/react-timeago-7.1.0.tgz#248bc6aa40a561249e756b2df402c94f1a296a85"

@@ -24,7 +24,7 @@ export const useCreateItemMutation = () =>
     ({ item, userId }: { item: IItem; userId: string }) =>
       createItem(item, userId),
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(itemQueryKeys.all),
+      onSuccess: () => reactQueryClient.invalidateQueries(itemQueryKeys.all()),
     },
   );
 
@@ -61,7 +61,7 @@ export const useCreateItemWithImageMutation = () =>
       }
     },
     {
-      onSuccess: () => reactQueryClient.invalidateQueries(itemQueryKeys.all),
+      onSuccess: () => reactQueryClient.invalidateQueries(itemQueryKeys.all()),
     },
   );
 
@@ -69,8 +69,8 @@ export const useUpdateItemMutation = () =>
   useMutation(({ item }: { item: IItemWithId }) => updateItem(item), {
     onSuccess: async () =>
       await Promise.all([
-        reactQueryClient.invalidateQueries(collectionQueryKeys.all),
-        reactQueryClient.invalidateQueries(itemQueryKeys.all),
+        reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+        reactQueryClient.invalidateQueries(itemQueryKeys.all()),
       ]),
   });
 
@@ -112,8 +112,8 @@ export const useUpdateItemWithImageMutation = () =>
     {
       onSuccess: async () =>
         await Promise.all([
-          reactQueryClient.invalidateQueries(collectionQueryKeys.all),
-          reactQueryClient.invalidateQueries(itemQueryKeys.all),
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
         ]),
     },
   );
@@ -138,8 +138,8 @@ export const useDeleteItemMutation = () =>
     {
       onSuccess: async () =>
         await Promise.all([
-          reactQueryClient.invalidateQueries(collectionQueryKeys.all),
-          reactQueryClient.invalidateQueries(itemQueryKeys.all),
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
         ]),
     },
   );

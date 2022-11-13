@@ -1,26 +1,32 @@
 import { getWishList, getWishListItems } from '../../../entities/wishList';
 
+import ReactQueryKeys from 'react-query-keys';
 import { useQuery } from '@tanstack/react-query';
 
-export const wishListQueryKeys = {
-  all: ['wish-list'] as const,
-  getList: (userId?: string) => [
-    ...wishListQueryKeys.all,
-    'get-list',
-    { userId },
-  ],
-  items: () => [...wishListQueryKeys.all, 'list-items'],
-  getListItems: (userId?: string) => [...wishListQueryKeys.items(), { userId }],
-};
+export const wishListQueryKeys = new ReactQueryKeys('wish-list', {
+  keyDefinitions: {
+    getList: {
+      dynamicVariableNames: ['userId'],
+    },
+    items: {},
+    getListItems: {
+      dynamicVariableNames: ['userId'],
+    },
+  },
+});
 
 export const useGetWishListQuery = (userId?: string) =>
-  useQuery(wishListQueryKeys.getList(userId), () => getWishList(userId), {
-    enabled: !!userId,
-  });
+  useQuery(
+    wishListQueryKeys.key('getList', { userId }),
+    () => getWishList(userId),
+    {
+      enabled: !!userId,
+    },
+  );
 
 export const useGetWishListItemsQuery = (userId?: string) =>
   useQuery(
-    wishListQueryKeys.getListItems(userId),
+    wishListQueryKeys.key('getListItems', { userId }),
     () => getWishListItems(userId),
     { enabled: !!userId },
   );

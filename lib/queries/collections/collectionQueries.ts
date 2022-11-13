@@ -5,32 +5,30 @@ import {
 } from '../../../entities/collection';
 
 import { ICollectionSearchOptions } from '../../types/collectionSearchTypes';
+import ReactQueryKeys from 'react-query-keys';
 import { useQuery } from '@tanstack/react-query';
 
-export const collectionQueryKeys = {
-  all: ['collections'] as const,
-  latestUserCollections: (userId?: string, count?: number) =>
-    [
-      ...collectionQueryKeys.all,
-      'latest-user-collections',
-      { userId, count },
-    ] as const,
-  collection: () => [...collectionQueryKeys.all, 'collection'],
-  singleCollection: (collectionId?: string, userId?: string) =>
-    [
-      ...collectionQueryKeys.collection(),
-      'single-collection',
-      { collectionId, userId },
-    ] as const,
-  search: (options: ICollectionSearchOptions) =>
-    [...collectionQueryKeys.all, 'search', { ...options }] as const,
-};
+export const collectionQueryKeys = new ReactQueryKeys('collections', {
+  keyDefinitions: {
+    latestUserCollections: {
+      dynamicVariableNames: ['userId', 'count'],
+    },
+    collection: {},
+    singleCollection: {
+      dynamicVariableNames: ['collectionId', 'userId'],
+    },
+    search: {
+      dynamicVariableNames: ['options'],
+    },
+  },
+});
+
 export const useGetLatestUserCollectionsQuery = (
   userId?: string,
   count?: number,
 ) =>
   useQuery(
-    collectionQueryKeys.latestUserCollections(userId, count),
+    collectionQueryKeys.key('latestUserCollections', { userId, count }),
     () => getLatestUserCollections(userId, count),
     {
       enabled: !!userId,
@@ -39,7 +37,7 @@ export const useGetLatestUserCollectionsQuery = (
 
 export const useGetCollectionQuery = (collectionId?: string, userId?: string) =>
   useQuery(
-    collectionQueryKeys.singleCollection(collectionId, userId),
+    collectionQueryKeys.key('singleCollection', { collectionId, userId }),
     () => getCollection(collectionId, userId),
     {
       enabled: !!collectionId,
@@ -47,6 +45,6 @@ export const useGetCollectionQuery = (collectionId?: string, userId?: string) =>
   );
 
 export const useSearchCollectionQuery = (options: ICollectionSearchOptions) =>
-  useQuery(collectionQueryKeys.search(options), () =>
+  useQuery(collectionQueryKeys.key('search', { options }), () =>
     searchCollections(options),
   );

@@ -30,7 +30,7 @@ export const useCreateCollectionMutation = () =>
       createCollection(collection, userId),
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(collectionQueryKeys.all),
+        reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
     },
   );
 
@@ -69,7 +69,7 @@ export const useCreateCollectionAndLoadImageMutation = () =>
     },
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(collectionQueryKeys.all),
+        reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
     },
   );
 
@@ -79,7 +79,7 @@ export const useUpdateCollection = () =>
       updateCollection(collection),
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(collectionQueryKeys.all),
+        reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
     },
   );
 
@@ -127,7 +127,7 @@ export const useUpdateCollectionWithImageMutation = () =>
     },
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(collectionQueryKeys.all),
+        reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
     },
   );
 
@@ -145,8 +145,8 @@ export const useUpdateCollectionItemsMutation = () =>
     {
       onSuccess: async () =>
         await Promise.all([
-          reactQueryClient.invalidateQueries(collectionQueryKeys.all),
-          reactQueryClient.invalidateQueries(itemQueryKeys.all),
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
         ]),
     },
   );
@@ -165,9 +165,9 @@ export const useUpdateCollectionFavoriteItemsMutation = () =>
     {
       onSuccess: async () => {
         await reactQueryClient.invalidateQueries(
-          collectionQueryKeys.collection(),
+          collectionQueryKeys.key('collection'),
         );
-        await reactQueryClient.invalidateQueries(itemQueryKeys.all);
+        await reactQueryClient.invalidateQueries(itemQueryKeys.all());
       },
     },
   );
@@ -185,7 +185,7 @@ export function useUpdateCollectionLikesMutation() {
     }) => updateCollectionLikes(collectionId, userId, isAdditive),
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(collectionQueryKeys.all),
+        reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
     },
   );
 }
@@ -220,8 +220,8 @@ export const useDeleteCollectionMutation = () =>
     {
       onSuccess: async () =>
         await Promise.all([
-          reactQueryClient.invalidateQueries(collectionQueryKeys.all),
-          reactQueryClient.invalidateQueries(itemQueryKeys.all),
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
         ]),
     },
   );
@@ -259,8 +259,8 @@ export const useUpdateCollectionItemOrderMutation = () =>
     {
       onSuccess: async () =>
         await Promise.all([
-          reactQueryClient.invalidateQueries(collectionQueryKeys.all),
-          reactQueryClient.invalidateQueries(itemQueryKeys.all),
+          reactQueryClient.invalidateQueries(collectionQueryKeys.all()),
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
         ]),
     },
   );

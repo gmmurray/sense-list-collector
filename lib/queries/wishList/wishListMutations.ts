@@ -15,7 +15,8 @@ import { wishListQueryKeys } from './wishListQueries';
 
 export const useCreateWishListMutation = () =>
   useMutation(({ userId }: { userId: string }) => createWishList(userId), {
-    onSuccess: () => reactQueryClient.invalidateQueries(wishListQueryKeys.all),
+    onSuccess: () =>
+      reactQueryClient.invalidateQueries(wishListQueryKeys.all()),
   });
 
 export const useCreateWishListItemMutation = () =>
@@ -24,7 +25,7 @@ export const useCreateWishListItemMutation = () =>
       createWishListItem(value, userId),
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(wishListQueryKeys.items()),
+        reactQueryClient.invalidateQueries(wishListQueryKeys.key('items')),
     },
   );
 
@@ -34,7 +35,7 @@ export const useUpdateWishListItemMutation = () =>
       updateWishListItem(value, userId),
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(wishListQueryKeys.items()),
+        reactQueryClient.invalidateQueries(wishListQueryKeys.key('items')),
     },
   );
 
@@ -51,7 +52,7 @@ export const useUpdateWishListItemStatusMutation = () =>
     }) => updateWishListItemStatus(id, userId, status),
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(wishListQueryKeys.items()),
+        reactQueryClient.invalidateQueries(wishListQueryKeys.key('items')),
     },
   );
 
@@ -61,7 +62,7 @@ export const useDeleteWishListItemMutation = () =>
       deleteWishListItem(id, userId),
     {
       onSuccess: () =>
-        reactQueryClient.invalidateQueries(wishListQueryKeys.items()),
+        reactQueryClient.invalidateQueries(wishListQueryKeys.key('items')),
     },
   );
 
@@ -87,8 +88,8 @@ export const useConvertWishListItemMutation = () =>
     {
       onSuccess: async () => {
         await Promise.all([
-          reactQueryClient.invalidateQueries(wishListQueryKeys.items()),
-          reactQueryClient.invalidateQueries(itemQueryKeys.all),
+          reactQueryClient.invalidateQueries(wishListQueryKeys.key('items')),
+          reactQueryClient.invalidateQueries(itemQueryKeys.all()),
         ]);
       },
     },
