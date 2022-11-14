@@ -1,16 +1,14 @@
 import {
   Box,
-  Container,
+  Button,
   Grid,
   IconButton,
   Link as MUILink,
-  Stack,
   Typography,
   useTheme,
 } from '@mui/material';
 
-import GitHubIcon from '@mui/icons-material/GitHub';
-import Link from 'next/link';
+import Image from 'next/image';
 import React from 'react';
 
 const Footer = () => {
@@ -28,121 +26,25 @@ const Footer = () => {
             : theme.palette.grey[900],
       }}
     >
-      {/* <Grid container mb={2} textAlign="center">
-          <Grid item xs={12} md={4} px={2}>
-            <Stack>
-              <Link href="/" passHref>
-                <Typography
-                  variant="subtitle2"
-                  color="white"
-                  component="a"
-                  gutterBottom
-                  sx={{ textDecoration: 'none' }}
-                >
-                  SenseList Collector
-                </Typography>
-              </Link>
-              <Typography variant="body2" sx={{ color: 'grey.A200' }}>
-                The best way to keep track of your ever-growing collection.
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={4}
-            px={2}
-            sx={{
-              borderLeft: {
-                xs: 'none',
-                md: '1px solid white',
-              },
-            }}
-          >
-            <Stack>
-              <Typography
-                variant="subtitle2"
-                color="white"
-                component="a"
-                gutterBottom
-              >
-                Other sites
-              </Typography>
-              <MUILink
-                href="https://books.senselist.gmurray.dev"
-                variant="body2"
-                target="_blank"
-                rel="noreferrer"
-                sx={{ color: 'grey.A200', textDecoration: 'none' }}
-              >
-                Books
-              </MUILink>
-              <MUILink
-                href="https://recipes.gmurray.dev/"
-                variant="body2"
-                target="_blank"
-                rel="noreferrer"
-                sx={{ color: 'grey.A200', textDecoration: 'none' }}
-              >
-                Recipes
-              </MUILink>
-            </Stack>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={4}
-            px={2}
-            sx={{
-              borderLeft: {
-                xs: 'none',
-                md: '1px solid white',
-              },
-            }}
-          >
-            <Stack>
-              <Typography
-                variant="subtitle2"
-                color="white"
-                component="a"
-                gutterBottom
-              >
-                About the creator
-              </Typography>
-              <MUILink
-                href="https://gregmurray.org"
-                variant="body2"
-                target="_blank"
-                rel="noreferrer"
-                sx={{ color: 'grey.A200', textDecoration: 'none' }}
-              >
-                Personal website
-              </MUILink>
-              <MUILink
-                href="https://github.com/gmmurray"
-                variant="body2"
-                target="_blank"
-                rel="noreferrer"
-                sx={{ color: 'grey.A200', textDecoration: 'none' }}
-              >
-                GitHub
-              </MUILink>
-              <MUILink
-                href="https://gregmurray.org/blog"
-                variant="body2"
-                target="_blank"
-                rel="noreferrer"
-                sx={{ color: 'grey.A200', textDecoration: 'none' }}
-              >
-                Blog
-              </MUILink>
-            </Stack>
-          </Grid>
-        </Grid> */}
       <Grid container>
         <Grid item xs={12} textAlign="center">
-          <IconButton href="https://github.com/gmmurray" target="_blank">
-            <GitHubIcon />
+          <Button
+            href="https://sense-list.com"
+            target="_blank"
+            color="inherit"
+            size="small"
+          >
+            Sense List app suite
+          </Button>
+        </Grid>
+        <Grid item xs={12} textAlign="center">
+          <IconButton href="https://sense-list.com" target="_blank">
+            <Image
+              src="/sense_list_logo.png"
+              height="35"
+              width="35"
+              alt="Sense List logo"
+            />
           </IconButton>
         </Grid>
         <Grid item xs={12} textAlign="center">
@@ -150,7 +52,7 @@ const Footer = () => {
             {`Copyright© ${new Date().getFullYear()} `}
             <MUILink
               color="inherit"
-              href="https://gregmurray.org"
+              href="https://github.com/gmmurray"
               target="_blank"
               rel="noreferrer"
             >
