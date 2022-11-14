@@ -15,8 +15,6 @@ import {
   MenuItem,
   Paper,
   Stack,
-  ToggleButton,
-  ToggleButtonGroup,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -25,10 +23,6 @@ import {
   ICollectionWithProfile,
 } from '../entities/collection';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import {
-  collectionQueryKeys,
-  useSearchCollectionQuery,
-} from '../lib/queries/collections/collectionQueries';
 
 import CenteredLoadingIndicator from '../components/shared/CenteredLoadingIndicator';
 import CenteredMessage from '../components/shared/CenteredMessage';
@@ -40,10 +34,9 @@ import { LoadingButton } from '@mui/lab';
 import { appRoutes } from '../lib/constants/routes';
 import { getCollectionCoverImageUrl } from '../lib/constants/images';
 import { getStringFromStringOrArray } from '../lib/helpers/stringHelpers';
-import { reactQueryClient } from '../config/reactQuery';
-import { uniqueElements } from '../lib/helpers/arrayHelpers';
 import usePageTitle from '../lib/hooks/usePageTitle';
 import { useRouter } from 'next/router';
+import { useSearchCollectionQuery } from '../lib/queries/collections/collectionQueries';
 import withLayout from '../lib/hoc/layout/withLayout';
 import withUser from '../lib/hoc/withUser';
 
@@ -133,22 +126,9 @@ const ExplorePage = () => {
     [handleCloseUserOptionsMenu],
   );
 
-  const reset = () => {
-    setAllCollections([]);
-    setSearchSettings({});
-    reactQueryClient.invalidateQueries(collectionQueryKeys.search({}));
-  };
-
-  const uniqueUserIds = uniqueElements(allCollections.map(c => c.userId));
   const profileMap = new Map(
     allCollections.filter(c => !!c.profile).map(c => [c.userId, c.profile]),
   );
-  // const userProfileOptions = [];
-  // allCollections.forEach()
-  // allCollections.map((c) => {
-  //   if (c.profile)
-  //     return { ...c.profile, userId: c.userId };
-  // });
 
   return (
     <Container maxWidth="lg">
