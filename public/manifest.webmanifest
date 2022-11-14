@@ -1,7 +1,6 @@
 {
   "theme_color": "#0041fa",
   "background_color": "#fff",
-  "display": "browser",
   "scope": "/",
   "start_url": "/",
   "name": "Collectionist",
