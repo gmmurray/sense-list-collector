@@ -4,7 +4,7 @@ import { Box, Container } from '@mui/material';
 
 import CreateProfileDialog from '../../../components/layout/CreateProfileDialog';
 import Footer from '../../../components/layout/Footer';
-import Navbar from '../../../components/layout/Navbar';
+import Navbar from '../../../components/layout/navbar/Navbar';
 
 type LayoutSettings = {
   useCustomContainer?: boolean;
