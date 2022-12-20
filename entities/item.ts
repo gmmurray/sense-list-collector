@@ -171,7 +171,9 @@ export const updateItemCollections = async (
   ref: DocumentReference<DocumentData>,
   newCollections: string[] = [],
   oldCollections: string[] = [],
+  additionalOperation?: (batch: WriteBatch) => void,
 ) => {
+  const batch = writeBatch(firebaseDB);
   const collectionsToAdd = newCollections.filter(
     collectionId => !oldCollections.includes(collectionId),
   );
@@ -179,14 +181,22 @@ export const updateItemCollections = async (
     collectionId => !oldCollections.includes(collectionId),
   );
 
+  let needsBatch = false;
   if (collectionsToAdd.length || collectionsToRemove.length) {
-    const batch = writeBatch(firebaseDB);
     collectionsToAdd.forEach(collectionId =>
       updateItemsOnCollectionWithinBatch(collectionId, [ref.id], batch, true),
     );
     collectionsToRemove.forEach(collectionId =>
       updateItemsOnCollectionWithinBatch(collectionId, [ref.id], batch, false),
     );
+    needsBatch = true;
+  }
+
+  if (additionalOperation) {
+    additionalOperation(batch);
+  }
+
+  if (additionalOperation || needsBatch) {
     await batch.commit();
   }
 };
@@ -247,7 +257,9 @@ export const deleteItem = async (itemId?: string, userId?: string) => {
 
   const item = await getUserItem(itemId, userId);
 
-  await updateItemCollections(ref, [], item.collectionIds);
+  await updateItemCollections(ref, [], item.collectionIds, batch =>
+    batch.delete(ref),
+  );
 };
 
 export const createItemFromWishList = (

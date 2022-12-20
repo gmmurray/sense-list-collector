@@ -66,7 +66,9 @@ export const saveFirebaseCollectionImage = async ({
 }: saveFirebaseCollectionImageParams) => {
   return await saveFirebaseImage({
     file,
-    path: generateUserCollectionImageRef(userId, collectionId) + file.name,
+    path:
+      generateUserCollectionImageRef(userId, collectionId) +
+      `${collectionId}-${file.name}`,
     customMetadata: undefined,
     progressCallback,
   });
@@ -86,7 +88,7 @@ export const saveFirebaseItemImage = async ({
 }: saveFirebaseItemImageParams) => {
   return await saveFirebaseImage({
     file,
-    path: generateUserItemImageRef(userId, itemId) + file.name,
+    path: generateUserItemImageRef(userId, itemId) + `${itemId}-${file.name}`,
     customMetadata: undefined,
     progressCallback,
   });
